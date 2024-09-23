@@ -1,0 +1,172 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+    id 'com.google.firebase.crashlytics'
+    id 'com.google.firebase.firebase-perf'
+}
+
+android {
+    namespace 'com.rubyproducti9n.unofficialmech'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "com.rubyproducti9n.unofficialmech"
+        minSdk 29
+        targetSdk 34
+        versionCode 58
+        versionName "10.6.51"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+//        debug {
+//            buildConfigField "String", "MY_API_KEY", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk"
+//        }
+        release {
+            minifyEnabled true
+            shrinkResources true
+//            buildConfigField "String", "MY_API_KEY", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk"
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    buildFeatures{
+        viewBinding true
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+}
+
+dependencies {
+
+    implementation 'androidx.activity:activity:1.9.2'
+    implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01'
+    implementation 'com.google.android.play:review:2.0.1'
+    implementation 'com.android.billingclient:billing-ktx:7.1.0'
+    implementation 'androidx.media3:media3-ui:1.4.1'
+    constraints {
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0") {
+            because("kotlin-stdlib-jdk7 is now a part of kotlin-stdlib")
+        }
+        implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.0") {
+            because("kotlin-stdlib-jdk8 is now a part of kotlin-stdlib")
+        }
+    }
+
+//    implementation 'androidx.buildconfig:buildconfig-gradle:1.0.0'
+
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.preference:preference:1.2.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.navigation:navigation-fragment:2.8.1'
+    implementation 'androidx.navigation:navigation-ui:2.8.1'
+    implementation 'com.google.firebase:firebase-messaging:24.0.1'
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
+
+    //Shimmer
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+
+    //Google Admob
+    implementation 'com.google.android.gms:play-services-ads:23.3.0'
+
+    //Picasso Library
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.2.0-alpha01"
+
+    //Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:33.3.0')
+    //Firebase Analytics (Google Analytics)
+    implementation 'com.google.firebase:firebase-analytics:22.1.0'
+    //Firebase Crashlytics
+    implementation 'com.google.firebase:firebase-crashlytics:19.1.0'
+    //Firebase Realtime Database
+    implementation "com.google.firebase:firebase-database:21.0.0"
+    //Firebase Storage
+    implementation 'com.google.firebase:firebase-storage:21.0.0'
+    //Firebase Remote Config
+    implementation 'com.google.firebase:firebase-config:22.0.0'
+    //Firebase Performance dependancy
+    implementation 'com.google.firebase:firebase-perf:21.0.1'
+    //Firebase Cloud Messaging Service
+    implementation 'com.google.firebase:firebase-messaging:24.0.1'
+    //Firebase Authentication
+    implementation('com.google.firebase:firebase-auth:23.0.0')
+    //Google Play Billing
+    implementation "com.android.billingclient:billing:7.1.0"
+    //Firebase In-App Messaging
+//    implementation("com.google.firebase:firebase-inappmessaging:20.4.0")
+    //Firebase Admin SDK
+//    implementation 'com.google.firebase:firebase-admin:9.2.0'
+
+    //Google Pay
+//    implementation 'com.google.android.gms:play-services-wallet:19.2.0'
+    //PhonePe
+//    implementation 'com.phonepe.android:phonepesdk:1.11.0'
+    //PayPal
+    //implementation 'com.paypal.sdk:paypal-android-sdk:2.21.0'
+
+    //Image compressor library
+    //implementation 'com.github.luban-android:Luban:1.1.9'
+
+    //Lottie Animation
+    implementation 'com.airbnb.android:lottie:6.5.2'
+
+    //QR generator
+    implementation 'com.google.zxing:core:3.5.3'
+
+    //Pdf generator Lib
+//    implementation 'com.itextpdf:itextg-android:5.5.13.3'
+
+    //App Updater
+//    implementation 'com.github.Piashsarker:AndroidAppUpdateLibrary:1.0.4'
+//    implementation project(':appupdatelibrary')
+
+    //ExoPlayer
+    //implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+
+
+    //Google Play Services
+    implementation 'com.google.android.play:app-update:2.1.0'
+    //Google Play Integrity
+    implementation 'com.google.android.play:integrity:1.4.0'
+
+
+    //Google AI Studio Integration
+    // add the dependency for the Google AI client SDK for Android
+    implementation("com.google.ai.client.generativeai:generativeai:0.9.0")
+
+    // Required for one-shot operations (to use `ListenableFuture` from Reactive Streams)
+    implementation('com.google.guava:guava:33.3.0-jre')
+
+    // Required for streaming operations (to use `Publisher` from Guava Android)
+    implementation("org.reactivestreams:reactive-streams:1.0.4")
+
+    implementation project(':SmartMech')
+
+    implementation 'com.google.android.exoplayer:exoplayer:2.19.1'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.19.1'
+//    implementation 'com.google.apis:google-api-services-drive:v3-rev189-1.30.0'
+
+    //Google SignIn
+    implementation 'com.google.android.gms:play-services-auth:21.2.0'
+
+    //News API
+    //implementation 'com.github.KwabenBerko:News-API-Java:1.0.0'
+
+
+//    implementation 'com.android.tools.build:gradle:8.2.0'
+
+    //Multidex Lib
+//    implementation 'com.android.support:multidex:2.0.1'
+
+}

@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".BottomSheetAppConfiguration">
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/progress"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:indeterminateBehavior="cycle"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/main_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintTop_toBottomOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/dragBar"
+            style="@style/Widget.Material3.CardView.Filled"
+            android:layout_width="60dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="18dp"
+            android:fontFamily="@font/alata"
+            android:text="App Configuration"
+            android:textSize="24dp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/dragBar" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/lockdownSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:background="#1AC30000"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Set Lockdown"
+            app:layout_constraintTop_toBottomOf="@+id/txt" />
+
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/uploadSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Enable uploads"
+            app:layout_constraintTop_toBottomOf="@id/lockdownSwitch" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/futureSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Force update"
+            app:layout_constraintTop_toBottomOf="@+id/uploadSwitch" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/notificationSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Enable notification"
+            app:layout_constraintTop_toBottomOf="@+id/futureSwitch" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/adSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Enable Ads"
+            app:layout_constraintTop_toBottomOf="@+id/notificationSwitch" />
+
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/paymentSwitch"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:fontFamily="@font/alata"
+            android:padding="24dp"
+            android:text="Enable Payments"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/adSwitch" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</FrameLayout>

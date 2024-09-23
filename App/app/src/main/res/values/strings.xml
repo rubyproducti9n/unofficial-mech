@@ -1,0 +1,347 @@
+<resources>
+    <string name="app_name">Unofficial Mech</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="default_role">Student</string>
+
+
+    <string-array name="dropdown_items">
+        <item>Gemini Pro</item>
+        <item>Gemini 1.5 Flash</item>
+        <item>Gemini 1.5 Pro</item>
+    </string-array>
+
+
+    <string-array name="div">
+        <item>A</item>
+        <item>B</item>
+        <item>C</item>
+        <item>D</item>
+    </string-array>
+
+    <string-array name="dept">
+        <item>Mechanical Department</item>
+        <item>Electrical Department</item>
+        <item>Computer Department</item>
+        <item>Civil Department</item>
+        <item>Structural Department</item>
+        <item>Mechatronix Department</item>
+        <item>Electrical and Telecommunication Department</item>
+        <item>IT Department</item>
+    </string-array>
+
+
+    <!--    Website Structure-->
+
+    <string name="lorem_ipsum">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam in scelerisque sem. Mauris
+        volutpat, dolor id interdum ullamcorper, risus dolor egestas lectus, sit amet mattis purus
+        dui nec risus. Maecenas non sodales nisi, vel dictum dolor. Class aptent taciti sociosqu ad
+        litora torquent per conubia nostra, per inceptos himenaeos. Suspendisse blandit eleifend
+        diam, vel rutrum tellus vulputate quis. Aliquam eget libero aliquet, imperdiet nisl a,
+        ornare ex. Sed rhoncus est ut libero porta lobortis. Fusce in dictum tellus.\n\n
+        Suspendisse interdum ornare ante. Aliquam nec cursus lorem. Morbi id magna felis. Vivamus
+        egestas, est a condimentum egestas, turpis nisl iaculis ipsum, in dictum tellus dolor sed
+        neque. Morbi tellus erat, dapibus ut sem a, iaculis tincidunt dui. Interdum et malesuada
+        fames ac ante ipsum primis in faucibus. Curabitur et eros porttitor, ultricies urna vitae,
+        molestie nibh. Phasellus at commodo eros, non aliquet metus. Sed maximus nisl nec dolor
+        bibendum, vel congue leo egestas.\n\n
+        Sed interdum tortor nibh, in sagittis risus mollis quis. Curabitur mi odio, condimentum sit
+        amet auctor at, mollis non turpis. Nullam pretium libero vestibulum, finibus orci vel,
+        molestie quam. Fusce blandit tincidunt nulla, quis sollicitudin libero facilisis et. Integer
+        interdum nunc ligula, et fermentum metus hendrerit id. Vestibulum lectus felis, dictum at
+        lacinia sit amet, tristique id quam. Cras eu consequat dui. Suspendisse sodales nunc ligula,
+        in lobortis sem porta sed. Integer id ultrices magna, in luctus elit. Sed a pellentesque
+        est.\n\n
+        Aenean nunc velit, lacinia sed dolor sed, ultrices viverra nulla. Etiam a venenatis nibh.
+        Morbi laoreet, tortor sed facilisis varius, nibh orci rhoncus nulla, id elementum leo dui
+        non lorem. Nam mollis ipsum quis auctor varius. Quisque elementum eu libero sed commodo. In
+        eros nisl, imperdiet vel imperdiet et, scelerisque a mauris. Pellentesque varius ex nunc,
+        quis imperdiet eros placerat ac. Duis finibus orci et est auctor tincidunt. Sed non viverra
+        ipsum. Nunc quis augue egestas, cursus lorem at, molestie sem. Morbi a consectetur ipsum, a
+        placerat diam. Etiam vulputate dignissim convallis. Integer faucibus mauris sit amet finibus
+        convallis.\n\n
+        Phasellus in aliquet mi. Pellentesque habitant morbi tristique senectus et netus et
+        malesuada fames ac turpis egestas. In volutpat arcu ut felis sagittis, in finibus massa
+        gravida. Pellentesque id tellus orci. Integer dictum, lorem sed efficitur ullamcorper,
+        libero justo consectetur ipsum, in mollis nisl ex sed nisl. Donec maximus ullamcorper
+        sodales. Praesent bibendum rhoncus tellus nec feugiat. In a ornare nulla. Donec rhoncus
+        libero vel nunc consequat, quis tincidunt nisl eleifend. Cras bibendum enim a justo luctus
+        vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
+    </string>
+
+    <string name="open">Open Navigation Drawer</string>
+    <string name="close">Close Navigation Drawer</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_app_store">AppStoreActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+
+
+    <string name="remember">
+        1. When you see "Connected!"  in notifications, you will get them, but once it is gone, no more notifications.\n
+        2. Only the latest 5 notices will be visible\n
+        3. Once uploaded or posted, you cannot delete the post there after.
+
+    </string>
+
+    <string name="payment_policy">
+        1. Our payment structure is dynamic, tailored to individual service usage. This flexibility ensures fairness and personalization in each transaction, aligning with the unique needs of our users.\n\n
+
+2. Emphasizing your security, we employ robust encryption methods to protect your payment details. Our secure processing ensures that your financial information remains confidential and shielded from unauthorized access.\n\n
+
+3. Guaranteeing transparency, our transactions provide a clear breakdown of charges. This commitment allows users to comprehend and verify each expense, fostering trust and understanding in our payment processes.\n\n
+
+4. It is essential to note that we do not have a refund policy in place. Customers should be aware that once a transaction is completed, it is considered final, and no refunds will be issued.\n\n
+
+5. Privacy Protection: Our commitment to privacy extends beyond transactions. Adhering to stringent data protection standards, we prioritize safeguarding your personal information, ensuring it remains confidential and protected within our secure systems.\n\n
+
+6. We want to inform our users that we do not provide payment confirmations. While our transactions proceed smoothly, customers should be aware that we do not offer explicit confirmations for completed payments.\n\n
+        7. More the User, Less the Amount: As a reward for increased usage, our pricing model reflects a user-friendly approach. The more our users engage with our services, the more cost-effective their transactions become.
+    </string>
+
+    <string name="privacyPolicy">
+         Effective Date: 20-07-2024\n
+
+Unofficial Mech is committed to protecting the privacy of our users.
+        This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our mobile application, Unofficial Mech.
+\n\n
+1. Information We Collect\n
+We collect two types of information through the App:
+\n\n
+ - Personal Information: This information identifies you as an individual and may include:\n
+• Usage data: information about your interaction with the App, such as features used, browsing history, and crash logs.\n
+• Account information: username, password (hashed and salted), and profile information.\n
+ - Non-Personal Information: This information does not identify you as an individual and may include:\n
+• Aggregated data: derived from your Personal Information and anonymized so it does not identify any specific user.\n
+• Log data: information automatically collected when you use the App, such as access times, pages viewed, and referring URLs.\n
+\n\n
+2. How We Collect Information\n
+We collect information through various methods when you use the App:\n
+• Directly from You: You may provide Personal Information when you create an account, use certain features, or contact us for support.\n
+• Automatically: We collect information automatically through the Apps technology, including cookies and similar tracking technologies.\n
+\n\n
+3. How We Use Your Information\n
+We use the information we collect for the following purposes:\n
+• Provide and improve the App: We use your information to operate, maintain, and improve the App, personalize your experience, and develop new features.\n
+• Analyze Usage: We use your information to analyze how users interact with the App, identify trends, and improve its functionality.\n
+• Communicate with You: We may use your information to communicate with you about the App, including sending service announcements, promotional offers, and responding to your inquiries.\n
+• Security and Fraud Prevention: We use your information to protect the App from unauthorized access, misuse, and fraud.\n
+\n\n
+4. Sharing Your Information\n
+We may share your information with third-party service providers who help us operate and improve the App.
+        These providers may be located in different countries and jurisdictions.
+        We will only share your information with providers who have agreed to comply with strict data privacy and security standards.\n
+Here are the categories of third-party service providers we may share your information with:
+\n
+• Hosting Providers: We store your information on servers provided by third-party hosting companies.\n
+• Analytics Providers: We use third-party analytics services to understand how users interact with the App and improve its performance.\n
+• Payment Processors: We may use third-party payment processors if the App offers in-app purchases or subscriptions.\n
+• We will never sell or rent your Personal Information to third-party marketers without your explicit consent.
+        However, we may share your Aggregated Data or Non-Personal Information with third parties for various purposes, such as market research or advertising.\n
+\n\n
+5. Your Choices\n
+You have certain choices regarding your information:\n
+• Account Information: You can access and update your account information through the App settings.\n
+• Location Services: You may be able to control whether the App accesses your location information through your device settings.\n
+• Push Notifications: You can opt-out of receiving push notifications through the App settings.\n
+• Cookies and Tracking Technologies: Most web browsers allow you to control or disable cookies and similar tracking technologies.
+        You can adjust your browser settings to manage your preferences.\n
+\n\n
+6. Data Retention\n
+We will retain your Personal Information for as long as necessary to fulfill the purposes outlined in this Privacy Policy, unless a longer retention period is required or permitted by law.
+\n\n
+7. Security\n
+We take reasonable security measures to protect your information from unauthorized access, disclosure, alteration, or destruction. However, no internet or electronic storage system is completely secure.
+        We cannot guarantee the security of your information.
+\n\n
+8. Children Privacy\n
+The App is not directed to children under the age of 13. We do not knowingly collect Personal Information from children under 13.
+        If you are a parent or guardian and believe your child has provided us with Personal Information, please contact us.
+        We will delete any Personal Information collected from a child under 13 upon verification.
+\n\n
+9. International Transfers\n
+Your information may be transferred to and processed in countries outside your country of residence. These countries may have different data protection laws than your own.
+
+        <!--        This privacy policy describes how Unofficial Mech App collects, uses, and shares your personal information when you use our app \n \n-->
+
+        <!--        Personal Information we collect:\n-->
+        <!--        • Your full name\n-->
+        <!--        • Your email addresses \n-->
+        <!--        • Your password \n \n-->
+
+        <!--        How We Use Your Personal Information \n-->
+        <!--        We use your personal information to: \n-->
+        <!--        • Provide you with the services you have requested \n-->
+        <!--        Communicate with you about your account \n-->
+        <!--        Improve our app \n-->
+        <!--        Target our marketing \n \n-->
+
+        <!--        Do We Share Your Personal Information With Third Parties\n-->
+        <!--        We do not share your personal information with third parties for their own marketing purposes. However, we may share your personal information with third parties who help us provide our service, such as our payment processors or our hosting provider. \n\n-->
+        <!--        How  We Protect Your Personal Information \n-->
+        <!--        We take steps to protect your personal information, such as encryption and password protection. However, no security system is perfect, and we recommend you to do not set your personal password create a new password while creating your account \n\n-->
+
+        <!--        In-app privacy\n-->
+        <!--        • Faculty cannot see posts made by students as their role is only to provide their realtime status for students convenience\n-->
+        <!--        • We do not share your personal details to any third-party company except Google\n-->
+        <!--        • Your personal details are used to enhance your app experience\n-->
+        <!--        • Secured by Google-->
+        <!--        \n-->
+
+        <!--        Contact Information \n-->
+        <!--        If you have any questions about this Privacy Policy, please contact us at: \n-->
+        <!--        om.lokhande34@gmail.com\n \n-->
+        <!--        Effective date\n-->
+        <!--        This Privacy Policy is effective as of\n-->
+        <!--        20th July 2023-->
+    </string>
+
+    <string name="termNconditions">
+        1. Acceptance of Terms\n
+        By downloading, installing, or using the Unofficial Mech mobile application, you agree to be bound by these Terms and Conditions. If you do not agree with any part of these terms, you will be not able to use the app.
+        \n\n
+        2. Use of the App\n
+        2.1. You must be at least 18 years old to use the App.\n
+        2.2. You are responsible for any activity that occurs under your App account.\n
+        2.3. You agree not to engage in any unlawful or prohibited activities while using the app.\n
+        \n
+        3. Privacy\n
+        3.1. Your use of the App is also governed by our Privacy Policy.\n
+        3.2. By using the App, you consent to the collection and use of your personal information as described in the Privacy Policy.\n
+        \n
+        4. Intellectual Property\n
+        4.1. The App and its content are protected by copyright and other intellectual property laws.\n
+        4.2. You may not modify, reproduce, distribute, or create derivative works based on the App without our explicit permission\n
+        \n
+        5. User Content\n
+        5.1. You may submit content, including text, images, and comments, through the App.\n
+        \n
+        6. Updates and Changes\n
+        6.1. We may update , modify, or discontinue the App at any time without notice.\n
+        6.2. We reserve the right to change these Terms and Conditions at our discretions.\n
+        \n
+        7. Disclaimer\n
+        7.1. The App is provided "as is" without any warranties, express or implied.\n
+        7.2. We do not guarantee the accuracy, but we do guarantee the availability and the content in the App.\n
+        \n
+        8. Limitation of Liability\n
+        8.1. We are not liable for any damages or losse arising from your use of the App.\n
+        \n
+        9. Termination\m
+        We reserve the right to terminate your access to the App at any time for any reason.\n
+        \n
+        10. Contact Information\n
+        If you have any questions or concerns about these Terms and Conditions,please contact us at: om.lokhande34@gmail.com\n
+        \n
+        With effect as of 5th September 2023
+    </string>
+
+    <string name="about">
+
+        Unofficial Mech - Your College Memories Hub\n\n
+
+        Welcome to Unofficial Mech, the ultimate social media platform exclusively for college students. Our app is your personal space to relieve and cherish your college memories , stay connected with your college community, and access essential campus updates in real-time.\n\n
+
+        Major Feature:\n\n
+
+        • College Memories: Capture and share your college journey with ease. Upload photos, videos, and stories that reflect unforgettable moments, whether its that epic graduation ceremony or the impromtu late-night study sessions.\n
+        \n
+        • Memory Storage: Safeguard your cherished memories. Our app provides secure cloud storage to ensure your college adventures are preserved for a lifetime.\n
+        \n
+        • Notice board: Stay informed about campus news and events with our integrated notice board. Receive realtime updates on class schedules, campus events, and important announcements directly from college faculty.\n
+        \n
+        • Faculty Status: Wondering if professor is available for a quick chat? Check the realtime faculty status feature to see their availability and office hours.\n
+        \n
+        • Campus Community: Connect with fellow students, alumni, and faculty members. Join or create groups dedicated to your major, interests, or extracyrricular ativities.\n
+        \n
+
+        Third-Party Services\n
+        This app utilizes various third-party services including Firebase, MDC, Google AI, Picasso and Google Vision in accordance with their respective terms of service.\n\n
+
+        Privacy\n
+        Your privacy is important to us. This app only functions in the background to enable features like notifications. We do not collect any user data in the background. To learn more about our data practices, please refer to our Privacy Policy.\n\n
+
+        App Features\n
+        Secure Community Discussions: Engage in discussions with the community where your posts are not visible to faculty members. This fosters a safe space for open and honest communication.\n\n
+
+        Our Vision:\n
+        At Unofficial Mech, we believe that college is a journey filled with unique experiences and friendships that last a lifetime. Our mission is to provide a dedicated platform where college students can celebrate these moments, connect with their peers, and stay informed about campus life.\n\n
+
+        This app is developed by Om Lokhande with support of Aishwarya Kumbhar (CR) from B.TECH (B) Mechanical Department\n
+        <!--        Developer: Om Lokhande [T.Y B.TECH (B)]\n-->
+        <!--        With support: \nAishwarya Kumbhar [CR (T.Y.B.TECH (B))]-->
+        \n*2021 - 2025 Batch
+
+    </string>
+
+    <string name="changeLog">
+        Changelog:\n
+        • Introducing Gemini Flash Latest\n
+        • NEW! Search friends\n
+        • NEW! Virtual ID\n
+        • NEW! My Profile\n
+        • NEW! Dark Mode (System default)\n
+        • NEW! Activities\n
+        • NEW! ION Student App \n
+        • NEW! Superset\n
+        • NEW! ERP\n
+        • NEW! Profile Views\n
+        • NEW! Gemini Flash Latest\n
+        • NEW! FAQs\n
+        • Added new layer of Security\n
+        • Invite faculties!\n
+        • Supports swipe feature between tabs\n
+        • Attendance Tracker (Deprecated)\n
+        • Enhanced smooth experience\n
+        • Stable update\n
+        • Fixed Faculty UI\n
+        • Fixed minor bugs\n
+    </string>
+
+    <string name="pServer">http://192.168.23.78/dashboard/</string>
+
+    <string name="guidlines">
+        • Respect the privacy of the other users and avoid sharing personal information without consent\n
+        • Refrain from posting false or misleading information that could harm the community\n
+        • Avoid spamming the app with irrelevant or promotional content.\n
+        • Report to any violation of guidelines to maintain a safe and positive app environment.\n
+        • Misleading notices and inappropriate posts will lead to account suspension\n
+        • Adding your personal photos in the album is strictly restricted.
+    </string>
+
+    <string name="app_id">ca-app-pub-5180621516690353~1979975040</string>
+    <string name="ad">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="test_ad">ca-app-pub-3940256099942544/6300978111</string>
+    <string name="ad_banner_unit1">ca-app-pub-5180621516690353/9078690344</string>
+    <string name="ad_banner_unit2">ca-app-pub-5180621516690353/2629634391</string>
+
+    <string name="native_default">ca-app-pub-5180621516690353/4142806860</string>
+    <string name="interstitial_default">ca-app-pub-5180621516690353/8609265521</string>
+    <string name="rewarded_default">ca-app-pub-5180621516690353/2338712470</string>
+    <!--    <string name="banner_ad1">ca-app-pub-5180621516690353/3483315326</string>-->
+    <!--    <string name="banner_ad2">ca-app-pub-5180621516690353/1209818855</string>-->
+    <!--    <string name="banner_ad3">ca-app-pub-5180621516690353/4550298067</string>-->
+    <!--    <string name="native_ad1">ca-app-pub-5180621516690353/4326936788</string>-->
+    <!--    <string name="native_ad2">ca-app-pub-5180621516690353/5671808049</string>-->
+    <!--    <string name="native_ad3">ca-app-pub-5180621516690353/1840374241</string>-->
+    <!--    <string name="reward_ad1">ca-app-pub-5180621516690353/2385856079</string>-->
+    <!--    <string name="reward_ad2">ca-app-pub-5180621516690353/1072774406</string>-->
+    <!--    <string name="reward_ad3">ca-app-pub-5180621516690353/9709704522</string>-->
+    <!--    <string name="interstitial_ad1">ca-app-pub-5180621516690353/9857151980</string>-->
+    <!--    <string name="interstitial_ad2">ca-app-pub-5180621516690353/7275112879</string>-->
+    <!--    <string name="interstitial_ad3">ca-app-pub-5180621516690353/4466537588</string>-->
+
+    <!--    Ad settings-->
+    <string name="ad_stroke">0dp</string>
+    <string name="ad_radius">18dp</string>
+    <string name="ad_size">SMART_BANNER</string>
+    <string name="ad_elevation">4dp</string>
+    <string name="panic_button">Panic Button</string>
+    <string name="create_button">Create Button</string>
+
+</resources>

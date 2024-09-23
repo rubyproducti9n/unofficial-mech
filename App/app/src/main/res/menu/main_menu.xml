@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+<!--    <item-->
+<!--        android:id="@+id/upload"-->
+<!--        android:title="Upload Center"-->
+<!--        android:icon="@drawable/outline_add_24"-->
+<!--        android:iconTint="@color/matte_black"-->
+<!--        app:showAsAction="always"-->
+<!--        android:visible="true"/>-->
+
+    <item
+        android:id="@+id/action_account"
+        android:title="Profile"
+        android:iconTint="@color/matte_black"
+        android:icon="@drawable/round_account_circle_24"
+        app:showAsAction="always"
+        app:actionLayout="@layout/profile_menu_item"/>
+
+</menu>

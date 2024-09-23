@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_post"
+        android:title="New post"
+        app:showAsAction="never"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/action_notice"
+        android:title="New Notice"
+        app:showAsAction="never"
+        android:visible="true"/>
+
+    <item
+        android:id="@+id/action_memories"
+        android:title="New Memory"
+        app:showAsAction="never"
+        android:visible="true"/>
+
+</menu>

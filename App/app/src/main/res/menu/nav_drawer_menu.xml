@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<!--Add checkableBehaviour for Fragments in <group>-->
+    <group>
+
+        <item android:id="@+id/nav_settings"
+            android:title="Settings"
+            android:icon="@drawable/img_settings"
+            android:iconTint="@color/DynamicBlack"/>
+
+        <item android:id="@+id/nav_career"
+            android:title="Career"
+            android:icon="@drawable/img_career"
+            android:iconTint="@color/DynamicBlack"/>
+
+        <item android:id="@+id/nav_feedback"
+            android:title="Feedback"
+            android:icon="@drawable/img_feedback"
+            android:iconTint="@color/DynamicBlack"/>
+
+    </group>
+
+    <item android:title="Social Media">
+        <menu>
+            <group>
+                <item android:id="@+id/whatsapp"
+                    android:title="WhatsApp"
+                    android:icon="@drawable/whatsapp"/>
+                <item android:id="@+id/instagram"
+                    android:title="Instagram"
+                    android:icon="@drawable/img_instagram"/>
+                <item android:id="@+id/youtube"
+                    android:title="Youtube"
+                    android:icon="@drawable/youtube"/>
+                <item android:id="@+id/telegram"
+                    android:title="Telegram"
+                    android:icon="@drawable/telegram"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>

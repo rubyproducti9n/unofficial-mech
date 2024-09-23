@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/nav_album"
+        android:title="Album"
+        android:icon="@drawable/img_gallery"
+        android:iconTint="@color/DynamicBlack"/>
+
+    <item android:id="@+id/nav_about"
+        android:title="About"
+        android:icon="@drawable/img_info"
+        android:iconTint="@color/DynamicBlack"/>
+
+</menu>

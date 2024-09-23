@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_accounts"
+        android:title="Users"
+        android:icon="@drawable/round_account_circle_24"/>
+
+    <item
+        android:id="@+id/action_posts"
+        android:title="Applications"
+        android:icon="@drawable/round_photo_library_24"/>
+
+    <item
+        android:id="@+id/action_panel"
+        android:title="Panel"
+        android:icon="@drawable/round_admin_panel_settings_24"/>
+
+</menu>

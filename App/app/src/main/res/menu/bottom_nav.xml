@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/action_home"
+        android:title="Home"
+        android:icon="@drawable/home_new"/>
+
+    <item
+        android:id="@+id/action_notice"
+        android:title="Notice board"
+        android:enabled="true"
+        android:icon="@drawable/notice_new"/>
+
+    <item
+        android:id="@+id/action_create"
+        android:title=""
+        android:icon="@drawable/plus_new"/>
+
+    <item
+        android:id="@+id/action_notifications"
+        android:title="Notifications"
+        android:icon="@drawable/internship_new"/>
+
+    <item
+        android:id="@+id/action_library"
+        android:title="Library"
+        android:icon="@drawable/library_new"/>
+
+</menu>

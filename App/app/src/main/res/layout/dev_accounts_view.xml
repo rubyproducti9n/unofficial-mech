@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/userView"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="12dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="18dp"
+            app:strokeWidth="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:paddingTop="18dp"
+                android:paddingBottom="18dp"
+                android:paddingStart="28dp"
+                android:paddingEnd="28dp">
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/avatar1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="18dp"
+                    app:strokeWidth="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/uAvatar"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/ic_unofficial" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/uUsername"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="User Name"
+                    android:textAlignment="center"
+                    android:textFontWeight="900"
+                    android:textSize="18sp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/avatar1" />
+
+                <TextView
+                    android:id="@+id/uYear"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="B.Tech"
+                    android:textAlignment="center"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/uUsername" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/uViewProfile"
+                    style="@style/Widget.Material3.Button.IconButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:enabled="false"
+                    android:visibility="visible"
+                    android:textFontWeight="900"
+                    app:icon="@drawable/round_keyboard_arrow_right_24"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/uYear" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/devView"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mc9"
+            style="@style/Widget.Material3.CardView.Elevated"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="6dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="3.1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="18dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/pfp_container"
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_margin="12dp"
+                    app:cardCornerRadius="12dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/round_account_circle_24" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/account_holder_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="my na"
+                    android:textSize="18sp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    app:layout_constraintEnd_toEndOf="@+id/pfp_container"
+                    app:layout_constraintStart_toStartOf="@+id/pfp_container"
+                    app:layout_constraintTop_toBottomOf="@+id/pfp_container" />
+
+                <ImageView
+                    android:id="@+id/verified"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="3dp"
+                    android:visibility="gone"
+                    android:src="@drawable/img_badge"
+                    app:layout_constraintBottom_toBottomOf="@+id/account_holder_name"
+                    app:layout_constraintStart_toEndOf="@+id/account_holder_name"
+                    app:layout_constraintTop_toTopOf="@+id/account_holder_name" />
+
+                <ImageView
+                    android:id="@+id/suspended"
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginStart="3dp"
+                    android:visibility="gone"
+                    android:src="@drawable/round_block_24"
+                    app:layout_constraintBottom_toBottomOf="@+id/account_holder_name"
+                    app:layout_constraintStart_toEndOf="@+id/verified"
+                    app:layout_constraintTop_toTopOf="@+id/account_holder_name" />
+
+
+                <TextView
+                    android:id="@+id/division"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="B "
+                    android:textSize="12sp"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="@+id/account_holder_name"
+                    app:layout_constraintStart_toStartOf="@+id/account_holder_name"
+                    app:layout_constraintTop_toBottomOf="@+id/account_holder_name" />
+
+                <TextView
+                    android:id="@+id/role"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text=" Admin"
+                    android:visibility="gone"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/account_holder_name"
+                    app:layout_constraintStart_toEndOf="@+id/division"
+                    app:layout_constraintTop_toBottomOf="@+id/account_holder_name" />
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView32"
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="18dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="28dp"
+                    android:layout_marginBottom="34dp"
+                    android:backgroundTint="#FFC107"
+                    android:visibility="gone"
+                    android:elevation="5dp"
+                    app:cardElevation="0.2dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/pfp_container">
+
+                    <TextView
+                        android:id="@+id/userId"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="6dp"
+                        android:paddingEnd="6dp"
+                        android:text="user id goes here"
+                        android:textSize="12dp" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/resetBtn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="38dp"
+            android:layout_marginTop="-54dp"
+            android:elevation="4dp"
+            android:textSize="12sp"
+            android:visibility="gone"
+            app:icon="@drawable/round_restore_24"
+            app:layout_constraintStart_toStartOf="@+id/devView"
+            app:layout_constraintTop_toBottomOf="@+id/devView" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/suspendUserBtn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="-54dp"
+            android:elevation="4dp"
+            android:textSize="12sp"
+            app:icon="@drawable/round_block_24"
+            app:iconTint="#FF0000"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/resetBtn"
+            app:layout_constraintTop_toBottomOf="@+id/devView" />
+
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/verifyUserBtn"
+            style="@style/Widget.Material3.Button.IconButton.Filled"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="-54dp"
+            android:elevation="4dp"
+            android:textSize="12sp"
+            app:icon="@drawable/img_badge"
+            app:iconTint="#FFFFFF"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/suspendUserBtn"
+            app:layout_constraintTop_toBottomOf="@+id/devView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

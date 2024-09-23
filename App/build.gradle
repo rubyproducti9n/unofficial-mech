@@ -1,0 +1,39 @@
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+buildscript {
+    ext {
+        agp_version = '8.4.0-alpha06'
+        agp_version1 = '8.6.0'
+        agp_version2 = '8.6.0'
+    }
+    repositories {
+        // Make sure that you have the following two repositories
+        google()  // Google's Maven repository
+
+        mavenCentral()  // Maven Central repository
+        maven { url 'https://jitpack.io' }
+    }
+    dependencies {
+        //AndroidX Gradle Plugin
+        classpath "com.android.tools.build:gradle:8.6.1"
+        // Add the dependency for the Google services Gradle plugin
+        classpath 'com.google.gms:google-services:4.4.2'
+        // Add the dependency for the Crashlytics Gradle plugin
+        classpath 'com.google.firebase:firebase-crashlytics-gradle:3.0.2'
+        //Firebase Performance gradle plugin
+        classpath 'com.google.firebase:perf-plugin:1.4.2'
+
+    }
+}
+
+
+plugins {
+    id 'com.android.application' version '8.0.2' apply false
+    id 'com.android.library' version '8.0.2' apply false
+    id 'com.google.gms.google-services' version '4.4.2' apply false
+}
+
+ext {
+    firebaseDatabaseVersion = '21.0.0'
+}
+
+

@@ -1,0 +1,57 @@
+{
+  "project_info": {
+    "project_number": "877541556888",
+    "firebase_url": "https://unofficial-mech-default-rtdb.firebaseio.com",
+    "project_id": "unofficial-mech",
+    "storage_bucket": "unofficial-mech.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:877541556888:android:7793e1a16c86cbc4e146ed",
+        "android_client_info": {
+          "package_name": "com.rubyproducti9n.unofficialmech"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "877541556888-d6oma716ogm9t917030t1q1ps1ogjbag.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rubyproducti9n.unofficialmech",
+            "certificate_hash": "e0c9357c398c886adc4f9ef9f111d048405adcee"
+          }
+        },
+        {
+          "client_id": "877541556888-gmso0rd19jflam2csh7hcb5s1rkot4lt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rubyproducti9n.unofficialmech",
+            "certificate_hash": "71261f66ce489c3a711961b7fc5b6b27e98b5197"
+          }
+        },
+        {
+          "client_id": "877541556888-4man539dm14kfl750va8pjtrl9r4bss3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCTH2w872WlhplZtARczB-EBwKEoKWq1QA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "877541556888-1tvc2tp33h2kpobu5464gm6tskcvuj21.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      },
+      "admob_app_id": "ca-app-pub-5180621516690353~9337366487"
+    }
+  ],
+  "configuration_version": "1"
+}

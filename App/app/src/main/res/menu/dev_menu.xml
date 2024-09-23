@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/activity_appStore"
+        android:title="App Store"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/activity_beta"
+        android:title="Beta Activity"
+        app:showAsAction="never"/>
+    <item
+        android:id="@+id/activity_uploads"
+        android:title="Upload Center"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_access_denied"
+        android:title="Access Denied Activity"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_password"
+        android:title="Password Activity"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_splash"
+        android:title="Splash Activity"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_ai"
+        android:title="AI Activity"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_event"
+        android:title="Event schedule"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_aitool"
+        android:title="AI Tools"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_video"
+        android:title="Video Activity"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/activity_test"
+        android:title="Test Activity"
+        app:showAsAction="never"/>
+
+</menu>
