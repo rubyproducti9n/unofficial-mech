@@ -1,2 +1,2 @@
-# unofficial-mech
+# Unofficial Mech
  Unofficial Students Community App
