@@ -54,10 +54,4 @@ This app is **unofficial** and not affiliated with the **official administration
 
 ---
 
-## License  
-
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.  
-
---- 
-
 Stay connected, stay updated!  
