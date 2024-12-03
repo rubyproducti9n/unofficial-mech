@@ -28,13 +28,19 @@ The app fosters collaboration and enhances connectivity within the college commu
 ## Availability  
 
 The app is officially available on the **Google Play Store**. Download now and join the community:  
-[Download Unofficial Mech](https://play.google.com/store/apps/details?id=com.rubyproducti9n.unofficialmech)  
+[Download Unofficial Mech](https://play.google.com/store/apps/details?id=com.rubyproducti9n.unofficialmech)
 
 ---
 
 ## Screenshots  
 
-*Include relevant screenshots showcasing app features.*  
+![IMG-20240717-WA0002](https://github.com/user-attachments/assets/a0a22b21-8501-44bd-a6c4-ae2f1db5edaf)
+
+![IMG-20240717-WA0003](https://github.com/user-attachments/assets/e54d8173-59fd-45c8-8e8d-a900c0ceee5e)
+
+![IMG-20240717-WA0005](https://github.com/user-attachments/assets/f1fcf939-73f9-4ab1-a5a0-259dbdc617fd)
+
+![IMG-20240717-WA0006](https://github.com/user-attachments/assets/86d6caf6-8503-4d95-a317-298d25570a49)
 
 ---
 
