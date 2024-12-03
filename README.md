@@ -18,7 +18,10 @@ The app fosters collaboration and enhances connectivity within the college commu
   Interact with peers and stay connected with the unofficial student community.  
 
 - **Streamlined Experience**  
-  Minimalist design with easy navigation ensures the best user experience.  
+  Minimalist design with easy navigation ensures the best user experience.
+  
+- **Gemini Flash 1.5**  
+  Use the Ultimate Google Gemini Flash 1.5 for free.
 
 ---
 
