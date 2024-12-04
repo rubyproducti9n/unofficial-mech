@@ -34,13 +34,10 @@ The app is officially available on the **Google Play Store**. Download now and j
 
 ## Screenshots  
 
-![IMG-20240717-WA0002](https://github.com/user-attachments/assets/a0a22b21-8501-44bd-a6c4-ae2f1db5edaf)
-
-![IMG-20240717-WA0003](https://github.com/user-attachments/assets/e54d8173-59fd-45c8-8e8d-a900c0ceee5e)
-
-![IMG-20240717-WA0005](https://github.com/user-attachments/assets/f1fcf939-73f9-4ab1-a5a0-259dbdc617fd)
-
-![IMG-20240717-WA0006](https://github.com/user-attachments/assets/86d6caf6-8503-4d95-a317-298d25570a49)
+<img src="https://github.com/user-attachments/assets/a0a22b21-8501-44bd-a6c4-ae2f1db5edaf" alt="Screenshot 1" width="200"/>  
+<img src="https://github.com/user-attachments/assets/e54d8173-59fd-45c8-8e8d-a900c0ceee5e" alt="Screenshot 2" width="200"/>  
+<img src="https://github.com/user-attachments/assets/f1fcf939-73f9-4ab1-a5a0-259dbdc617fd" alt="Screenshot 3" width="200"/>  
+<img src="https://github.com/user-attachments/assets/86d6caf6-8503-4d95-a317-298d25570a49" alt="Screenshot 4" width="200"/>
 
 ---
 
