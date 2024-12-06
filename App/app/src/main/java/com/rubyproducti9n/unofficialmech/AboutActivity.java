@@ -23,6 +23,7 @@ public class AboutActivity extends AppCompatActivity {
 
     TextView instruction;
 
+    //Test
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
