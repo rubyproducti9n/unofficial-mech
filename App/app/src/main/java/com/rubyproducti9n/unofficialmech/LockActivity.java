@@ -62,8 +62,9 @@ public class LockActivity extends AppCompatActivity {
                     startActivity(new Intent(LockActivity.this, DeveloperActivity.class));
                     Toast.makeText(LockActivity.this, "Welcome Admin!", Toast.LENGTH_SHORT).show();
                 }
-                if (pass.getText().toString().equals("1980")){
-
+                if (pass.getText().toString().equals("1000")){
+                    Toast.makeText(LockActivity.this, "Welcome sir!", Toast.LENGTH_SHORT).show();
+                    granted();
                 }
             }
         });

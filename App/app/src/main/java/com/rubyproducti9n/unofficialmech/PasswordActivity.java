@@ -342,8 +342,9 @@ public class PasswordActivity extends AppCompatActivity {
 //                            dialog.dismiss();
 //                        }
 //                    }).show();
-                BottomSheetLogin bottomSheetFragment = new BottomSheetLogin();
-                bottomSheetFragment.show(getSupportFragmentManager(), "BottomSheet");
+//                BottomSheetLogin bottomSheetFragment = new BottomSheetLogin();
+//                bottomSheetFragment.show(getSupportFragmentManager(), "BottomSheet");
+                startActivity(new Intent(PasswordActivity.this, LoginActivity.class));
             }
         });
 

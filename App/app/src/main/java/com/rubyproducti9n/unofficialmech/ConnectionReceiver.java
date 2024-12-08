@@ -24,6 +24,25 @@ public class ConnectionReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
 
+//        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "default")
+//                .setSmallIcon(R.drawable.notify)
+//                .setContentTitle("5 Minute Reminder")
+//                .setContentText("Hello! It's been 5 minutes.")
+//                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//
+//        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+//        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//            // TODO: Consider calling
+//            //    ActivityCompat#requestPermissions
+//            // here to request the missing permissions, and then overriding
+//            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+//            //                                          int[] grantResults)
+//            // to handle the case where the user grants the permission. See the documentation
+//            // for ActivityCompat#requestPermissions for more details.
+//            return;
+//        }
+//        notificationManager.notify(1, builder.build());
+
         if (ConnectivityManager.CONNECTIVITY_ACTION.equals(action)) {
             boolean isConnected = isConnectedToNetwork(context);
 

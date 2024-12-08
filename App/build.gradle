@@ -14,7 +14,7 @@ buildscript {
     }
     dependencies {
         //AndroidX Gradle Plugin
-        classpath "com.android.tools.build:gradle:8.6.1"
+        classpath 'com.android.tools.build:gradle:8.7.3'
         // Add the dependency for the Google services Gradle plugin
         classpath 'com.google.gms:google-services:4.4.2'
         // Add the dependency for the Crashlytics Gradle plugin

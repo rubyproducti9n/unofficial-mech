@@ -10,6 +10,7 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 import android.Manifest;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,6 +42,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -66,41 +68,39 @@ import java.util.concurrent.Executors;
 
 public class CreatePost extends AppCompatActivity {
 
-    private ActivityResultLauncher<Intent> startActivityForResult;
-    LinearProgressIndicator progressBar;
-    ImageView img;
-    MaterialButton button, addImageBtn;
-    TextInputEditText editCaption;
-    int postCount;
-    private String selectedImageUriString;
+    ImageView postImg;
+    MaterialCardView postImgContainer;
+    EditText captionEditTxt;
+    MaterialButton posBtn, addImg;
     Uri rawSelectedImageUri;
     boolean uploadEnableStatus;
     Intent intent;
     private String anonymous = "public";
     MaterialCheckBox box;
+    LinearProgressIndicator progressBar;
+    ActivityResultLauncher<Intent> startActivityForResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
-        checkEnableUpload();
+        postImg = findViewById(R.id.img);
+        postImg.setVisibility(View.GONE);
+        addImg = findViewById(R.id.addImg);
+        captionEditTxt = findViewById(R.id.caption);
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setVisibility(View.GONE);
+        posBtn = findViewById(R.id.post);
+        postImgContainer = findViewById(R.id.materialCardView7);
+
+        fetchServer();
 
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         box = findViewById(R.id.anonymous);
-
-        progressBar = findViewById(R.id.progressBar);
-        ProjectToolkit.fadeIn(progressBar);
-        //progressBar.setVisibility(View.VISIBLE);
-        img = findViewById(R.id.img);
-        button = findViewById(R.id.button);
-        addImageBtn = findViewById(R.id.add_image);
-        editCaption = findViewById(R.id.caption);
-
-        box.setChecked(true);
         box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -109,49 +109,10 @@ public class CreatePost extends AppCompatActivity {
                 } else {
                     anonymous = "public";
                 }
-//                Toast.makeText(CreatePost.this, "Anonymous setting: " + anonymous, Toast.LENGTH_SHORT).show();
             }
         });
 
-        ScrollView scrollView = findViewById(R.id.scroll_view);
-        ProjectToolkit.fadeOut(scrollView);
-        setProgressBar(scrollView);
-        //scrollView.setVisibility(View.GONE);
-        ImageView profilePicture = findViewById(R.id.avatar);
-        TextView username = findViewById(R.id.username);
-        TextView div = findViewById(R.id.div);
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
-        String userId = pref.getString("auth_userId", null);
-        DatabaseReference profileRef = FirebaseDatabase.getInstance().getReference("users");
-        profileRef.orderByChild("userId").equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists()){
-                    for(DataSnapshot userSnapshot : snapshot.getChildren()){
-                        String firstName = userSnapshot.child("firstName").getValue(String.class);
-                        String lastName = userSnapshot.child("lastName").getValue(String.class);
-                        String division = userSnapshot.child("div").getValue(String.class);
-                        String avatar = userSnapshot.child("avatar").getValue(String.class);
-                        Picasso.get().load(avatar).into(profilePicture);
-                        username.setText(firstName + " " + lastName);
-                        div.setText("From " + division + " division");
-                        ProjectToolkit.fadeOut(progressBar);
-                        ProjectToolkit.fadeIn(scrollView);
-                        //progressBar.setVisibility(View.GONE);
-                        //scrollView.setVisibility(View.VISIBLE);
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.d("Firebase error", "error");
-            }
-        });
-
-
-
-        addImageBtn.setOnClickListener(new View.OnClickListener() {
+        addImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 openGallery();
@@ -166,8 +127,11 @@ public class CreatePost extends AppCompatActivity {
                         if (data != null) {
                             rawSelectedImageUri = data.getData();
                             String selectedImageUri = rawSelectedImageUri.toString();
-                            img.setImageURI(rawSelectedImageUri);
-                            button.setText("Post");
+                            if (isImage(this, rawSelectedImageUri)){
+                                postImg.setImageURI(rawSelectedImageUri);
+                                postImgContainer.setVisibility(View.VISIBLE);
+
+                            }
                         }else{
                             rawSelectedImageUri = null;
                         }
@@ -175,25 +139,221 @@ public class CreatePost extends AppCompatActivity {
                 }
         );
 
-
-
-    }
-
-
-    private void showPermissionDenied() {
-        MaterialAlertDialogBuilder materialAlert = new MaterialAlertDialogBuilder(CreatePost.this);
-        materialAlert.setTitle("Warning");
-        materialAlert.setMessage("This app requires media permission to function properly, Please grant the permission from the app settings.");
-        materialAlert.setPositiveButton("App settings", new DialogInterface.OnClickListener() {
+        posBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which) {
-                openAppSettings();
-                Toast.makeText(CreatePost.this, "Enable all permissions to enjoy uninterepted services", Toast.LENGTH_SHORT).show();
+            public void onClick(View v) {
+                push(captionEditTxt.getText().toString(), rawSelectedImageUri);
             }
         });
-        materialAlert.setCancelable(false);
-        materialAlert.show();
+
+
+
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (rawSelectedImageUri!=null){
+            new MaterialAlertDialogBuilder(this)
+                    .setMessage(rawSelectedImageUri.toString()).show();
+        }
+    }
+
+    public static boolean isImage(Context context, Uri uri) {
+        ContentResolver contentResolver = context.getContentResolver();
+
+        // Get MIME type from the Uri
+        String mimeType = contentResolver.getType(uri);
+
+        // Check if the MIME type starts with "image/"
+        return mimeType != null && mimeType.startsWith("image/");
+    }
+
+    private void fetchServer(){
+        MaterialCardView alert = findViewById(R.id.alert);
+        alert.setVisibility(View.GONE);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference dataUploadRef = database.getReference("app-configuration/uploads");
+        dataUploadRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Boolean uploadsValue = snapshot.getValue(Boolean.class);
+                if (Boolean.TRUE.equals(uploadsValue)){
+                    posBtn.setEnabled(true);
+                    alert.setVisibility(View.GONE);
+                }else{
+                    ProjectToolkit.fadeIn(alert);
+                    alert.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                posBtn.setEnabled(false);
+            }
+        });
+    }
+
+    private void loadIntent(){
+        Intent i = getIntent();
+        if (intent!=null){
+            String sharedText = intent.getStringExtra("sharedText");
+            String sharedImage = intent.getStringExtra("sharedImage");
+            if (sharedText!=null){
+                captionEditTxt.setText(sharedText);
+            }
+            if (sharedImage!=null){
+                Uri imageUri = Uri.parse(sharedImage);
+                postImg.setImageURI(imageUri);
+                postImg.setVisibility(View.VISIBLE);
+                postImgContainer.setVisibility(View.VISIBLE);
+            }else {
+                postImg.setVisibility(View.GONE);
+                postImgContainer.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void reset(){
+        posBtn.setEnabled(false);
+        postImg.setVisibility(View.GONE);
+        captionEditTxt.setText("");
+        postImgContainer.setVisibility(View.GONE);
+    }
+
+
+    private void push(String caption, Uri imgUri) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ProjectToolkit.fadeIn(progressBar);
+                posBtn.setEnabled(false);
+            }
+        });
+
+        if (imgUri == null && caption.isEmpty()) {
+            Snackbar.make(findViewById(R.id.progressBar), "Please add a caption or an image", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+            return;
+        }
+
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
+
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
+        String uid = preferences.getString("auth_userId", null);
+        String authName = preferences.getString("auth_name", null);
+
+
+
+        String fileName = "post" + System.currentTimeMillis() + "." + getFileType(String.valueOf(imgUri));
+        StorageReference imgRef = storageReference.child(fileName);
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String uploadTime = currentDateTime.format(dateTimeFormatter);
+
+        String postId = databaseReference.push().getKey();
+
+        if (imgUri != null) {
+            Uri uri = null;
+            if (isImage(this, imgUri)){
+                uri = ProjectToolkit.compress(this, imgUri, 25);
+            }else{
+                uri = imgUri;
+            }
+            //Snackbar.make(findViewById(R.id.progressBar), "URI: " +uri, Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+            UploadTask uploadTask = imgRef.putFile(uri);
+            progressBar.setProgress(80, true);
+            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                    imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                        @Override
+                        public void onSuccess(Uri downloadUri) {
+                            String imageUrl = downloadUri.toString();
+                            Map<String, Boolean> likes = new HashMap<>();
+                            Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
+                            Map<String, Object> postValues = post.toMap();
+                            databaseReference.child(postId).updateChildren(postValues);
+                            Snackbar.make(findViewById(R.id.progressBar), "Posted!", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+                            finish();
+                            reset();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    Snackbar.make(findViewById(R.id.progressBar), "Oops! An error occurred, try again later", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+                                }
+                            });
+                        }
+                    });
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(findViewById(R.id.progressBar), "Request denied", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+                        }
+                    });
+                }
+            });
+        } else {
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    Map<String, Boolean> likes = new HashMap<>();
+                    Post post = new Post(postId, uid, authName, null, caption, uploadTime, anonymous, likes);
+                    databaseReference.child(postId).setValue(post);
+                    reset();
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(findViewById(R.id.progressBar), "Posted!", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+                            progressBar.setIndeterminate(true);
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    finish();
+                                }
+                            },2000);
+                        }
+                    });
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Snackbar.make(findViewById(R.id.progressBar), "Request denied, try again later", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+                        }
+                    });
+                }
+            });
+
+        }
+
+    }
+    private String getFileType(String urlString) {
+        if (urlString.endsWith(".jpg") || urlString.endsWith(".jpeg") || urlString.endsWith(".png") || urlString.endsWith(".gif")) {
+            return "image";
+        } else if (urlString.endsWith(".pdf")) {
+            return "pdf";
+        } else if (urlString.endsWith(".doc") || urlString.endsWith(".docx")) {
+            return "word";
+        } else if (urlString.endsWith(".xls") || urlString.endsWith(".xlsx")) {
+            return "excel";
+        } else {
+            return "unknown";
+        }
+    }
+
     private void openAppSettings() {
         Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
         Uri uri = Uri.fromParts("package", getPackageName(), null);
@@ -204,744 +364,21 @@ public class CreatePost extends AppCompatActivity {
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
         startActivityForResult.launch(intent);
+
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//
+//        intent.setType("*/*");
+//        String[] mimeTypes = {"image/*", "application/pdf",
+//                "application/msword",
+//                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
+//                "application/vnd.ms-excel",
+//                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}; // XLSX
+//
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        startActivityForResult.launch(intent);
+
     }
-
-//    private void uploadImage(Uri imgUri) {
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                ProjectToolkit.fadeIn(progressBar);
-//                button.setEnabled(false);
-//            }
-//        });
-//
-//        if (imgUri == null && Objects.requireNonNull(editCaption.getText()).toString().isEmpty()) {
-//            Toast.makeText(CreatePost.this, "Please add a caption or an image", Toast.LENGTH_SHORT).show();
-//            return;
-//        }
-//
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Toast.makeText(CreatePost.this, "Please wait while the post is uploaded", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//        StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
-//        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
-//        DatabaseReference countReference = FirebaseDatabase.getInstance().getReference("counts");
-//
-//        String anonymous = "public";
-//
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
-//        String userId = preferences.getString("auth_userId", null);
-//        String authName = preferences.getString("auth_name", null);
-//        String uid = preferences.getString("auth_userId", null);
-//        String caption = editCaption.getText().toString();
-//
-//        //Creating a unique file name
-//        String fileName = "post" + System.currentTimeMillis() + ".jpg";
-//
-//        //Creating a reference to the file location in Firebase Storage
-//        StorageReference imgRef = storageReference.child(fileName);
-//
-//        LocalDateTime currentDateTime = LocalDateTime.now();
-//        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//        String uploadTime = currentDateTime.format(dateTimeFormatter);
-//
-//        String postId = databaseReference.push().getKey();
-//
-//        if (rawSelectedImageUri != null){
-//            if (rawSelectedImageUri.toString().startsWith("https://rubyproducti9n.github.io")){
-//                authName = preferences.getString("auth_name", null);
-//                String imageUrl = imgUri.toString();
-//                Map<String, Boolean> likes = new HashMap<>();
-//                Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-//                databaseReference.child(postId).setValue(post);
-//            }else{
-//                //Upload the file to the firebase storage
-//                UploadTask uploadTask = imgRef.putFile(ProjectToolkit.compress(this, imgUri, 25));
-//                progressBar.setProgress(80, true);
-////                setProgressBar(null);
-//
-////                uploadTask.addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-////                    @Override
-////                    public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-////                        double uploadProgress = (100.0 * snapshot.getBytesTransferred()) / snapshot.getTotalByteCount();
-////                        progressBar.setProgress((int) uploadProgress, true);
-////                    }
-////                });
-//                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                    @Override
-//                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                        //Image successfully uploaded
-////                        runOnUiThread(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                                ProjectToolkit.fadeOut(progressBar);
-////                            }
-////                        });
-//                        //customDialog("Success!", "Your post has been uploaded and will be displayed after a review", "Ok");
-//                        //Notification("Success!", "Your post uploaded successfully");
-//                        //Can retrieve the download URL of the uploaded image for further use
-//                        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                            @Override
-//                            public void onSuccess(Uri downloadUri) {
-//                                //Retrieved uploaded image and can be used
-//                                String authName = preferences.getString("auth_name", null);
-//                                String imageUrl = downloadUri.toString();
-//                                Map<String, Boolean> likes = new HashMap<>();
-//                                Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-//                                databaseReference.child(postId).setValue(post);
-//                                Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-//                                //postCount = newPostCount;
-//                                setDefault();
-//                                reset();
-//                            }
-//                        }).addOnFailureListener(new OnFailureListener() {
-//                            @Override
-//                            public void onFailure(@NonNull Exception e) {
-//                                //Handle error while displaying the uploaded image
-//                                runOnUiThread(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        Toast.makeText(CreatePost.this, "Error while retrieving image", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                });
-//                            }
-//                        });
-//                    }
-//                }).addOnFailureListener(new OnFailureListener() {
-//                    @Override
-//                    public void onFailure(@NonNull Exception e) {
-//                        //Handle error while uploading
-//                        runOnUiThread(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                Toast.makeText(CreatePost.this, "Error while uploading image", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                    }
-//                });
-//            }
-//        }else{
-//            databaseReference.addValueEventListener(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            setProgressBar(null);
-//                            Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                    //Notification("Success!", "Your post uploaded successfully");
-//                    //Retrieved uploaded image and can be used
-//                    String authName = preferences.getString("auth_name", null);
-//                    String imageUrl = null;
-//                    Map<String, Boolean> likes = new HashMap<>();
-//                    Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-//                    databaseReference.child(postId).setValue(post);
-//                    //postCount = newPostCount;
-//                    setDefault();
-//                    reset();
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//                    runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Toast.makeText(CreatePost.this, "An error occurred", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//            });
-//        }
-//
-//
-//
-//
-//    }
-
-    private void uploadImage(Uri imgUri) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ProjectToolkit.fadeIn(progressBar);
-                button.setEnabled(false);
-            }
-        });
-
-        // Retrieve the caption once and store it in a local variable
-        String caption = editCaption.getText() != null ? editCaption.getText().toString().trim() : "";
-
-        // Validate the caption and image input
-        if (imgUri == null && caption.isEmpty()) {
-            Toast.makeText(CreatePost.this, "Please add a caption or an image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-//        runOnUiThread(new Runnable() {
-//            @Override
-//            public void run() {
-//                Toast.makeText(CreatePost.this, "Please wait while the post is uploaded", Toast.LENGTH_SHORT).show();
-//            }
-//        });
-
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
-
-
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-            }
-        });
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
-        String uid = preferences.getString("auth_userId", null);
-        String authName = preferences.getString("auth_name", null);
-
-        String fileName = "post" + System.currentTimeMillis() + ".jpg";
-        StorageReference imgRef = storageReference.child(fileName);
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String uploadTime = currentDateTime.format(dateTimeFormatter);
-
-        String postId = databaseReference.push().getKey();
-
-        if (imgUri != null) {
-            // Check if image is from a specific URL
-            if (imgUri.toString().startsWith("https://rubyproducti9n.github.io")) {
-                String imageUrl = imgUri.toString();
-                Map<String, Boolean> likes = new HashMap<>();
-                Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-                databaseReference.child(postId).setValue(post);
-            } else {
-                UploadTask uploadTask = imgRef.putFile(ProjectToolkit.compress(this, imgUri, 25));
-                progressBar.setProgress(80, true);
-
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri downloadUri) {
-                                String imageUrl = downloadUri.toString();
-                                Map<String, Boolean> likes = new HashMap<>();
-                                Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-                                databaseReference.child(postId).setValue(post);
-                                Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-                                setDefault();
-                                reset();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(CreatePost.this, "Error while retrieving image", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(CreatePost.this, "Error while uploading image", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                });
-            }
-        } else {
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            setProgressBar(null);
-                            Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    Map<String, Boolean> likes = new HashMap<>();
-                    Post post = new Post(postId, uid, authName, null, caption, uploadTime, anonymous, likes);
-                    databaseReference.child(postId).setValue(post);
-                    setDefault();
-                    reset();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(CreatePost.this, "An error occurred", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-    private void upload(Uri imgUri){
-        ExecutorService e = Executors.newSingleThreadExecutor();
-        ProjectToolkit.fadeIn(progressBar);
-        button.setEnabled(false);
-        if (imgUri == null && Objects.requireNonNull(editCaption.getText()).toString().isEmpty()) {
-            Toast.makeText(CreatePost.this, "Please add a caption or an image", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Toast.makeText(CreatePost.this, "Please wait while the post is uploaded", Toast.LENGTH_SHORT).show();
-
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
-
-
-        String anonymous = "public";
-
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
-        String authName = preferences.getString("auth_name", null);
-        String caption = editCaption.getText().toString();
-
-        //Creating a unique file name
-        String fileName = "post" + System.currentTimeMillis() + ".jpg";
-        //Creating a reference to the file location in Firebase Storage
-        StorageReference imgRef = storageReference.child(fileName);
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String uploadTime = currentDateTime.format(dateTimeFormatter);
-
-        String postId = databaseReference.push().getKey();
-        if (rawSelectedImageUri != null){
-            if (rawSelectedImageUri.toString().startsWith("https://rubyproducti9n.github.io")){
-                authName = preferences.getString("auth_name", null);
-                String authDiv = preferences.getString("auth_division", null);
-                String imageUrl = imgUri.toString();
-                Map<String, Boolean> likes = new HashMap<>();
-                Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, anonymous, likes);
-                databaseReference.child(postId).setValue(post);
-            }else{
-                UploadTask uploadTask = imgRef.putFile(ProjectToolkit.compress(this, imgUri, 25));
-                final Handler handler = new Handler();
-                Runnable runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        int progress = progressBar.getProgress();
-                        if (progress < 90) {
-                            progressBar.setProgress(progress + 1, true);
-                            handler.postDelayed(this, 10);
-                        }
-                    }
-                };
-                handler.postDelayed(runnable, 1000);
-//                progressBar.setProgress(80, true);
-
-                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                        imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                            @Override
-                            public void onSuccess(Uri downloadUri) {
-                                String authName = preferences.getString("auth_name", null);
-                                String authDiv = preferences.getString("auth_division", null);
-                                String imageUrl = downloadUri.toString();
-                                Map<String, Boolean> likes = new HashMap<>();
-                                e.execute(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, anonymous, likes);
-                                        databaseReference.child(postId).setValue(post);
-                                    }
-                                });
-                                e.shutdown();
-                                setProgressBar(null);
-                                Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-                                setDefault();
-                                reset();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(CreatePost.this, "Error while retrieving image", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(CreatePost.this, "Error while uploading image", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-        }else{
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    ProjectToolkit.fadeIn(progressBar);
-                    new Handler().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setProgressBar(null);
-                            Toast.makeText(CreatePost.this, "Posted!", Toast.LENGTH_SHORT).show();
-                        }
-                    }, 1500);
-                    String authName = preferences.getString("auth_name", null);
-                    String authDiv = preferences.getString("auth_division", null);
-                    String imageUrl = null;
-                    Map<String, Boolean> likes = new HashMap<>();
-                    Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, anonymous, likes);
-                    databaseReference.child(postId).setValue(post);
-                    //postCount = newPostCount;
-                    setDefault();
-                    reset();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(CreatePost.this, "An error occurred", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            });
-        }
-    }
-
-    private void reset(){
-        progressBar.setProgress(0, true);
-        ProjectToolkit.fadeOut(progressBar);
-    }
-
-    private void Notification(String title, String msg) {
-        Context context = null;
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "post_upload_channel")
-                .setSmallIcon(R.drawable.notification_img)
-                .setContentTitle(title)
-                .setContentText(msg)
-                .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notification_sound))
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setTimeoutAfter(1000);
-
-        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(CreatePost.this);
-        if (ActivityCompat.checkSelfPermission(CreatePost.this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return;
-        }
-        notificationManagerCompat.notify(0, builder.build());
-    }
-
-    private void customDialog(String title, String msg, String negBtnTitle){
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(CreatePost.this);
-        builder.setTitle(title);
-        builder.setMessage(msg);
-        builder.setNegativeButton(negBtnTitle, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setCancelable(false);
-        builder.show();
-    }
-
-    public void checkEnableUpload(){
-        MaterialCardView alert = findViewById(R.id.alert);
-        alert.setVisibility(View.GONE);
-
-        FirebaseDatabase database = (FirebaseDatabase) FirebaseDatabase.getInstance();
-        DatabaseReference dataUploadRef = database.getReference("app-configuration/uploads");
-        dataUploadRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean uploadsValue = snapshot.getValue(Boolean.class);
-
-                if(uploadsValue == true){
-                    ProjectToolkit.fadeOut(alert);
-                    //alert.setVisibility(View.GONE);
-                    button.setEnabled(false);
-                    uploadEnableStatus = true;
-                    if (!editCaption.toString().isEmpty()){
-                        intent = getIntent();
-                        String sharedImage;
-                        if (intent != null){
-                            String sharedText = intent.getStringExtra("sharedText");
-                            sharedImage = intent.getStringExtra("sharedImage");
-                            if(sharedText!=null){
-                                editCaption.setText(sharedText);
-                            }
-                            if (sharedImage!=null){
-                                Uri imageUri = Uri.parse(sharedImage);
-                                if (sharedImage.startsWith("https://rubyproducti9n.github.io")){
-                                    Picasso.get().load(sharedImage).into(img);
-                                }else{
-                                    img.setImageURI(imageUri);
-                                }
-                                rawSelectedImageUri = imageUri;
-
-                            }
-                            button.setEnabled(true);
-                            ProjectToolkit.setButtonEnabledAnim(button);
-                            button.setText("POST");
-                            button.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    ExecutorService e = Executors.newSingleThreadExecutor();
-                                    e.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            uploadImage(rawSelectedImageUri);
-                                        }
-                                    });
-                                    setDefault();
-                                }
-                            });
-                        } else {
-                            sharedImage = null;
-                        }
-                    }else{
-                        editCaption.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                                String captionCheck = charSequence.toString();
-                                button.setEnabled(!captionCheck.isEmpty());
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                                if (editCaption.getText().toString().isEmpty()) {
-                                    button.setEnabled(false);
-                                    ProjectToolkit.setButtonDisabledAnim(button);
-                                }else{
-                                    button.setEnabled(true);
-                                    ProjectToolkit.setButtonEnabledAnim(button);
-                                    button.setText("POST");
-                                    button.setOnClickListener(new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View v) {
-                                            ExecutorService e = Executors.newSingleThreadExecutor();
-                                            e.execute(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    uploadImage(rawSelectedImageUri);
-                                                }
-                                            });
-                                            setDefault();
-                                        }
-                                    });
-
-                                }
-                            }
-                        });
-                    }
-                }else{
-                    button.setEnabled(false);
-                    uploadEnableStatus = false;
-                    ProjectToolkit.fadeIn(alert);
-                    //alert.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(CreatePost.this, "Error 503", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void setDefault(){
-        button.setText("POST");
-        img.setImageResource(R.drawable.round_photo_library_24);
-        editCaption.setText("");
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                openGallery();
-//                if (ContextCompat.checkSelfPermission(CreatePost.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                    ActivityCompat.requestPermissions(getActivity(),
-//                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-//                            1);
-//                } else {
-//                    openGallery();
-//                }
-//            }
-//        });
-    }
-
-
-//    private static class MyAsyncTask extends AsyncTask<Void, Void, Void> {
-//        private Context context;
-//        private WeakReference<Context> contextReference;
-//        private WeakReference<LinearProgressIndicator> progressBarReference;
-//        private WeakReference<MaterialButton> buttonReference;
-//        private WeakReference<EditText> editCaptionReference;
-//        private WeakReference<Uri> rawSelectedImageUri;
-//
-//        MyAsyncTask(Context context, LinearProgressIndicator progressBar, MaterialButton button, EditText editCaptionReference, Uri uri) {
-//            this.contextReference = new WeakReference<>(context);
-//            this.progressBarReference = new WeakReference<>(progressBar);
-//            this.buttonReference = new WeakReference<>(button);
-//            this.editCaptionReference = new WeakReference<>(editCaptionReference);
-//            this.rawSelectedImageUri = new WeakReference<>(uri);
-//        }
-//
-//        @Override
-//        protected Void doInBackground(Void... voids) {
-//            try {
-//                Thread.sleep(12000);
-//            } catch (Exception e) {
-//                throw new RuntimeException(e);
-//            }
-//            publishProgress();
-//            return null;
-//        }
-//
-//        @Override
-//        protected void onProgressUpdate(Void... values) {
-//
-//        }
-//
-//        @Override
-//        protected void onPostExecute(Void unused) {
-//            Context context = contextReference.get();
-//            LinearProgressIndicator progressBar = progressBarReference.get();
-//            MaterialButton button = buttonReference.get();
-//            EditText editCaption = editCaptionReference.get();
-//
-//            progressBar.setVisibility(View.VISIBLE);
-//            button.setEnabled(false);
-//            //Get a reference to the Firebase Storage
-//            StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
-//            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
-//            DatabaseReference countReference = FirebaseDatabase.getInstance().getReference("counts");
-//
-//            String visibility = "private";
-//
-//            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-//            String userId = preferences.getString("auth_userId", null);
-//            String authName = preferences.getString("auth_name", null);
-//            String caption = editCaption.getText().toString();
-//
-//            //Creating a unique file name
-//            String fileName = "post" + System.currentTimeMillis() + ".jpg";
-//
-//            //Creating a reference to the file location in Firebase Storage
-//            StorageReference imgRef = storageReference.child(fileName);
-//
-//            LocalDateTime currentDateTime = LocalDateTime.now();
-//            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-//            String uploadTime = currentDateTime.format(dateTimeFormatter);
-//
-//            String postId = databaseReference.push().getKey();
-//
-//            if (rawSelectedImageUri != null) {
-//                if (rawSelectedImageUri.toString().startsWith("https://rubyproducti9n.github.io")) {
-//                    authName = preferences.getString("auth_name", null);
-//                    String authDiv = preferences.getString("auth_division", null);
-//                    String imageUrl = imgUri.toString();
-//                    Map<String, Boolean> likes = new HashMap<>();
-//                    Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, visibility, likes);
-//                    databaseReference.child(postId).setValue(post);
-//                } else {
-//                    //Upload the file to the firebase storage
-//                    UploadTask uploadTask = imgRef.putFile(ProjectToolkit.compress(this, imgUri, 25));
-//
-//
-//                    uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-//                        @Override
-//                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-//                            //Image successfully uploaded
-//                            progressBar.setVisibility(View.GONE);
-//                            Toast.makeText(context, "Posted!", Toast.LENGTH_SHORT).show();
-//                            //customDialog("Success!", "Your post has been uploaded and will be displayed after a review", "Ok");
-//                            //Notification("Success!", "Your post uploaded successfully");
-//                            //Can retrieve the download URL of the uploaded image for further use
-//                            imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-//                                @Override
-//                                public void onSuccess(Uri downloadUri) {
-//                                    //Retrieved uploaded image and can be used
-//                                    String authName = preferences.getString("auth_name", "User not found");
-//                                    String authDiv = preferences.getString("auth_division", null);
-//                                    String imageUrl = downloadUri.toString();
-//                                    Map<String, Boolean> likes = new HashMap<>();
-//                                    Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, visibility, likes);
-//                                    databaseReference.child(postId).setValue(post);
-//                                    //postCount = newPostCount;
-//                                    setDefault();
-//                                }
-//                            }).addOnFailureListener(new OnFailureListener() {
-//                                @Override
-//                                public void onFailure(@NonNull Exception e) {
-//                                    //Handle error while displaying the uploaded image
-//                                    Toast.makeText(context, "Error while retrieving image", Toast.LENGTH_SHORT).show();
-//                                }
-//                            });
-//                        }
-//                    }).addOnFailureListener(new OnFailureListener() {
-//                        @Override
-//                        public void onFailure(@NonNull Exception e) {
-//                            //Handle error while uploading
-//                            Toast.makeText(context, "Error while uploading image", Toast.LENGTH_SHORT).show();
-//                        }
-//                    });
-//                }
-//            } else {
-//                databaseReference.addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        progressBar.setVisibility(View.GONE);
-//                        Toast.makeText(context, "Posted!", Toast.LENGTH_SHORT).show();
-//                        //Notification("Success!", "Your post uploaded successfully");
-//                        //Retrieved uploaded image and can be used
-//                        String authName = preferences.getString("auth_name", null);
-//                        String authDiv = preferences.getString("auth_division", null);
-//                        String imageUrl = null;
-//                        Map<String, Boolean> likes = new HashMap<>();
-//                        Post post = new Post(postId, authName, authDiv, imageUrl, caption, uploadTime, visibility, likes);
-//                        databaseReference.child(postId).setValue(post);
-//                        //postCount = newPostCount;
-//                        CreatePost.setDefault();
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//                        Toast.makeText(context, "An error occurred", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//            }
-//
-//            super.onPostExecute(unused);
-//        }
-//    }
-//
-//    private void startAsyncTask() {
-//        LinearProgressIndicator progressBar = findViewById(R.id.progressBar); // replace with your actual ProgressBar ID
-//        MaterialButton button = findViewById(R.id.button); // replace with your actual Button ID
-//        new MyAsyncTask(this, progressBar, button).execute();
-//    }
-
     private void setProgressBar(View view){
         final Handler handler = new Handler(Looper.getMainLooper());
         Runnable runnable = new Runnable() {

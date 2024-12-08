@@ -2,6 +2,7 @@ package com.rubyproducti9n.unofficialmech;
 
 import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
+import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeOut;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getPreloadedInterstitial;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isStudent;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
@@ -77,6 +78,7 @@ import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
@@ -95,6 +97,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
@@ -114,6 +117,9 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -147,6 +153,8 @@ public class MainActivity extends AppCompatActivity {
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
+
+    public static LottieAnimationView likeAnim;
 
     private ViewPager viewPager;
     DownloadManager.Request request;
@@ -188,6 +196,7 @@ GestureDetector gesture;
         getWindow().setAllowEnterTransitionOverlap(true);
 
 //        goPremium();
+        likeAnim= findViewById(R.id.lottieLikeAnim);
 
         reviewManager = ReviewManagerFactory.create(this);
 
@@ -195,6 +204,8 @@ GestureDetector gesture;
         userListRecyclerView = findViewById(R.id.userListRecyclerView);
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+
 
         ImageView gemini = findViewById(R.id.gemini);
         gemini.setOnClickListener(new View.OnClickListener() {
@@ -269,7 +280,7 @@ GestureDetector gesture;
         FloatingActionButton fab = findViewById(R.id.fab0);
         fab.setOnClickListener(view -> ProjectToolkit.initiatePanicMode(MainActivity.this));
 
-        ImageView bgImg = findViewById(R.id.bgView);
+//        ImageView bgImg = findViewById(R.id.bgView);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -363,12 +374,18 @@ GestureDetector gesture;
                                 }
                             }).start();
                         }else{
-                            bgImg.setVisibility(View.GONE);
+//                            bgImg.setVisibility(View.GONE);
                         }
                     }
                 });
             }
         }).start();
+
+
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        String uid = p.getString("auth_userId", null);
+        receiveRequest();
 
         FloatingActionButton createButton = findViewById(R.id.fab);
         createButton.setOnClickListener(new View.OnClickListener() {
@@ -416,6 +433,21 @@ GestureDetector gesture;
 
 
 
+
+    }
+
+
+    public static void triggerAnim(){
+        fadeIn(likeAnim);
+        likeAnim.setAnimation(R.raw.like_anim);
+        likeAnim.loop(false);
+        likeAnim.playAnimation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadeOut(likeAnim);
+            }
+        },800);
 
     }
 
@@ -982,7 +1014,7 @@ GestureDetector gesture;
     }
     public void telegram(){
         String url = "https://t.me/+dRJBOb3AVhdlNmFl";
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent =new Intent(Intent.ACTION_VIEW);
         intent.setData((Uri.parse(url)));
         startActivity(intent);
     }
@@ -1033,11 +1065,12 @@ GestureDetector gesture;
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String avatar = snapshot.child("avatar").getValue(String.class);
                     String firstName = snapshot.child("firstName").getValue(String.class);
                     String lastName = snapshot.child("lastName").getValue(String.class);
                     String dept = snapshot.child("dept").getValue(String.class);
 
-                    SearchAdapter.SearchItem i = new SearchAdapter.SearchItem(firstName + " " + lastName, dept);
+                    SearchAdapter.SearchItem i = new SearchAdapter.SearchItem(avatar, firstName + " " + lastName, dept);
                     userList.add(i);
                 }
                 Collections.shuffle(userList);
@@ -1080,6 +1113,67 @@ GestureDetector gesture;
         Random random = new Random();
         return random.nextDouble() < rate;
     }
+
+    public void receiveRequest(){
+                            Snackbar.make(findViewById(R.id.bottom_navigation), "Checking fro new request...", Snackbar.LENGTH_SHORT)
+                            .setAnchorView(R.id.bottom_navigation).show();
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        String email = p.getString("auth_email", null);
+        String uid = p.getString("auth_userId", null);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests");
+        assert email != null;
+        ref.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    for (DataSnapshot snap : snapshot.getChildren()){
+
+                        String uid = snap.child("uid").getValue(String.class);
+                        String timestamp = snap.child("timestamp").getValue(String.class);
+                        String email = snap.child("email").getValue(String.class);
+                        Boolean isValid = snap.child("valid").getValue(Boolean.class);
+
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                        // Parse the uploaded time and get the current time
+                        LocalDateTime uploadedDateTime = LocalDateTime.parse(timestamp, dateTimeFormatter);
+                        LocalDateTime currentDateTime = LocalDateTime.now();
+
+                        // Calculate the duration between the uploaded time and the current time
+                        Duration duration = Duration.between(uploadedDateTime, currentDateTime);
+
+                        if (uid!=null){
+                            if (Boolean.TRUE.equals(isValid)){
+                                if (duration.toMinutes() <= 5){
+                                    Snackbar.make(findViewById(R.id.bottom_navigation), "Request accepted", Snackbar.LENGTH_LONG)
+                                            .setAction("Accept", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                    snap.getRef().child("valid").setValue(false);
+                                                    new MaterialAlertDialogBuilder(MainActivity.this)
+                                                            .setTitle("Accepted")
+                                                            .setMessage("Congrats! The request was accepted successfully")
+                                                            .show();
+                                                }
+                                            })
+                                            .setAnchorView(R.id.bottom_navigation).show();
+                                }else{
+                                    snap.getRef().child("valid").setValue(false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

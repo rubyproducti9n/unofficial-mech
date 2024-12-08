@@ -9,511 +9,858 @@
     tools:context=".TestActivity">
 
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/materialToolbar"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:title="Register"
-        android:visibility="gone"
-        app:titleTextAppearance="@style/ToolBarTheme" />
+        android:layout_height="match_parent">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/lottie"
-        android:layout_width="128dp"
-        android:layout_height="128dp"
-        android:src="@drawable/login"
-        android:layout_margin="12dp"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/request"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send request"
+            android:layout_margin="28dp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
-    <ScrollView
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:layout_marginTop="28dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_default="wrap"
-        app:layout_constraintHeight_max="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:visibility="gone">
 
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="12dp"
-            android:paddingTop="0dp"
-            android:paddingEnd="12dp"
-            android:paddingBottom="12dp">
+            android:layout_gravity="center"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:indeterminateBehavior="repeat"
+            android:indeterminateTint="@color/matte_black"
+            app:indeterminateAnimationType="disjoint"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:id="@+id/t1"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/singleMode"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="18dp">
+
+            <com.google.android.material.materialswitch.MaterialSwitch
+                android:id="@+id/singleSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:elevation="10dp"
-                android:layout_marginTop="0dp"
+                android:text="Single Mode" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/singleLayout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleMode">
+
+            <TextView
+                android:id="@+id/trollingTxt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="Create Account"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:layout_editor_absoluteX="12dp" />
+                android:text="Loading..."/>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView3"
-                style="@style/Widget.Material3.CardView.Elevated"
-                android:layout_width="98dp"
-                android:layout_height="98dp"
-                android:layout_marginStart="0dp"
-                android:layout_marginTop="0dp"
-                app:cardCornerRadius="58dp"
-                app:cardElevation="2dp"
-                app:layout_constraintBottom_toBottomOf="@id/names"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/t1">
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                <ImageView
-                    android:id="@+id/profilePicture"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/round_account_circle_24" />
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/singleMode"
+            app:shimmer_duration="1000"
+            app:shimmer_shape="linear">
 
-            </com.google.android.material.card.MaterialCardView>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/names"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:layout_marginTop="12dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/materialCardView3"
-                app:layout_constraintTop_toBottomOf="@+id/t1">
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/first_name_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="6dp"
-                    android:hint="First name"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
-
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/firstNameEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapSentences"
-                        android:required="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/last_name_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="6dp"
-                    android:hint="Last name"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/first_name_layout">
-
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/lastNameEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textCapSentences"
-                        android:required="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/roll_div_container"
+            <ScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/names">
+                android:layout_height="match_parent">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/dropdown_layout2"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="18dp"
-                    android:layout_marginEnd="12dp"
-                    android:hint="Division"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:hintAnimationEnabled="true"
-                    app:hintEnabled="true"
-                    app:layout_constraintEnd_toStartOf="@id/roll_layout"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/dropdown_menu2"
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardView"
+                        style="@style/Widget.Material3.CardView.Elevated"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:labelFor="@id/roll_layout" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <!--                        <com.google.android.material.textfield.TextInputLayout-->
-                <!--                            android:id="@+id/dropdown_layout"-->
-                <!--                            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"-->
-                <!--                            android:layout_width="0dp"-->
-                <!--                            android:layout_height="wrap_content"-->
-                <!--                            android:layout_centerInParent="true"-->
-                <!--                            android:layout_marginStart="12dp"-->
-                <!--                            android:layout_marginTop="18dp"-->
-                <!--                            android:hint="Roll No."-->
-                <!--                            app:boxCornerRadiusBottomEnd="18dp"-->
-                <!--                            app:boxCornerRadiusBottomStart="18dp"-->
-                <!--                            app:boxCornerRadiusTopEnd="18dp"-->
-                <!--                            app:boxCornerRadiusTopStart="18dp"-->
-                <!--                            app:hintAnimationEnabled="true"-->
-                <!--                            app:hintEnabled="true"-->
-                <!--                            app:layout_constraintEnd_toEndOf="parent"-->
-                <!--                            app:layout_constraintStart_toEndOf="@id/dropdown_layout2"-->
-                <!--                            app:layout_constraintTop_toTopOf="parent">-->
-
-                <!--                            <com.google.android.material.textfield.MaterialAutoCompleteTextView-->
-                <!--                                android:id="@+id/dropdown_menu"-->
-                <!--                                android:layout_width="match_parent"-->
-                <!--                                android:layout_height="wrap_content"-->
-                <!--                                android:inputType="none"-->
-                <!--                                android:labelFor="@id/dropdown_layout" />-->
-
-                <!--                        </com.google.android.material.textfield.TextInputLayout>-->
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/roll_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="18dp"
-                    android:hint="Roll No."
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:errorEnabled="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/dropdown_layout2"
-                    app:layout_constraintTop_toTopOf="parent">
-
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/rollEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:required="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/dept_layout"
-                    style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:layout_marginTop="12dp"
-                    android:hint="Select your Department"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:hintAnimationEnabled="true"
-                    app:hintEnabled="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/roll_layout">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/deptMenu"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none"
-                        android:labelFor="@id/roll_layout" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/prn_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="PRN Number"
-                    app:boxCornerRadiusBottomEnd="18dp"
-                    app:boxCornerRadiusBottomStart="18dp"
-                    app:boxCornerRadiusTopEnd="18dp"
-                    app:boxCornerRadiusTopStart="18dp"
-                    app:errorEnabled="true"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/dept_layout">
-
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/prnEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textEmailAddress"
-                        android:required="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/clg_email_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="College email address"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
-                app:errorEnabled="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/roll_div_container"
-                app:startIconDrawable="@drawable/baseline_email_24">
-
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/clgEmailEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:required="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/genderLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/clg_email_layout">
-
-                <TextView
-                    android:id="@+id/textView7"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Gender:"
-                    android:textSize="18sp"
-                    tools:ignore="MissingConstraints" />
-
-                <RadioGroup
-                    android:id="@+id/gender_radio_group"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:required="true"
-                    app:layout_constraintTop_toBottomOf="@+id/textView7">
-
-                    <RadioButton
-                        android:id="@+id/maleRadioButton"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="Male"
+                        android:layout_margin="12dp"
+                        android:elevation="0dp"
+                        android:paddingBottom="190dp"
+                        android:visibility="visible"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="1dp"
+                        app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                        app:layout_constraintTop_toTopOf="parent">
 
-                    <RadioButton
-                        android:id="@+id/femaleRadioButton"
-                        android:layout_width="0dp"
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/img_avtar_card"
+                                style="@style/Widget.Material3.CardView.Filled"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_margin="12dp"
+                                app:cardCornerRadius="50dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/img_avtar"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:contentDescription="TODO"
+                                    android:scaleType="centerCrop" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+
+                            <ImageView
+                                android:id="@+id/card_menu"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_margin="18dp"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/baseline_more_vert_24"
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:tint="@color/DynamicBlack" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/txtUsername"
+                                android:layout_width="100dp"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="8dp"
+                                android:padding="0dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toEndOf="@+id/img_avtar_card"
+                                app:layout_constraintTop_toTopOf="@+id/img_avtar_card"
+                                app:strokeWidth="0dp" />
+
+                            <ImageView
+                                android:id="@+id/verifiedBadge"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginTop="4dp"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/img_badge"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/txtUsername"
+                                app:layout_constraintStart_toEndOf="@+id/txtUsername"
+                                app:layout_constraintTop_toTopOf="@+id/img_avtar_card" />
+
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/postCaption"
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="14dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="14dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/visibility"
+                                app:strokeWidth="0dp" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/sub_postCard"
+                                android:layout_width="match_parent"
+                                android:layout_height="200dp"
+                                android:layout_marginTop="18dp"
+                                android:layout_marginBottom="6dp"
+                                app:cardCornerRadius="0dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintBottom_toTopOf="@id/like_comment_share"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/postCaption">
+
+                                <VideoView
+                                    android:id="@+id/videoView"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="580dp"
+                                    android:layout_gravity="center"
+                                    android:backgroundTint="@color/DynamicBlack"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"
+                                    app:elevation="1dp" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/volumeButton"
+                                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|end"
+                                    android:layout_margin="12dp"
+                                    android:enabled="false"
+                                    android:visibility="gone"
+                                    app:elevation="15dp"
+                                    app:icon="@drawable/outline_volume_off_24" />
+
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressBar1"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:indeterminate="true"
+                                    android:indeterminateBehavior="repeat"
+                                    android:indeterminateTint="@color/matte_black"
+                                    android:padding="68dp"
+                                    android:visibility="gone"
+                                    app:indeterminateAnimationType="disjoint" />
+
+                                <ImageView
+                                    android:id="@+id/img"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:adjustViewBounds="true"
+                                    android:contentDescription="TODO"
+                                    android:scaleType="centerCrop"
+                                    app:layout_constraintTop_toBottomOf="@+id/img_avtar" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/like_comment_share"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_margin="8dp"
+                                android:elevation="2dp"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="@+id/sub_postCard"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/sub_postCard">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/like"
+                                    style="@style/Widget.Material3.Button.IconButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="18dp"
+                                    android:enabled="false"
+                                    android:fontFamily="@font/alata"
+                                    android:gravity="start"
+                                    android:visibility="gone"
+                                    app:icon="@drawable/heart_outline"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/sub_postCard" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/contact_us"
+                                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                                    android:layout_width="60dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:enabled="false"
+                                    android:visibility="gone"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/like" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/share"
+                                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="18dp"
+                                    android:enabled="false"
+                                    android:gravity="right"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/txtTime"
+                                android:layout_width="50dp"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="6dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toEndOf="@+id/img_avtar_card"
+                                app:layout_constraintTop_toBottomOf="@+id/txtUsername"
+                                app:strokeWidth="0dp" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/id_container"
+                                style="@style/Widget.Material3.CardView.Elevated"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="1dp"
+                                android:backgroundTint="#FFB100"
+                                app:cardCornerRadius="4dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintStart_toEndOf="@+id/txtTime"
+                                app:layout_constraintTop_toBottomOf="@+id/txtUsername">
+
+                                <TextView
+                                    android:id="@+id/postId"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingStart="4dp"
+                                    android:paddingTop="1dp"
+                                    android:paddingEnd="4dp"
+                                    android:paddingBottom="1dp"
+                                    android:text="postId"
+                                    android:textColor="@color/DynamicWhite"
+                                    android:textSize="8sp"
+                                    android:visibility="gone" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <TextView
+                                android:id="@+id/visibility"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginTop="6dp"
+                                android:drawableStart="@drawable/round_public_24"
+                                android:drawablePadding="2dp"
+                                android:drawableTint="@color/matte_black"
+                                android:fontFamily="@font/alata"
+                                android:text="Public post"
+                                android:textColor="#333333"
+                                android:textSize="8sp"
+                                android:visibility="gone"
+                                app:layout_constraintStart_toStartOf="@+id/img_avtar_card"
+                                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card" />
+
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/taken_down_container"
+                                style="@style/Widget.Material3.CardView.Filled"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="12dp"
+                                android:visibility="gone"
+                                app:cardElevation="1dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="12dp"
+                                    android:drawableStart="@drawable/round_info_24"
+                                    android:drawablePadding="6dp"
+                                    android:text="This notice was taken down"
+                                    android:textStyle="bold" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+
+                            <ImageView
+                                android:id="@+id/img_like"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginTop="14dp"
+                                android:layout_marginBottom="14dp"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/heart_outline"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/sub_postCard" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardView1"
+                        style="@style/Widget.Material3.CardView.Elevated"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="12dp"
-                        android:layout_weight="1"
-                        android:text="Female"
-                        app:layout_constraintStart_toEndOf="@+id/maleRadioButton"
-                        app:layout_constraintTop_toBottomOf="@+id/textView7" />
+                        android:layout_margin="12dp"
+                        android:elevation="0dp"
+                        android:paddingBottom="190dp"
+                        android:visibility="visible"
+                        app:cardCornerRadius="28dp"
+                        app:cardElevation="1dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/cardView">
 
-                </RadioGroup>
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/img_avtar_card1"
+                                style="@style/Widget.Material3.CardView.Filled"
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_margin="12dp"
+                                app:cardCornerRadius="18dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent">
+
+                                <ImageView
+                                    android:id="@+id/img_avtar1"
+                                    android:layout_width="40dp"
+                                    android:layout_height="40dp"
+                                    android:contentDescription="TODO"
+                                    android:scaleType="centerCrop" />
+
+                            </com.google.android.material.card.MaterialCardView>
 
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                            <ImageView
+                                android:id="@+id/card_menu1"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:layout_margin="18dp"
+                                android:adjustViewBounds="true"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/baseline_more_vert_24"
+                                android:visibility="gone"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:tint="@color/DynamicBlack" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/personal_email_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Your personal email address"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/txtUsername1"
+                                android:layout_width="100dp"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="8dp"
+                                android:padding="0dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toEndOf="@+id/img_avtar_card1"
+                                app:layout_constraintTop_toTopOf="@+id/img_avtar_card1"
+                                app:strokeWidth="0dp" />
+
+                            <ImageView
+                                android:id="@+id/verifiedBadge1"
+                                android:layout_width="12dp"
+                                android:layout_height="12dp"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginTop="4dp"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/img_badge"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="@+id/txtUsername1"
+                                app:layout_constraintStart_toEndOf="@+id/txtUsername1"
+                                app:layout_constraintTop_toTopOf="@+id/img_avtar_card1" />
+
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/postCaption1"
+                                android:layout_width="match_parent"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="14dp"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginEnd="14dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/visibility1"
+                                app:strokeWidth="0dp" />
+
+                            <androidx.cardview.widget.CardView
+                                android:id="@+id/sub_postCard1"
+                                android:layout_width="match_parent"
+                                android:layout_height="300dp"
+                                android:layout_marginTop="18dp"
+                                android:layout_marginBottom="6dp"
+                                app:cardCornerRadius="0dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintBottom_toTopOf="@id/like_comment_share1"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/postCaption1">
+
+                                <VideoView
+                                    android:id="@+id/videoView1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="580dp"
+                                    android:layout_gravity="center"
+                                    android:backgroundTint="@color/DynamicBlack"
+                                    android:scaleType="centerCrop"
+                                    android:visibility="gone"
+                                    app:elevation="1dp" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/volumeButton1"
+                                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="bottom|end"
+                                    android:layout_margin="12dp"
+                                    android:enabled="false"
+                                    android:visibility="gone"
+                                    app:elevation="15dp"
+                                    app:icon="@drawable/outline_volume_off_24" />
+
+
+                                <com.google.android.material.progressindicator.CircularProgressIndicator
+                                    android:id="@+id/progressBar11"
+                                    android:layout_width="18dp"
+                                    android:layout_height="18dp"
+                                    android:layout_gravity="center"
+                                    android:layout_margin="12dp"
+                                    android:indeterminate="true"
+                                    android:indeterminateBehavior="repeat"
+                                    android:indeterminateTint="@color/matte_black"
+                                    android:padding="68dp"
+                                    android:visibility="gone"
+                                    app:indeterminateAnimationType="disjoint" />
+
+                                <ImageView
+                                    android:id="@+id/img1"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:adjustViewBounds="true"
+                                    android:contentDescription="TODO"
+                                    android:scaleType="centerCrop"
+                                    app:layout_constraintTop_toBottomOf="@+id/img_avtar" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <androidx.constraintlayout.widget.ConstraintLayout
+                                android:id="@+id/like_comment_share1"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:layout_margin="8dp"
+                                android:elevation="2dp"
+                                android:visibility="visible"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="@+id/sub_postCard1"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/sub_postCard1">
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/like1"
+                                    style="@style/Widget.Material3.Button.IconButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="18dp"
+                                    android:enabled="false"
+                                    android:fontFamily="@font/alata"
+                                    android:gravity="start"
+                                    android:visibility="gone"
+                                    app:icon="@drawable/heart_outline"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toStartOf="parent"
+                                    app:layout_constraintTop_toBottomOf="@+id/sub_postCard1" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/contact_us1"
+                                    style="@style/Widget.Material3.Button.IconButton"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:enabled="false"
+                                    android:visibility="gone"
+                                    app:icon="@drawable/outline_comment_24"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintStart_toEndOf="@+id/like1" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/share1"
+                                    style="@style/Widget.Material3.Button.IconButton.Filled"
+                                    android:layout_width="100dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginEnd="18dp"
+                                    android:enabled="false"
+                                    android:gravity="right"
+                                    android:visibility="visible"
+                                    app:layout_constraintBottom_toBottomOf="parent"
+                                    app:layout_constraintEnd_toEndOf="parent"
+                                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                            </androidx.constraintlayout.widget.ConstraintLayout>
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/txtTime1"
+                                android:layout_width="50dp"
+                                android:layout_height="10dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="6dp"
+                                app:cardElevation="1dp"
+                                app:layout_constraintStart_toEndOf="@+id/img_avtar_card1"
+                                app:layout_constraintTop_toBottomOf="@+id/txtUsername1"
+                                app:strokeWidth="0dp" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/id_container1"
+                                style="@style/Widget.Material3.CardView.Elevated"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="12dp"
+                                android:layout_marginTop="1dp"
+                                android:backgroundTint="#FFB100"
+                                app:cardCornerRadius="4dp"
+                                app:cardElevation="0dp"
+                                app:layout_constraintStart_toEndOf="@+id/txtTime1"
+                                app:layout_constraintTop_toBottomOf="@+id/txtUsername1">
+
+                                <TextView
+                                    android:id="@+id/postId1"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:paddingStart="4dp"
+                                    android:paddingTop="1dp"
+                                    android:paddingEnd="4dp"
+                                    android:paddingBottom="1dp"
+                                    android:text="postId"
+                                    android:textColor="@color/DynamicWhite"
+                                    android:textSize="8sp"
+                                    android:visibility="gone" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                            <TextView
+                                android:id="@+id/visibility1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="4dp"
+                                android:layout_marginTop="6dp"
+                                android:drawableStart="@drawable/round_public_24"
+                                android:drawablePadding="2dp"
+                                android:drawableTint="@color/matte_black"
+                                android:fontFamily="@font/alata"
+                                android:text="Public post"
+                                android:textColor="#333333"
+                                android:textSize="8sp"
+                                android:visibility="gone"
+                                app:layout_constraintStart_toStartOf="@+id/img_avtar_card1"
+                                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card1" />
+
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/taken_down_container1"
+                                style="@style/Widget.Material3.CardView.Filled"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="12dp"
+                                android:visibility="gone"
+                                app:cardElevation="1dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card1">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="12dp"
+                                    android:drawableStart="@drawable/round_info_24"
+                                    android:drawablePadding="6dp"
+                                    android:text="This notice was taken down"
+                                    android:textStyle="bold" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+
+                            <ImageView
+                                android:id="@+id/img_like1"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:layout_marginLeft="24dp"
+                                android:layout_marginTop="14dp"
+                                android:layout_marginBottom="14dp"
+                                android:contentDescription="TODO"
+                                android:src="@drawable/heart_outline"
+                                android:visibility="gone"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/sub_postCard1" />
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </ScrollView>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewStories"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_margin="0dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/singleMode" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="0dp"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/recyclerViewStories" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/err"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone">
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/lottieAnimationView"
+                android:layout_width="230dp"
+                android:layout_height="230dp"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/genderLayout"
-                app:startIconDrawable="@drawable/baseline_email_24">
-
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/personalEmailEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:required="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/mobile_num_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Your mobile number"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/personal_email_layout"
-                app:startIconDrawable="@drawable/round_call_24">
-
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/mobileNumEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textEmailAddress"
-                    android:required="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/password_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:layout_marginBottom="18dp"
-                android:hint="Password"
-                app:boxCornerRadiusBottomEnd="18dp"
-                app:boxCornerRadiusBottomStart="18dp"
-                app:boxCornerRadiusTopEnd="18dp"
-                app:boxCornerRadiusTopStart="18dp"
-                app:helperText="Create a strong password"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/mobile_num_layout"
-                app:layout_constraintBottom_toTopOf="@+id/consent"
-                app:passwordToggleEnabled="true"
-                app:startIconDrawable="@drawable/baseline_lock_24">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/passwordEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"
-                    android:required="true" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/facultyBtn"
-                style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
-                android:alpha="1"
-                app:icon="@drawable/round_account_circle_24"
-                app:iconSize="32dp"
-                app:layout_constraintBottom_toBottomOf="@+id/cretaeAccountBtn"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/cretaeAccountBtn" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/consent"
+                android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="18dp"
-                android:text="*By creating account you are agree to our Terms and Conditions."
-                android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/cretaeAccountBtn"/>
-
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/saveBtn"
-                style="@style/Widget.Material3.Button.UnelevatedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="24dp"
-                android:visibility="gone"
-                android:text="Save"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/cretaeAccountBtn" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/cretaeAccountBtn"
-                style="@style/Widget.Material3.Button.UnelevatedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginBottom="24dp"
-                android:text="Create account"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                android:gravity="center"
+                android:text="No appointments for today!"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/lottieAnimationView" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Create static account"
-        android:layout_margin="28dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
-<!--    <TextView-->
-<!--        android:id="@+id/plan"-->
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+<!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:layout_width="wrap_content"-->
 <!--        android:layout_height="wrap_content"-->
-<!--        android:text="PLAN"-->
-<!--        android:textSize="28sp"-->
-<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        android:visibility="gone">-->
+
+
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/likeButton"-->
+<!--        style="@style/Widget.Material3.Button.IconButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="28dp"-->
+<!--        android:paddingStart="24dp"-->
+<!--        android:paddingTop="12dp"-->
+<!--        android:paddingEnd="24dp"-->
+<!--        android:paddingBottom="12dp"-->
+<!--        android:text="Like"-->
+<!--        android:textStyle="bold"-->
+<!--        app:icon="@drawable/heart_outline"-->
+<!--        app:iconPadding="12dp"-->
 <!--        app:layout_constraintEnd_toEndOf="parent"-->
 <!--        app:layout_constraintStart_toStartOf="parent"-->
 <!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/commentBtn"-->
+<!--        style="@style/Widget.Material3.Button.IconButton"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="28dp"-->
+<!--        android:paddingStart="24dp"-->
+<!--        android:paddingTop="12dp"-->
+<!--        android:paddingEnd="24dp"-->
+<!--        android:paddingBottom="12dp"-->
+<!--        app:iconPadding="12dp"-->
+<!--        android:text="Comments"-->
+<!--        app:icon="@drawable/outline_chat_24"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/user4" />-->
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/user1"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="12dp"-->
+<!--        android:text="User 1"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/likeButton" />-->
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/user2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="12dp"-->
+<!--        android:text="User 2"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/user1" />-->
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/user3"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="12dp"-->
+<!--        android:text="User 3"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/user2" />-->
+
+
+<!--    <com.google.android.material.button.MaterialButton-->
+<!--        android:id="@+id/user4"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_margin="12dp"-->
+<!--        android:text="User 4"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/user3" />-->
+
+
+<!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,6 +7,14 @@
     <string name="default_role">Student</string>
 
 
+    <string name="host">https://rubyproducti9n.github.io/mech/</string>
+
+    <string name="contentDescription">Default</string>
+
+    <!--    <string name="def_corners">28dp</string>-->
+    <!--    <string name="def_ic_corners">18dp</string>-->
+
+
     <string-array name="dropdown_items">
         <item>Gemini Pro</item>
         <item>Gemini 1.5 Flash</item>

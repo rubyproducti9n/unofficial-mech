@@ -48,6 +48,22 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".LoginActivity"
+            android:exported="false" />
+        <activity
+            android:name=".TourActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StudyMaterialActivity"
+            android:exported="false"
+            android:theme="@style/AppTheme" />
+
+        <receiver
+            android:name=".MyReceiver"
+            android:enabled="true"
+            android:exported="true" />
+
+        <activity
             android:name=".BlueprintActivity"
             android:exported="false" />
         <activity

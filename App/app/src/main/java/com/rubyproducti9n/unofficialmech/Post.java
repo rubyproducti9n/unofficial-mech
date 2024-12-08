@@ -36,7 +36,18 @@ public class Post {
         this.visibility = visibility;
         this.likes = likes;
     }
-
+    public Map<String, Object> toMap() {
+        HashMap<String, Object> result = new HashMap<>();
+        result.put("postId", postId);
+        result.put("uid", uid);
+        result.put("user_name", user_name);
+        result.put("imgUrl", imgUrl);
+        result.put("caption", caption);
+        result.put("uploadTime", uploadTime);
+        result.put("visibility", visibility);
+        result.put("likes", likes);
+        return result;
+    }
     public String getPostId() {
         return postId;
     }

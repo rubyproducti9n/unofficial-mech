@@ -458,6 +458,9 @@ public class FragmentLibrary extends Fragment {
                         Intent i = new Intent(requireContext(), WebViewActivity.class);
                         switch(which){
                             case 0:
+//                                Intent intent = new Intent(requireContext(), WebViewActivity.class);
+//                                intent.putExtra("link", "https://mysanjivani.edupluscampus.com/"); // Pass your URL here
+//                                startActivity(intent);
                                 requireActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://mysanjivani.edupluscampus.com/")));
                                 break;
                             case 1:
@@ -492,7 +495,16 @@ public class FragmentLibrary extends Fragment {
         startActivity(intent);
     }
     private void initiateCalendar(){
-        startActivity(new Intent(requireContext(), CalendarActivity.class));
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Manager")
+                        .setMessage("Oops! this feature is in maintenance mode. Please try again later")
+                                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+//        startActivity(new Intent(requireContext(), CalendarActivity.class));
     }
     private void initiateTimeTable(View view, String userRole, String div){
         serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {

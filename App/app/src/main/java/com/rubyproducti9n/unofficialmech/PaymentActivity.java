@@ -35,6 +35,7 @@ import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.android.billingclient.api.SkuDetails;
@@ -77,6 +78,8 @@ public class PaymentActivity extends AppCompatActivity {
     private ProductDetails productDetailsForStandard;
     private ProductDetails productDetailsForPremium;
 
+
+    private MaterialButton basicBtn, standardBtn, premiumBtn;
 //    private PaymentsClient paymentsClient;
 //    private PhonePeSDK phonePeSDK;
 
@@ -98,6 +101,10 @@ private static final int TEZ_REQUEST_CODE = 123;
         setContentView(R.layout.activity_payment);
         disableStatusBar(this);
 
+        basicBtn = findViewById(R.id.buyPlan0);
+        standardBtn = findViewById(R.id.buyPlan1);
+        premiumBtn = findViewById(R.id.buyPlan2);
+
         current_plan = findViewById(R.id.textView3);
 
         PricingManager manager = PricingManager.getInstance(this);
@@ -113,14 +120,9 @@ private static final int TEZ_REQUEST_CODE = 123;
 //                        .setEnvironment(WalletConstants.ENVIRONMENT_TEST)
 //                        .build());
 
-        MaterialButton btnPlan0, btnPlan1, btnPlan2;
-        btnPlan0 = findViewById(R.id.buyPlan0);
-        btnPlan1 = findViewById(R.id.buyPlan1);
-        btnPlan2 = findViewById(R.id.buyPlan2);
-
         initiate();
 
-        btnPlan0.setOnClickListener(new View.OnClickListener() {
+        basicBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchBillingFlow(productDetailsForBasic);
@@ -128,7 +130,7 @@ private static final int TEZ_REQUEST_CODE = 123;
             }
         });
 
-        btnPlan1.setOnClickListener(new View.OnClickListener() {
+        standardBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchBillingFlow(productDetailsForStandard);
@@ -136,7 +138,7 @@ private static final int TEZ_REQUEST_CODE = 123;
             }
         });
 
-        btnPlan2.setOnClickListener(new View.OnClickListener() {
+        premiumBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 launchBillingFlow(productDetailsForPremium);
@@ -353,9 +355,9 @@ private static final int TEZ_REQUEST_CODE = 123;
                         handlePurchase(purchase);
                     }
                 } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-                    // Handle an error caused by a user cancelling the purchase flow.
+                    Toast.makeText(context, "Purchase cancelled", Toast.LENGTH_SHORT).show();
                 } else {
-                    // Handle any other error codes.
+                    Toast.makeText(context, "Purchase error: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         };
@@ -370,6 +372,8 @@ private static final int TEZ_REQUEST_CODE = 123;
             public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                 if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     queryAvailableSubscriptions();
+                } else {
+                    Toast.makeText(context, "Error setting up billing: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -389,6 +393,8 @@ private static final int TEZ_REQUEST_CODE = 123;
                     public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
                         if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                             queryAvailableSubscriptions();
+                        } else {
+                            Toast.makeText(context, "Error retrying connection: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                         }
                     }
 
@@ -437,11 +443,34 @@ private static final int TEZ_REQUEST_CODE = 123;
                                 break;
                         }
                     }
+                    checkOwnedSubscriptions();
+                } else {
+                    Toast.makeText(context, "Error loading products: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
+    private void checkOwnedSubscriptions() {
+        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+            @Override
+            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+                    for (Purchase purchase : purchases) {
+                        if (purchase.getProducts().equals("basic_plan")) {
+                            basicBtn.setEnabled(false);
+                        } else if (purchase.getProducts().equals("standard_subscription")) {
+                            standardBtn.setEnabled(false);
+                        } else if (purchase.getProducts().equals("premium_subscription")) {
+                            premiumBtn.setEnabled(false);
+                        }
+                    }
+                    findViewById(R.id.mainLayout).setVisibility(View.VISIBLE);
+                } else {
+                    Toast.makeText(context, "Error checking subscriptions: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
     private void launchBillingFlow(ProductDetails productDetails) {
         if (productDetails != null) {
             ImmutableList<BillingFlowParams.ProductDetailsParams> productDetailsParamsList =
@@ -472,7 +501,9 @@ private static final int TEZ_REQUEST_CODE = 123;
                         @Override
                         public void onAcknowledgePurchaseResponse(BillingResult billingResult) {
                             if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                                // Grant entitlement to the user.
+                                Toast.makeText(context, "Subscription acknowledged", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(context, "Error acknowledging purchase: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
                     };
@@ -489,7 +520,7 @@ private static final int TEZ_REQUEST_CODE = 123;
                     handlePurchase(purchase);
                 }
             } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED) {
-                Toast.makeText(context, "Current", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Already subscribed!", Toast.LENGTH_SHORT).show();
                 current_plan.setText("Active Plan");
             } else {
                 Toast.makeText(context, "Error", Toast.LENGTH_SHORT).show();

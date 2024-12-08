@@ -44,28 +44,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/progress_bar">
 
-        <ImageView
-            android:id="@+id/imageView16"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="18dp"
-            android:src="@drawable/ic_gemini_trans"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/adaptIconColor" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Gemini Flash"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:fontFamily="@font/montserrat_medium"
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/lottie"
+            android:layout_width="100dp"
+            android:layout_height="80dp"
             android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="@+id/imageView16"
-            app:layout_constraintStart_toEndOf="@+id/imageView16"
-            app:layout_constraintTop_toTopOf="@+id/imageView16" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/model_info"

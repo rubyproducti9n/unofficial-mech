@@ -1,12 +1,21 @@
 package com.rubyproducti9n.unofficialmech;
 
+import static android.content.ContentValues.TAG;
+import static com.google.common.reflect.Reflection.getPackageName;
+import static com.rubyproducti9n.unofficialmech.MainActivity.triggerAnim;
+
+import android.content.ActivityNotFoundException;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.pdf.PdfRenderer;
 import android.media.MediaPlayer;
+import android.net.Uri;
+import android.os.ParcelFileDescriptor;
 import android.text.SpannableString;
 import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
@@ -27,12 +36,15 @@ import android.widget.VideoView;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.preference.EditTextPreference;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -41,11 +53,16 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 //import java.io.FilterReader;
+import java.io.File;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -253,6 +270,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
 
                     if (item.getStateVisibility()!=null && item.getStateVisibility().equals("private")){
                         holder.getUsername().setText("Anonymous User");
+                        holder.visibility.setCompoundDrawables(mContext.getDrawable(R.drawable.baseline_lock_24), null,null, null);
                         holder.getTxt_tags().setText(result);
                         Picasso.get().load("https://e0.pxfuel.com/wallpapers/862/171/desktop-wallpaper-having-a-reason-to-live-in-this-cosmos-take-a-look-hitman-suit-thumbnail.jpg").into(holder.profile_avatar);
                         holder.verifiedBadge.setVisibility(View.GONE);
@@ -317,11 +335,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                 }else{
                     holder.postLayout.setVisibility(View.GONE);
                 }
-            }else if (item.getUserName().contains("sanjivanians")){
-                verifiedBadge.setVisibility(View.VISIBLE);
-                verifiedBadge.setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_IN);
-                holder.getTxt_tags().setText("Sponsored • " + result);
-                Picasso.get().load("https://instagram.fpnq13-2.fna.fbcdn.net/v/t51.2885-19/433276391_1125444065466323_7857726127284116829_n.jpg?stp=dst-jpg_s150x150&_nc_ht=instagram.fpnq13-2.fna.fbcdn.net&_nc_cat=111&_nc_ohc=Aa9kzqauRjMQ7kNvgH1zK72&edm=AJYBtmQBAAAA&ccb=7-5&oh=00_AYAwoXJgwOfSe50euMv6nTcDRRetKSX4ccHBh-7i2HUutQ&oe=66C80D34&_nc_sid=691684").into(holder.profile_avatar);
             }else if (item.getUserName().contains("sanjivani_memes_katta")){
                 verifiedBadge.setVisibility(View.VISIBLE);
                 verifiedBadge.setColorFilter(Color.parseColor("#FFBF00"), PorterDuff.Mode.SRC_IN);
@@ -404,7 +417,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
             }else{
                 holder.videoView.setVisibility(View.GONE);
                 holder.volumeButton.setVisibility(View.GONE);
-                Picasso.get().load(item.getPostUrl()).error(R.drawable.post_error).into(holder.getItemImageView(), new Callback() {
+
+                if (holder.getFileType(item.getPostUrl()).equals("image")){
+                    holder.viewPdf.setVisibility(View.GONE);
+                    Picasso.get().load(item.getPostUrl()).error(R.drawable.post_error).into(holder.getItemImageView(), new Callback() {
                     @Override
                     public void onSuccess() {
                         progress.setVisibility(View.GONE);
@@ -416,7 +432,23 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                         progress.setVisibility(View.VISIBLE);
                     }
                 });
-                holder.post.setVisibility(View.VISIBLE);
+                    holder.post.setVisibility(View.VISIBLE);
+                }else if (holder.getFileType(item.getPostUrl()).equals("pdf")){
+                    holder.post.setVisibility(View.GONE);
+                    holder.viewPdf.setVisibility(View.GONE);
+                    holder.viewPdf.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            holder.openFileInDefaultApp(mContext, item.getPostUrl());
+                            holder.checkIfPdfAndRetrieveDetails(item.getPostUrl());
+                        }
+                    });
+                }else{
+                    holder.post.setVisibility(View.GONE);
+                    holder.viewPdf.setVisibility(View.GONE);
+                }
+
+
 
                 ScaleGestureDetector scaleGestureDetector = new ScaleGestureDetector(mContext,
                         new ScaleGestureDetector.OnScaleGestureListener() {
@@ -499,6 +531,21 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
 //                }
 //            });
 
+        //holder.isLiked(item.getPostId());
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String uid = p.getString("auth_userId", null);
+        if (uid!=null){
+            holder.likeBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.pushLike(item.getUid(), item.getPostId());
+                }
+            });
+        }else{
+            holder.likeBtn.setEnabled(false);
+        }
+
+
             holder.shareButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -535,7 +582,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         private ImageView profile_avatar;
         private MaterialCardView postLayout;
         private ImageView card_menu;
-        private TextView postId;
+        private TextView postId, pdfName, pdfSize;
         private TextView username;
         private ImageView verifiedBadge;
         private TextView division;
@@ -546,16 +593,19 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         private ImageView menu;
         private TextView visibility;
         boolean isLiked = false;
+        private MaterialButton viewPdf;
 
         private VideoView videoView;
         private MaterialButton volumeButton;
 
-        private MaterialButton likeButton;
         private Map<String, Boolean> getLike;
 
         private MaterialButton shareButton;
         boolean showAd = Math.random() < 0.75;
         private MaterialCardView mc;
+        MaterialButton likeBtn, commentBtn;
+        int likeCount = 0;
+        int commentCount = 0;
 
 
 
@@ -600,6 +650,10 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
 
             mc = itemView.findViewById(R.id.mc);
 
+            pdfName = itemView.findViewById(R.id.pdfName);
+            pdfSize = itemView.findViewById(R.id.pdfSize);
+            viewPdf = itemView.findViewById(R.id.viewBtn);
+
             profile_avatar = itemView.findViewById(R.id.img_avtar);
             postId = itemView.findViewById(R.id.postId);
             verifiedBadge = itemView.findViewById(R.id.verifiedBadge);
@@ -612,7 +666,8 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
             videoView = itemView.findViewById(R.id.videoView);
             volumeButton = itemView.findViewById(R.id.volumeButton);
 
-            likeButton = itemView.findViewById(R.id.like);
+            likeBtn = itemView.findViewById(R.id.likeBtn);
+            likeBtn.setVisibility(View.GONE);
             shareButton = itemView.findViewById(R.id.share);
 
             String[] adUnitIds = {"ca-app-pub-5180621516690353/6163652319", "ca-app-pub-5180621516690353/6323434418", "ca-app-pub-5180621516690353/8674265587", "ca-app-pub-5180621516690353/2471873213", "ca-app-pub-5180621516690353/7644254948"};
@@ -640,26 +695,114 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                 }
             });
 
-            likeImageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    isLiked = !isLiked;
-                    if(isLiked){
-                        likeImageView.setImageResource(R.drawable.heart_active);
-                    }else{
-                        likeImageView.setImageResource(R.drawable.heart_outline);
-                    }
-
-                    Context context1 = null;
-
-                }
-            });
 
         }
         public interface UserDetailCallback {
             void onCallback(BottomSheetCreateAccount.User userDetail);
             void onFailure(String errorMessage);
         }
+
+        private void isLiked(String postId){
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("posts/" + postId + "/Likes/");
+            SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(getUsername().getContext());
+            String uid = p.getString("auth_userId", null);
+            pullLike(postId, uid);
+            ref.orderByChild(postId).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (uid!=null){
+                        if (snapshot.exists() && snapshot.hasChild(uid)){
+                            likeBtn.setIcon(itemView.getContext().getDrawable(R.drawable.heart_active));
+                            likeBtn.setText(String.valueOf(likeCount));
+                        }else{
+                            pushLike(uid, postId);
+                        }
+                    }else{
+                        //User not logged in
+                        likeBtn.setEnabled(false);
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    likeBtn.setEnabled(false);
+                    likeBtn.setText("Like");
+                }
+            });
+        }
+        private void pullLike(String postId, String userId) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("posts/" + postId + "/Likes/");
+
+            ref.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    int likeCount = 0; // Reset the count before starting the loop
+                    isLiked = false; // Track if the current user has liked the post
+
+                    if (snapshot.exists()) {
+                        for (DataSnapshot snap : snapshot.getChildren()) {
+                            Boolean liked = snap.getValue(Boolean.class); // Get the boolean value of the like
+                            if (liked != null && liked) {
+                                likeCount++; // Increment the count only if the value is true (liked)
+                            }
+
+                            if (snap.getKey().equals(userId) && liked) {
+                                isLiked = true; // Check if the current user has liked the post
+                            }
+                        }
+
+                        // Update the like button text based on the like count
+                        if (likeCount > 0) {
+                            likeBtn.setText(String.valueOf(likeCount));
+                        } else {
+                            likeBtn.setText("Like");
+                        }
+
+                        // Update the button style to indicate if the user has liked the post
+                        if (isLiked) {
+                            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.heart_active, 0, 0, 0); // Liked icon
+                        } else {
+                            likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.heart_outline, 0, 0, 0); // Default like icon
+                        }
+                    } else {
+                        likeBtn.setText("Like"); // Default text if no likes are found
+                        likeBtn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.heart_outline, 0, 0, 0); // Default like icon
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    likeBtn.setText("Like"); // Default text in case of error
+                }
+            });
+        }
+
+        private void pushLike(String uid, String postId){
+            if (uid != null) {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("posts/" + postId + "/Likes/");
+                if (isLiked){
+                    //Dislike feature
+                    //ref.child(uid).removeValue();
+                }else{
+                    ref.child(uid).setValue(true).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        triggerAnim();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getUsername().getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                }
+
+
+            }
+
+        }
+
         public void fetchUserDetails(String userId, final UserDetailCallback callback) {
             DatabaseReference db = FirebaseDatabase.getInstance().getReference("users");
             db.child(userId).addValueEventListener(new ValueEventListener() {
@@ -713,6 +856,133 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                 }
             });
         }
+        private String getFileType(String urlString) {
+            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(urlString);
+
+            storageReference.getMetadata().addOnSuccessListener(metadata -> {
+                String mimeType = metadata.getContentType();  // Get MIME type
+                Log.d(TAG, "MIME Type: " + mimeType);
+
+                if (mimeType != null) {
+                    if (mimeType.startsWith("image/")) {
+                        Log.d(TAG, "File Type: image");
+                    } else if ("application/pdf".equals(mimeType)) {
+                        Log.d(TAG, "File Type: pdf");
+                        pdfName.setText(metadata.getName());
+                    } else if ("application/msword".equals(mimeType) ||
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document".equals(mimeType)) {
+                        Log.d(TAG, "File Type: word");
+                    } else if ("application/vnd.ms-excel".equals(mimeType) ||
+                            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet".equals(mimeType)) {
+                        Log.d(TAG, "File Type: excel");
+                    } else {
+                        Log.d(TAG, "File Type: unknown");
+                    }
+                } else {
+                    Log.d(TAG, "Could not retrieve MIME Type");
+                }
+            }).addOnFailureListener(e -> {
+                Log.e(TAG, "Failed to get metadata: ", e);
+            });
+
+            return "Checking...";
+        }
+//        private String getFileType(String urlString) {
+//            if (urlString.endsWith(".jpg") || urlString.endsWith(".jpeg") || urlString.endsWith(".png") || urlString.endsWith(".gif")) {
+//                return "image";
+//            } else if (urlString.endsWith(".pdf")) {
+//                return "pdf";
+//            } else if (urlString.endsWith(".doc") || urlString.endsWith(".docx")) {
+//                return "word";
+//            } else if (urlString.endsWith(".xls") || urlString.endsWith(".xlsx")) {
+//                return "excel";
+//            } else {
+//                return "unknown";
+//            }
+//        }
+        private void openFileInDefaultApp(Context context, String urlString) {
+            // Get the file type
+            String fileType = getFileType(urlString);
+
+            // Create an Intent to open the file
+            Intent intent  = new Intent(Intent.ACTION_VIEW).setPackage(context.getPackageName());
+
+            // Set data and type based on the file type
+            if (fileType.equals("image")) {
+                intent.setDataAndType(Uri.parse(urlString), "image/*");
+            } else if (fileType.equals("pdf")) {
+                intent.setDataAndType(Uri.parse(urlString), "application/pdf");
+            } else if (fileType.equals("word")) {
+                intent.setDataAndType(Uri.parse(urlString), "application/msword");
+            } else if (fileType.equals("excel")) {
+                intent.setDataAndType(Uri.parse(urlString), "application/vnd.ms-excel");
+            } else {
+                // If unknown, just open as a general file
+                intent.setDataAndType(Uri.parse(urlString), "*/*");
+            }
+
+            // Grant permission to other apps to read this Uri
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+            // Try to start the intent, handle if no app is available
+            try {
+                context.startActivity(intent);
+            } catch (ActivityNotFoundException e) {
+                // No app found to open this file type
+                Toast.makeText(context, "No application found to open this file.", Toast.LENGTH_SHORT).show();
+            }
+        }
+        private void checkIfPdfAndRetrieveDetails(String fileUrl) {
+            // Create a StorageReference from the URL
+            StorageReference storageReference = FirebaseStorage.getInstance().getReferenceFromUrl(fileUrl);
+
+            // Get metadata of the file
+            storageReference.getMetadata().addOnSuccessListener(metadata -> {
+                String mimeType = metadata.getContentType();  // Get MIME type
+                Log.d(TAG, "MIME Type: " + mimeType);
+
+                // Check if the file is a PDF
+                if ("application/pdf".equals(mimeType)) {
+                    String pName = metadata.getName();
+                    long pSize = metadata.getSizeBytes(); // Size in bytes
+
+                    Log.d(TAG, "PDF Name: " + pdfName);
+                    Log.d(TAG, "PDF Size: " + pdfSize + " bytes");
+
+
+                    pdfName.setText(pName);
+                    pdfSize.setText((int) pSize);
+
+
+                    // Now download the file temporarily to get the number of pages
+                    try {
+                        File localFile = File.createTempFile("tempPdf", ".pdf");
+                        storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+                            int totalPages = getPdfPageCount(localFile);
+                            Log.d(TAG, "Total Pages: " + totalPages);
+                        }).addOnFailureListener(e -> Log.e(TAG, "Failed to download PDF: ", e));
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Log.d(TAG, "The file is not a PDF.");
+                }
+            }).addOnFailureListener(e -> Log.e(TAG, "Failed to get metadata: ", e));
+        }
+        private int getPdfPageCount(File pdfFile) {
+            int pageCount = 0;
+            try {
+                ParcelFileDescriptor fd = ParcelFileDescriptor.open(pdfFile, ParcelFileDescriptor.MODE_READ_ONLY);
+                PdfRenderer renderer = new PdfRenderer(fd);
+                pageCount = renderer.getPageCount();
+                renderer.close();
+                fd.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return pageCount;
+        }
+
 
         private boolean getAdRate(){
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(itemView.getContext());
@@ -788,10 +1058,6 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                     Toast.makeText(getUsername().getContext(), "Server not responding", Toast.LENGTH_SHORT).show();
                 }
             });
-        }
-        private void updateLikeButtonIcon(boolean isLiked){
-            int iconRes = isLiked ? R.drawable.heart_outline : R.drawable.heart_active;
-            likeButton.setIconResource(iconRes);
         }
 
         private void share(Context context, String username){

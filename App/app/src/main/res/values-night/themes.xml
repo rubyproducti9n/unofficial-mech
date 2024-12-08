@@ -1,4 +1,5 @@
 <resources>
+
     <style name="AppTheme" parent="Theme.Material3.Dark.NoActionBar">
         <item name="colorPrimary">@color/md_theme_primary</item>
         <item name="colorOnPrimary">@color/md_theme_onPrimary</item>
@@ -48,7 +49,6 @@
         <item name="colorSurfaceContainerHighest">@color/md_theme_surfaceContainerHighest</item>
 
 
-
         <item name="fontFamily">@font/montserrat</item>
 
     </style>
@@ -58,6 +58,7 @@
         <item name="fontWeight">900</item>
         <item name="android:textSize">18sp</item>
     </style>
+
     <style name="UserToolBarSubTitleTheme" parent="TextAppearance.AppCompat.Title">
         <item name="fontFamily">@font/montserrat</item>
         <item name="fontWeight">200</item>
@@ -69,11 +70,13 @@
         <item name="android:textSize">16sp</item>
         <item name="android:textStyle">bold</item>
     </style>
+
     <style name="SubToolBarTheme" parent="TextAppearance.AppCompat.Title">
         <item name="fontFamily">@font/montserrat</item>
         <!--        <item name="fontWeight">bold</item>-->
         <item name="android:textSize">12sp</item>
     </style>
+
     <style name="NoBorderEditText" parent="ThemeOverlay.Material3.TextInputEditText">
 
         <item name="android:background">@null</item>
@@ -81,8 +84,15 @@
     </style>
 
     <style name="SlidingDialogAnimation">
-        <item name="android:windowEnterAnimation">@android:anim/accelerate_decelerate_interpolator</item>
-        <item name="android:windowExitAnimation">@android:anim/accelerate_decelerate_interpolator</item>
+        <item name="android:windowEnterAnimation">@android:anim/accelerate_decelerate_interpolator
+        </item>
+        <item name="android:windowExitAnimation">@android:anim/accelerate_decelerate_interpolator
+        </item>
+    </style>
+    <!-- Base application theme. -->
+    <style name="Base.AppTheme" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your dark theme here. -->
+        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
     </style>
 
 </resources>

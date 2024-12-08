@@ -88,6 +88,7 @@ public class ForegroundService extends Service {
             }
         }).start();
 
+        String msg = "We're working to ensure you never miss a beat. Everything's running smoothly!";
         Intent restartIntent = new Intent(this, MainActivity.class);
         restartIntent.setAction(Intent.ACTION_MAIN);
         restartIntent.addCategory(Intent.CATEGORY_LAUNCHER);
@@ -95,7 +96,8 @@ public class ForegroundService extends Service {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Keeping you updated!")
-                .setContentText("We're working to ensure you never miss a beat. Everything's running smoothly!")
+                .setContentText(msg)
+                .setStyle(new NotificationCompat.BigTextStyle())
                 .setSmallIcon(R.drawable.ic_unofficial)
                 .setPriority(NotificationCompat.PRIORITY_LOW)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)

@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 //import com.airbnb.lottie.animation.content.Content;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.ai.client.generativeai.GenerativeModel;
 //import com.google.ai.client.generativeai.internal.api.GenerateContentRequest;
 //import com.google.ai.client.generativeai.internal.api.GenerateContentResponse;
@@ -100,6 +101,12 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.DynamicBlack));
+
+        LottieAnimationView l = view.findViewById(R.id.lottie);
+        l.setAnimation(R.raw.anim_gemini_nm);
+        l.loop(true);
+        l.playAnimation();
+
 
         MaterialCardView ad_container = view.findViewById(R.id.ad_container);
         getAdValue(ad_container, new Callbacks.AdValue() {
@@ -169,8 +176,8 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         progressIndicator.setIndeterminate(false);
         progressIndicator.setProgress(0);
-        txt.setTextSize(28);
-        txt.setTextColor(getResources().getColor(R.color.geminiBlue));
+        txt.setTextSize(20);
+        txt.setTextColor(getResources().getColor(R.color.DynamicWhite));
 
 
         promptEditTxt.addTextChangedListener(new TextWatcher() {

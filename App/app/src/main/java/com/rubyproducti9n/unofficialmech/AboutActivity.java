@@ -19,80 +19,77 @@ import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.squareup.picasso.Picasso;
 
+import java.util.Objects;
+
 public class AboutActivity extends AppCompatActivity {
 
-    TextView instruction;
+    private TextView instruction;
+    private ImageView profile;
+    private MaterialButton google, insta, coffee;
 
-    //Test1
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
+        setupVersionInfo();
+        setupDynamicLayout();
+        setupToolbar();
+        setupUIElements();
+        setupButtonListeners();
+    }
+
+    private void setupVersionInfo() {
         TextView versionTxt = findViewById(R.id.version);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            String version = pInfo.versionName;
-            int verCode = pInfo.versionCode;
-            versionTxt.setText("v" + version);
-        }catch (PackageManager.NameNotFoundException e){
+            versionTxt.setText("v" + pInfo.versionName);
+        } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
+    }
 
+    private void setupDynamicLayout() {
         DynamicConstrainLayout dynamicConstrainLayout = new DynamicConstrainLayout(this);
-        dynamicConstrainLayout.createConstraintLayout("T1", "Desc", "https://rubyproducti9n.github.io/mech/img/avatar.jgp", "Link Text", "https://google.com");
+        dynamicConstrainLayout.createConstraintLayout(
+                "T1",
+                "Desc",
+                "https://rubyproducti9n.github.io/mech/img/avatar.jpg",
+                "Link Text",
+                "https://google.com"
+        );
+    }
 
+    private void setupToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+    }
 
-        TextView expiryDateTxtView;
-
+    private void setupUIElements() {
         instruction = findViewById(R.id.instructions);
+        profile = findViewById(R.id.imageView);
+        google = findViewById(R.id.btnGoogle);
+        insta = findViewById(R.id.btnInsta);
+        coffee = findViewById(R.id.btnCoffee);
+    }
 
-        ImageView profile = findViewById(R.id.imageView);
-//        Picasso.get().load("https://rubyproducti9n.github.io/mech/avatar/dev_avatar.jpg").into(profile);
+    private void setupButtonListeners() {
+        google.setOnClickListener(view -> openWebViewActivity("https://g.dev/omlokhande10"));
 
-        MaterialCardView logo = findViewById(R.id.mc1);
-        logo.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                startActivity(new Intent(AboutActivity.this, LockActivity.class));
-                Toast.makeText(AboutActivity.this, "Developer mode enabled!", Toast.LENGTH_SHORT).show();
-                return false;
-            }
-        });
+        insta.setOnClickListener(view -> openExternalLink("https://instagram.com/om.lokhande10?igshid=ZTQ3MWpwbHhmYm16"));
 
-        MaterialButton google = findViewById(R.id.btnGoogle);
-        google.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String link = "https://g.dev/omlokhande10";
-                Intent intent = new Intent(AboutActivity.this, WebViewActivity.class);
-                intent.putExtra("link", link);
-                startActivity(intent);
-            }
-        });
+        coffee.setOnClickListener(view -> openWebViewActivity("https://buymeacoffee.com/omlokhande"));
+    }
 
-        MaterialButton insta = findViewById(R.id.btnInsta);
-        insta.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/om.lokhande10?igshid=ZTQ3MWpwbHhmYm16"));
-                startActivity(intent);
-            }
-        });
+    private void openWebViewActivity(String link) {
+        Intent intent = new Intent(AboutActivity.this, WebViewActivity.class);
+        intent.putExtra("link", link);
+        startActivity(intent);
+    }
 
-        MaterialButton coffee = findViewById(R.id.btnCoffee);
-        coffee.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String link = "https://buymeacoffee.com/omlokhande";
-                Intent intent = new Intent(AboutActivity.this, WebViewActivity.class);
-                intent.putExtra("link", link);
-                startActivity(intent);
-            }
-        });
-
+    private void openExternalLink(String url) {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(intent);
     }
 }

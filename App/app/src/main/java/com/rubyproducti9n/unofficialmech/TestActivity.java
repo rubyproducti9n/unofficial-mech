@@ -1,659 +1,633 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.Algorithms.paymentServiceCheck;
-import static com.rubyproducti9n.unofficialmech.PDFCreator.createPDF;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.disableStatusBar;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fServer;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.initiateAds;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadNativeAd;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.register;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.serviceCheck;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.show;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.unregister;
 
-import android.Manifest;
-import android.animation.AnimatorSet;
-import android.animation.ObjectAnimator;
-import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
-import android.se.omapi.Session;
-import android.text.Editable;
-import android.text.TextWatcher;
+import android.os.ParcelFileDescriptor;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
-import android.view.animation.AccelerateInterpolator;
-import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.IntentSenderRequest;
-import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.view.GravityCompat;
-import androidx.core.view.WindowCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.billingclient.api.AcknowledgePurchaseParams;
-import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesResult;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.QueryPurchasesParams;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
-import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.radiobutton.MaterialRadioButton;
-import com.google.android.material.search.SearchBar;
-import com.google.android.material.search.SearchView;
-import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.play.core.appupdate.AppUpdateInfo;
-import com.google.android.play.core.appupdate.AppUpdateManager;
-import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
-import com.google.android.play.core.appupdate.AppUpdateOptions;
-import com.google.android.play.core.install.model.AppUpdateType;
-import com.google.android.play.core.install.model.UpdateAvailability;
-import com.google.android.play.core.review.ReviewInfo;
-import com.google.android.play.core.review.ReviewManager;
-import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.materialswitch.MaterialSwitch;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig;
-import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.squareup.picasso.Picasso;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.net.InetAddress;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Vector;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import android.widget.SearchView.OnQueryTextListener;
 
 public class TestActivity extends AppCompatActivity {
 
-    private BillingClient billingClient;
-    private PurchasesUpdatedListener purchasesUpdatedListener;
-    TextView plan;
-//    DatabaseReference databaseReference;
+//    MaterialButton likeBtn, commentBtn,u1,u2,u3,u4;
+    int likeCount = 0;
+    int commentCount = 0;
+    private static final String CHANNEL_ID = "default";
+    private static final String CHANNEL_NAME = "Default Channel";
+    private static final String CHANNEL_DESCRIPTION = "Main Channel";
+    private static final int IMPORTANCE = NotificationManager.IMPORTANCE_DEFAULT;
 
-    private ConstraintLayout adContainer;
-    private MaterialAutoCompleteTextView divDrop, deptDrop;
-    private DatabaseReference databaseReference;
-    public static ImageView profilePic;
-    MaterialButton facultyAcc, createAccBtn;
-    TextInputEditText fName, lName, inPrn, inClgMail, inPEmail, inMobNum, inPassword;
-    String inDivision, inDept, inGender = null;
-    String inRRoll = "0";
+    private FirebaseStorage firebaseStorage;
+    private StorageReference storageReference;
+    private static final String TAG = "PdfDetails";
+
+    ArrayList<Post> cachedPosts = new ArrayList<>();
+    ArrayList<AppointmentItem> cachedAppointments = new ArrayList<>();
+    ConstraintLayout singleLayout, singleMode;
+    TextView txtSingleTroll;
+    public static String[] singleMaleTrolling = {
+            "Aaj Valentine's day hai, toh apni akelepan ki selfie post krna mat bhulna! ..😂😅",
+            "Tumhe toh Valentine's Day pe romance ke bajaye Netflix n Chill ki invitation milti hogi nai😂",
+            "Yeh Valentine's ka toh tumhara agenda hi hota hai -- kuch nahi, bas ek din ka akelapan \uD83D\uDE42",
+            "Woh couples ko dekho, aur tumhara plan? Aaj toh Netflix ko hi apna Valentine banalo😂",
+            "Valentine's day pe apna dil toh nahi, lekin pizza🍕 aur ice-cream🍦 toh zaroor share kr sakte ho😉 \n\n No Zomato was harmed during this message😂"
+    };
+    private String[] flirtingWithFemale = {
+            "Tu single hai behen?\uD83D\uDE02\uD83D\uDE02"
+    };
+    private String[] singleLines = {
+            "Yeh din apne liye nahi hai mere dost...\nZomato se pizza mangwa aur celebrate kr\n#LoveYourSelf",
+            "kya aapki life mein bhi gf nahi hai?\nshukar hai nahi hai..muzhse kya puch raha hai bhai\nmeri khud nahi thi \uD83D\uDE42"
+    };
+    MaterialSwitch singleModeSwitch;
+    private PhotosAdapter adapter;
+    private StoryAdapter storyAdapter;
+    ShimmerFrameLayout progressBar;
+    RecyclerView recyclerView, recyclerViewStory;
+    ManagerLayout manager;
+    Handler handler;
+    List<Post> items;
+    ConstraintLayout err;
+    View view;
+    List<PhotosFragment.StoryItem> storyItems;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_test);
-        checkTemp();
 
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        profilePic = findViewById(R.id.profilePicture);
+        progressBar = findViewById(R.id.shimmer);
 
-        fName = findViewById(R.id.firstNameEditText);
-        lName = findViewById(R.id.lastNameEditText);
-        inPrn = findViewById(R.id.prnEditText);
-        inClgMail = findViewById(R.id.clgEmailEditText);
-        inPEmail = findViewById(R.id.personalEmailEditText);
-        inMobNum = findViewById(R.id.mobileNumEditText);
-        inPassword = findViewById(R.id.passwordEditText);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setVisibility(View.VISIBLE);
 
-        divDrop = findViewById(R.id.dropdown_menu2);
-        deptDrop = findViewById(R.id.deptMenu);
-        facultyAcc = findViewById(R.id.facultyBtn);
-        createAccBtn = findViewById(R.id.cretaeAccountBtn);
+        handler = new Handler(Looper.getMainLooper());
+        new Thread(
+                new Runnable() {
+                    @Override
+                    public void run() {
+                        optimized();
+                    }
+                }
+        ).start();
 
-        setupDivisionDropdown();
-        setupDepartmentDropdown();
-        setupGenderSelection();
-        setupRollNumberInput();
+        // Initialize Firebase Storage
+        firebaseStorage = FirebaseStorage.getInstance();
 
-        facultyAcc.setOnClickListener(v -> {
-            startActivity(new Intent(TestActivity.this, LockActivity.class));
-        });
+        // Reference to your PDF in Firebase Storage
+        storageReference = firebaseStorage.getReference().child("https://firebasestorage.googleapis.com/v0/b/unofficial-mech.appspot.com/o/ADHAR.pdf?alt=media&token=e42cf2fa-c306-46af-aed3-d09e435c9cb2");
 
-        createAccBtn.setOnClickListener(view -> checkInput(
-                Objects.requireNonNull(fName.getText()).toString(),
-                Objects.requireNonNull(lName.getText()).toString(),
-                inDivision, String.valueOf(inRRoll),
-                Objects.requireNonNull(inPrn.getText()).toString(),
-                Objects.requireNonNull(inClgMail.getText()).toString(),
-                inGender, Objects.requireNonNull(inPEmail.getText()).toString(),
-                Objects.requireNonNull(inMobNum.getText()).toString(),
-                ProjectToolkit.h(TestActivity.this, Objects.requireNonNull(inPassword.getText()).toString()),
-                "Student",
-                inDept
-        ));
+        // Get PDF details
+        getPdfDetails();
 
-
-        databaseReference = FirebaseDatabase.getInstance().getReference("users");
-        MaterialButton btn = findViewById(R.id.btn);
-        btn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.request).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(TestActivity.this, CreateAccount.class));
-//                String userId = databaseReference.push().getKey();
-//                BottomSheetCreateAccount.User user = new BottomSheetCreateAccount.User(userId, null, null, null, null, null, null, null, null, null, null, null, null + "@unofficialmech", false, null, null, null);
-//                databaseReference.child(userId).setValue(user);
+                sendRequest();
             }
         });
 
+//        likeBtn = findViewById(R.id.likeButton);
+//        commentBtn = findViewById(R.id.commentBtn);
+//        u1 = findViewById(R.id.user1);
+//        u2 = findViewById(R.id.user2);
+//        u3 = findViewById(R.id.user3);
+//        u4 = findViewById(R.id.user4);
 
-
-//        plan = findViewById(R.id.plan);
-//        purchasesUpdatedListener = new PurchasesUpdatedListener() {
+//        setAlarm();
+//        isLiked();
+//        pullComment();
+//        likeBtn.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onPurchasesUpdated(BillingResult billingResult, List<Purchase> purchases) {
-//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-//                    for (Purchase purchase : purchases) {
-//                        Log.d("PurchasesUpdated", "Purchase found: " + purchase.getSkus());
-//                        validatePurchase(purchase);
+//            public void onClick(View v) {
+//                isLiked();
+//            }
+//        });
+//        commentBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                CommentsDialog c = new CommentsDialog();
+//                c.show(getSupportFragmentManager(), "comments");
+//            }
+//        });
+//
+//        u1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setUser(6);
+//            }
+//        });
+//
+//        u2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setUser(2);
+//            }
+//        });
+//
+//        u3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setUser(3);
+//            }
+//        });
+//
+//        u4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                setUser(4);
+//            }
+//        });
+
+    }
+
+    private void sendRequest(){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests/final/");
+
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String sessionTime = currentDateTime.format(dateTimeFormatter);
+
+        String uid = ref.push().getKey();
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
+        String email = p.getString("auth_email", null);
+
+        AttendanceRequest req = new AttendanceRequest(uid, email, sessionTime, true);
+        ref.setValue(req);
+    }
+
+    private void receiveRequest(){
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
+        String email = p.getString("auth_email", null);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests/final/");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String uid = snapshot.child("uid").getValue(String.class);
+                String timestamp = snapshot.child("timestamp").getValue(String.class);
+                String email = snapshot.child("email").getValue(String.class);
+                Boolean isValid = snapshot.child("isValid").getValue(Boolean.class);
+
+                if (Boolean.TRUE.equals(isValid)){
+                    Snackbar.make(findViewById(R.id.request), "Request accepted", Snackbar.LENGTH_LONG)
+                            .setAction("Accept", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    new MaterialAlertDialogBuilder(TestActivity.this)
+                                            .setTitle("Accepted")
+                                            .setMessage("Congrats! The request was accepted successfully")
+                                            .show();
+                                }
+                            })
+                            .setAnchorView(R.id.request).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void optimized(){
+        //Thread Optimised code
+        ExecutorService exe = Executors.newFixedThreadPool(120);
+
+        FloatingActionButton fab = findViewById(R.id.fab);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String userRole = preferences.getString("auth_userole", null);
+
+        GridLayoutManager layoutManager = new GridLayoutManager(TestActivity.this, 1);
+        recyclerView.setLayoutManager(layoutManager);
+
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
+            @Override
+            public void run() {
+                recyclerView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                serviceCheck(TestActivity.this, new ProjectToolkit.ServiceCheckCallBack() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        if (result){
+                            if (userRole!=null){
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference postRef = database.getReference("posts");
+                                DatabaseReference storyRef = database.getReference("stories");
+
+                                List<Post> items = new ArrayList<>();
+                                adapter = (PhotosAdapter) new PhotosAdapter(TestActivity.this, items);
+
+                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {items.clear();
+                                                long childNumber = snapshot.getChildrenCount();
+                                                List<Post> fetchedItems = new ArrayList<>();
+
+                                                String postId;
+                                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                                    postId = postSnapshot.child("postId").getValue(String.class);
+                                                    String uid = postSnapshot.child("uid").getValue(String.class);
+                                                    String username = postSnapshot.child("userName").getValue(String.class);
+                                                    String div = postSnapshot.child("userDiv").getValue(String.class);
+                                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
+                                                    String caption = postSnapshot.child("caption").getValue(String.class);
+                                                    String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
+                                                    String postUrl = postSnapshot.child("postUrl").getValue(String.class);
+                                                    Map<String, Boolean> likes = new HashMap<>();
+
+                                                    Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
+                                                    cachedPosts.add(postItem);
+                                                    fetchedItems.add(postItem);
+                                                }
+                                                items.clear();
+                                                items.addAll(fetchedItems);
+                                                Collections.reverse(items);
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        recyclerView.setAdapter(adapter);
+                                                        ProjectToolkit.fadeOut(progressBar);
+                                                        fadeIn(recyclerView);
+                                                    }
+                                                }, 2000);
+                                            }
+                                        }).start();
+
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Snackbar.make(recyclerView, "Error 503", Snackbar.LENGTH_LONG).show();
+                                    }
+                                });
+
+//                        exe.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                            }
+//                        });
+//                        exe.shutdown();
+
+                            }else{
+                                //When user is not logged in
+                                DatabaseReference postRef = database.getReference("posts");
+                                List<Post> items = new ArrayList<>();
+                                adapter = (PhotosAdapter) new PhotosAdapter(TestActivity.this, items);
+
+                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {items.clear();
+                                                long childNumber = snapshot.getChildrenCount();
+                                                List<Post> fetchedItems = new ArrayList<>();
+
+                                                String postId;
+                                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                                    postId = postSnapshot.child("postId").getValue(String.class);
+                                                    String uid = postSnapshot.child("uid").getValue(String.class);
+                                                    String username = postSnapshot.child("userName").getValue(String.class);
+                                                    String div = postSnapshot.child("userDiv").getValue(String.class);
+                                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
+                                                    String caption = postSnapshot.child("caption").getValue(String.class);
+                                                    String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
+                                                    String postUrl = postSnapshot.child("postUrl").getValue(String.class);
+                                                    Map<String, Boolean> likes = new HashMap<>();
+
+                                                    Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
+                                                    cachedPosts.add(postItem);
+                                                    fetchedItems.add(postItem);
+                                                }
+                                                items.clear();
+                                                items.addAll(fetchedItems);
+                                                Collections.reverse(items);
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        recyclerView.setAdapter(adapter);
+                                                        ProjectToolkit.fadeOut(progressBar);
+                                                        fadeIn(recyclerView);
+                                                    }
+                                                }, 2000);
+                                            }
+                                        }).start();
+
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Snackbar.make(recyclerView, "Error 503", Snackbar.LENGTH_LONG).show();
+                                    }
+                                });
+                                recyclerViewStory.setVisibility(View.GONE);
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+
+    private void getPdfDetails() {
+        // Get metadata of the file
+        storageReference.getMetadata().addOnSuccessListener(metadata -> {
+            String pdfName = metadata.getName();
+            long pdfSize = metadata.getSizeBytes(); // Size in bytes
+
+
+            Log.d(TAG, "PDF Name: " + pdfName);
+            Log.d(TAG, "PDF Size: " + pdfSize + " bytes");
+
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Details")
+                    .setMessage("Name: " + pdfName + "\n" +
+                     "Size: " + pdfSize).show();
+
+            // Now download the file temporarily to get the number of pages
+            try {
+
+                File localFile = File.createTempFile("tempPdf", ".pdf");
+                storageReference.getFile(localFile).addOnSuccessListener(taskSnapshot -> {
+//                    int totalPages = getPdfPageCount(localFile);
+//                    Log.d(TAG, "Total Pages: " + totalPages);
+                }).addOnFailureListener(e -> Log.e(TAG, "Failed to download PDF: ", e));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).addOnFailureListener(e -> Log.e(TAG, "Failed to get metadata: ", e));
+    }
+
+    // Get total number of pages in the PDF
+//    private int getPdfPageCount(File pdfFile) {
+//
+//        PdfiumCore pdfiumCore = new PdfiumCore(this);
+//        int totalPages = 0;
+//        try {
+//            PdfDocument pdfDocument = pdfiumCore.newDocument(openFileDescriptor(pdfFile));
+//            totalPages = pdfiumCore.getPageCount(pdfDocument);
+//            pdfiumCore.closeDocument(pdfDocument); // Remember to close the document
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return totalPages;
+//    }
+
+    private ParcelFileDescriptor openFileDescriptor(File file) throws IOException {
+        return ParcelFileDescriptor.open(file, ParcelFileDescriptor.MODE_READ_ONLY);
+    }
+
+//    private void setUser(int i){
+//
+//        if (i>1){
+//            pushComment();
+//        }else {
+//            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+//    private void pullLike(){
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("test/Likes/");
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    for (DataSnapshot snap : snapshot.getChildren()){
+//                        likeCount++;
+//                        if (likeCount>0){
+//                            likeBtn.setText(String.valueOf(likeCount));
+//                        }else{
+//                            likeBtn.setText("Like");
+//                        }
 //                    }
-//                } else if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.USER_CANCELED) {
-//                    Log.d("PurchasesUpdated", "User canceled the purchase flow.");
-//                } else {
-//                    Log.e("PurchasesUpdated", "Purchase update failed with code: " + billingResult.getResponseCode());
 //                }
 //            }
 //
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
 //
-//        };
-//
-//        billingClient = BillingClient.newBuilder(this)
-//                .setListener(purchasesUpdatedListener)
-//                .enablePendingPurchases()
-//                .build();
-//
-//        startConnection();
-//
-//        getCurrentSubscriptionPlan();
-    }
-
-
-
-    private void setupDivisionDropdown() {
-        String[] items = getResources().getStringArray(R.array.div);
-        ArrayAdapter<String> divAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, items);
-        divDrop.setAdapter(divAdapter);
-        divDrop.setOnItemClickListener((parent, view, position, id) -> inDivision = (String) parent.getItemAtPosition(position));
-    }
-
-    private void setupDepartmentDropdown() {
-        String[] deptItems = getResources().getStringArray(R.array.dept);
-        ArrayAdapter<String> deptAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, deptItems);
-        deptDrop.setAdapter(deptAdapter);
-        deptDrop.setOnItemClickListener((parent, view, position, id) -> inDept = (String) parent.getItemAtPosition(position));
-    }
-
-    private void setupGenderSelection() {
-        RadioGroup radioGroup = findViewById(R.id.gender_radio_group);
-        radioGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            RadioButton selectedRadioButton = findViewById(checkedId);
-            String selectedOption = selectedRadioButton.getText().toString();
-            validGender(selectedOption);
-            inGender = selectedOption;
-        });
-    }
-
-    private void setupRollNumberInput() {
-        TextInputEditText rollInput = findViewById(R.id.rollEditText);
-        rollInput.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                inRRoll = "0";
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                boolean isInt = isInt(Objects.requireNonNull(rollInput.getText()).toString());
-                if (isInt) {
-                    inRRoll = rollInput.getText().toString();
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    public static boolean isInt(String input) {
-        try {
-            Integer.parseInt(input);
-            return true;
-        } catch (NumberFormatException e) {
-            return false;
-        }
-    }
-
-    private void checkInput(String firstName, String lastName, String Div, String roll, String prn, String oEmail, String gen, String pEmail, String mNum, String pass, String role, String dept) {
-        if (isEmpty(firstName)) {
-            showToast("Please fill your First name");
-            return;
-        }
-        if (isEmpty(lastName)) {
-            showToast("Please fill your Last name");
-            return;
-        }
-        if (isEmpty(Div)) {
-            showToast("Please select Division");
-            return;
-        }
-        if (isEmpty(roll) || roll.equals("0")) {
-            showToast("Please enter a valid Roll No.");
-            return;
-        }
-        if (isEmpty(oEmail)) {
-            showToast("Please enter your Official Email Address");
-            return;
-        }
-        if (isEmpty(gen)) {
-            showToast("Please select appropriate gender");
-            return;
-        }
-        if (isEmpty(pEmail)) {
-            showToast("Please enter your personal Email Address");
-            return;
-        }
-        if (isEmpty(mNum)) {
-            showToast("Please enter your mobile number.");
-            return;
-        }
-        if (isEmpty(pass)) {
-            showToast("Please enter your password");
-        } else {
-            if (!validateMobileNumber(mNum)) {
-                showToast("Invalid Mobile number, please enter a valid number");
-                return;
-            }
-            if (!isValidPRN(prn)) {
-                showToast("Invalid PRN number");
-                return;
-            }
-            if (!isValidGmail(pEmail)) {
-                showToast("Invalid Email address");
-                return;
-            }
-            if (!isValidSanjivanicoe(oEmail)) {
-                showToast("Invalid Clg Email Address");
-                return;
-            } else {
-                createAccount(firstName, lastName, Div, roll, prn, oEmail, gen, pEmail, mNum, pass, role, dept);
-            }
-        }
-    }
-
-    private void createAccount(String firstName, String lastName, String div, String roll, String prn, String oEmail, String gen, String pEmail, String mNum, String pass, String role, String dept) {
-        tempUser(null, firstName, lastName, div, roll, prn, oEmail, gen, pEmail, mNum, pass, role, dept);
-        LocalDateTime currentDate = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String dateCreatedAccount = currentDate.format(dateTimeFormatter);
-        String lastPaymentDate = currentDate.format(dateTimeFormatter);
-
-        String userId = databaseReference.push().getKey();
-
-        if (userId != null) {
-            BottomSheetCreateAccount.User user = new BottomSheetCreateAccount.User(userId, null, firstName, lastName, oEmail, gen, prn, roll, div, pEmail, pass, role, mNum, firstName.toLowerCase() + roll + "@unofficialmech", false, dateCreatedAccount, lastPaymentDate, dept);
-            databaseReference.child(userId).setValue(user);
-            saveUser(userId, firstName, lastName, div, roll, prn, oEmail, gen, pEmail, mNum, pass, role);
-            initiateNewActivity();
-        } else {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Oops!")
-                    .setMessage("Unable to create account, please try again.")
-                    .setNegativeButton("Try again", (dialog, which) -> createAccount(firstName, lastName, div, roll, prn, oEmail, gen, pEmail, mNum, pass, role, dept))
-                    .show();
-        }
-    }
-
-    private void saveUser(String uid, String firstName, String lastName, String div, String roll, String prn, String oEmail, String gen, String pEmail, String mNum, String pass, String role){
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
-        SharedPreferences.Editor e = p.edit();
-        e.putString("auth_userId", uid);
-        e.putString("auth_name", firstName + " " + lastName);
-        e.putString("auth_email", oEmail);
-        e.putString("auth_password", pass);
-        e.putString("auth_prn", prn);
-        e.putString("auth_roll", roll);
-        e.putString("auth_division", div);
-        e.putString("auth_gender", gen);
-        e.putString("auth_userole", role);
-        e.putString("auth_mob", mNum);
-        e.putString("auth_personalEmail", pEmail);
-        e.apply();
-    }
-
-    private void initiateNewActivity() {
-        Toast.makeText(this, "Successfully created account!", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-        finish();
-    }
-
-    private void tempUser(String uid, String firstName, String lastName, String div, String roll, String prn, String oEmail, String gen, String pEmail, String mNum, String pass, String role, String dept) {
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
-        SharedPreferences.Editor e = p.edit();
-        e.putString("temp_userId", uid);
-        e.putString("temp_name", firstName + " " + lastName);
-        e.putString("temp_email", oEmail);
-        e.putString("temp_password", pass);
-        e.putString("temp_prn", prn);
-        e.putString("temp_roll", roll);
-        e.putString("temp_division", div);
-        e.putString("temp_gender", gen);
-        e.putString("temp_userole", role);
-        e.putString("temp_mob", mNum);
-        e.putString("temp_personalEmail", pEmail);
-        e.putString("temp_dept", dept);
-        e.apply();
-        showToast("Saved!");
-    }
-
-    private void checkTemp() {
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
-        String nm = p.getString("temp_name", null);
-        if (nm != null) {
-            new MaterialAlertDialogBuilder(this)
-                    .setTitle("Manager")
-                    .setMessage("Would you like to autofill your details instead of filling it again?")
-                    .setPositiveButton("Fill", (dialog, which) -> loadData())
-                    .setNegativeButton("No", (dialog, which) -> {
-                        SharedPreferences.Editor e = p.edit();
-                        e.clear();
-                        e.apply();
-                    })
-                    .show();
-        }
-    }
-
-    private void loadData() {
-        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(TestActivity.this);
-        String nm = p.getString("temp_name", null);
-        String email = p.getString("temp_email", null);
-        String pass = p.getString("temp_password", null);
-        String prn = p.getString("temp_prn", null);
-        String div = p.getString("temp_division", null);
-        String roll = p.getString("temp_roll", null);
-        String gen = p.getString("temp_gender", null);
-        String role = p.getString("temp_userole", null);
-        String mNum = p.getString("temp_mob", null);
-        String pEmail = p.getString("temp_personalEmail", null);
-        String dept = p.getString("temp_dept", null);
-
-        createAccount(nm.split(" ")[0], nm.split(" ")[1], div, roll, prn, email, gen, pEmail, mNum, pass, role, dept);
-    }
-
-    private boolean validateMobileNumber(String mobileNumber) {
-        Pattern pattern = Pattern.compile("^[6-9]\\d{9}$");
-        Matcher matcher = pattern.matcher(mobileNumber);
-        return matcher.matches();
-    }
-
-    public static boolean isValidPRN(String prnNumber) {
-        Pattern pattern = Pattern.compile("^[A-Z]{3}[0-9]{2}[A-Z]{1}[0-9]{4}$");
-        Matcher matcher = pattern.matcher(prnNumber);
-        return matcher.matches();
-    }
-
-    public static boolean isValidGmail(String emailAddress) {
-        Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(gmail\\.com)$");
-        Matcher matcher = pattern.matcher(emailAddress);
-        return matcher.matches();
-    }
-
-    public static boolean isValidSanjivanicoe(String emailAddress) {
-        Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@sanjivanicoe\\.org\\.in$");
-        Matcher matcher = pattern.matcher(emailAddress);
-        return matcher.matches();
-    }
-
-    public static void validGender(String gen) {
-        if (gen.equals("Male")) {
-            ProjectToolkit.fadeIn(profilePic);
-            Picasso.get().load("https://rubyproducti9n.github.io/mech/avatar/male.png").into(profilePic);
-        }
-        if (gen.equals("Female")) {
-            ProjectToolkit.fadeIn(profilePic);
-            Picasso.get().load("https://rubyproducti9n.github.io/mech/avatar/female.png").into(profilePic);
-        }
-    }
-
-    private boolean isEmpty(String input) {
-        return input == null || input.isEmpty();
-    }
-
-    private void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
-
-
-
-    private String containsInvalidFirebaseKey(String key) {
-        if (key.contains("/") || key.contains(".") || key.contains("#") || key.contains("$") || key.contains("[") || key.contains("]")){
-            Toast.makeText(this, sanitizeKey(key), Toast.LENGTH_SHORT).show();
-            return sanitizeKey(key);
-        }else {
-            return key;
-        }
-    }
-    private String sanitizeKey(String key) {
-        StringBuilder sanitizedKey = new StringBuilder();
-        int index;
-
-        while ((index = key.indexOf('/')) != -1 ||
-                (index = key.indexOf('.')) != -1 ||
-                (index = key.indexOf('#')) != -1 ||
-                (index = key.indexOf('$')) != -1 ||
-                (index = key.indexOf('[')) != -1 ||
-                (index = key.indexOf(']')) != -1) {
-            sanitizedKey.append(key.substring(0, index));
-            key = key.substring(index + 1);
-        }
-
-        sanitizedKey.append(key);
-        return sanitizedKey.toString();
-    }
-
-
-
-    void handlePurchase(Purchase purchase) {
-        Log.d("HandlePurchase", "Purchase state: " + purchase.getPurchaseState());
-        if (purchase.getPurchaseState() == Purchase.PurchaseState.PURCHASED && !purchase.isAcknowledged()) {
-            AcknowledgePurchaseParams acknowledgePurchaseParams =
-                    AcknowledgePurchaseParams.newBuilder()
-                            .setPurchaseToken(purchase.getPurchaseToken())
-                            .build();
-
-            AcknowledgePurchaseResponseListener acknowledgePurchaseResponseListener =
-                    billingResult -> {
-                        if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                            // Grant entitlement to the user.
-                        }
-                    };
-
-            billingClient.acknowledgePurchase(acknowledgePurchaseParams, acknowledgePurchaseResponseListener);
-        }
-    }
-    private void startConnection() {
-        billingClient.startConnection(new BillingClientStateListener() {
-            @Override
-            public void onBillingSetupFinished(BillingResult billingResult) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    queryPurchases();
-                }
-            }
-
-            @Override
-            public void onBillingServiceDisconnected() {
-                // Retry connection or handle disconnection
-            }
-        });
-    }
-
-    private void queryPurchases() {
-        QueryPurchasesParams queryPurchasesParams = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build();
-
-        billingClient.queryPurchasesAsync(queryPurchasesParams, (billingResult, purchasesList) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchasesList != null) {
-                for (Purchase purchase : purchasesList) {
-                    validatePurchase(purchase);
-                }
-            } else {
-                plan.setText(billingResult.getDebugMessage());
-                // Handle errors
-            }
-        });
-    }
-
-//    private void validatePurchase(Purchase purchase) {
-//        for (String sku : purchase.getSkus()) {
-//            Log.d("ValidatePurchase", "SKU: " + sku);
-//            if (sku.equals("basic_plan")) {
-//                showToast("Basic Subscription is active.");
-//            } else if (sku.equals("standard_subscription")) {
-//                showToast("Standard Subscription is active.");
-//            } else if (sku.equals("premium_subscription")) {
-//                showToast("Premium Subscription is active.");
-//            } else {
-//                showToast("Invalid SKU: " + sku);
 //            }
+//        });
+//
+//    }
+//
+//    private void pushLike(String uid){
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("test/Likes");
+//        ref.child(uid).setValue(true);
+//    }
+//
+//    private void isLiked(){
+//        pullLike();
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("test/Likes");
+//        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+//        String uid = p.getString("auth_userId", null);
+//        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (uid!=null){
+//                    if (snapshot.exists() && snapshot.hasChild(uid)){
+//                    likeBtn.setIcon(getDrawable(R.drawable.heart_active));
+//                    likeBtn.setText(String.valueOf(likeCount));
+//                }else{
+//                    pushLike(uid);
+//                }
+//                }else{
+//                    Toast.makeText(TestActivity.this, "User not found", Toast.LENGTH_SHORT).show();
+//                }
+//
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//    }
+//
+//    private void pullComment(){
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("test/Comments/");
+//        ref.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                if (snapshot.exists()){
+//                    for (DataSnapshot snap : snapshot.getChildren()){
+//                        commentCount++;
+//                        if (commentCount>0){
+//                            commentBtn.setText(String.valueOf(commentCount));
+//                        }else{
+//                            commentBtn.setText("Comment");
+//                        }
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//
+//            }
+//        });
+//
+//    }
+//
+//
+//    private void pushComment(){
+//        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+//        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("test/Comments");
+//        String uid = p.getString("auth_uid", null);
+//
+//        if (uid !=null){
+//            ref.child(uid).setValue("some comment");
+//        }else{
+//            Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show();
 //        }
 //    }
 
 
-//    private void showToast(String message) {
-//        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
-//
-//
-//        plan.setText(message);
-//    }
+    public static void createNotificationChannel(Context context) {
+        long[] vib = {100, 200, 100};
+            NotificationChannel
+            channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, IMPORTANCE);
+            channel.enableLights(true);
+            channel.setImportance(NotificationManager.IMPORTANCE_HIGH);
+            channel.setVibrationPattern(vib);
+            channel.setDescription(CHANNEL_DESCRIPTION);
 
-    private void getCurrentSubscriptionPlan() {
-        QueryPurchasesParams queryPurchasesParams = QueryPurchasesParams.newBuilder()
-                .setProductType(BillingClient.ProductType.SUBS)
-                .build();
 
-        billingClient.queryPurchasesAsync(queryPurchasesParams, (billingResult, purchasesList) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchasesList != null) {
-                for (Purchase purchase : purchasesList) {
-                    validatePurchase(purchase);
-                }
-            } else {
-                // Handle errors
-                Log.e("SubscriptionError", billingResult.getDebugMessage());
-            }
-        });
+            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+
     }
 
-    private void validatePurchase(Purchase purchase) {
-        String currentSubscriptionPlan = null;
-        for (String sku : purchase.getSkus()) {
-            if (sku.equals("basic_plan")) {
-                currentSubscriptionPlan = "Basic";
-            } else if (sku.equals("standard_subscription")) {
-                currentSubscriptionPlan = "Standard";
-            } else if (sku.equals("premium_subscription")) {
-                currentSubscriptionPlan = "Premium";
-            } else {
-                currentSubscriptionPlan = "Unknown"; // Or handle unknown SKUs appropriately
-            }
-            showToast(currentSubscriptionPlan);
-            // Use currentSubscriptionPlan variable as needed
-            Log.d("CurrentPlan", "Current subscription plan: " + currentSubscriptionPlan);
-        }
+    private void setAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(
+                Context.ALARM_SERVICE);
+
+// Create an Intent for your BroadcastReceiver
+        Intent intent = new Intent(this, ConnectionReceiver.class);
+
+// Create a PendingIntent
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+
+// Set the alarm to repeat every 5 minutes
+        long interval = 5 * 60 * 1000; // 5 minutes in milliseconds
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), interval, pendingIntent);
     }
 
 
+public class AttendanceRequest{
+
+        String uid;
+        String email;
+        String timestamp;
+        Boolean isValid;
+
+    public AttendanceRequest(String uid, String email, String timestamp, Boolean isValid) {
+        this.uid = uid;
+        this.email = email;
+        this.timestamp = timestamp;
+        this.isValid = isValid;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public Boolean getValid() {
+        return isValid;
+    }
+
+    public void setValid(Boolean valid) {
+        isValid = valid;
+    }
+}
 
 }

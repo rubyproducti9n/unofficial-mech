@@ -17,32 +17,94 @@ import androidx.core.app.NotificationCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.text.SimpleDateFormat;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class HolidayManager extends AppCompatActivity {
     static Context c;
     private static final long MILLIS_IN_DAY = 24 * 60 * 60 * 1000;
-    public static List<String> holidayDates = new ArrayList<>();
+    public static List<Map.Entry<String, String>> holidayDates = new ArrayList<>();
 
     public static void initiate(Context context){
+        // January 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-01-06", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-01-13", "Makar Sankranti"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-01-20", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-01-26", "Republic Day"));
 
-        //Even Sem
-        holidayDates.add("2024-01-26");
-        holidayDates.add("2024-02-19");
-        holidayDates.add("2024-03-08");
-        holidayDates.add("2024-04-09");
-        holidayDates.add("2024-04-11");
+        // February 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-02-03", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-02-17", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-02-24", "Mahashivratri"));
 
-        //Odd Sem
-        holidayDates.add("2024-07-17");
-        holidayDates.add("2024-08-15");
-        holidayDates.add("2024-09-17");
-        holidayDates.add("2024-10-2");
-        holidayDates.add("2024-10-12");
+        // March 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-03-02", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-03-18", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-03-25", "Holi Festival"));
+
+        // April 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-04-06", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-04-19", "Good Friday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-04-20", "3rd Saturday Holiday"));
+
+        // May 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-05-04", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-05-18", "3rd Saturday Holiday"));
+
+        // June 2024
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-06-01", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-06-15", "3rd Saturday Holiday"));
+
+        // Odd Sem
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-06", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-15", "Reporting through ERP Week"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-20", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-21", "Last Day of Reporting"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-22", "Dept Meeting for Academic Planning"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-23", "Last Date: Submit MoM to Dean"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-25", "Finalize & Upload CIA Rubrics"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-26", "ERP Report Submission to Dean"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-27", "Director Teaching Status Submission"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-07-29", "Classes Commencement"));
+
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-03", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-15", "Independence Day"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-16", "Student Feedback-1 on Teaching"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-17", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-19", "Syllabus Report to Dean"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-23", "Attendance Communication to Parents"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-24", "Half Term Student Feedback"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-08-29", "Submit Attendance Report"));
+
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-05", "Teacher’s Day Celebration"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-07", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-16", "Parent Meet & Attendance Review"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-17", "First Sessional & Lab Exam"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-20", "Last Date: Display Lab Marks"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-21", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-25", "Display Student Feedback & Attendance"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-09-28", "Submit MoM & Feedback Report"));
+
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-02", "Gandhi Jayanti"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-05", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-14", "Dean Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-17", "Syllabus Report to Dean"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-19", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-22", "Dept Meeting: Student Feedback"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-10-25", "Academic Activities Review"));
+
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-02", "1st Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-15", "Final Date for CIA Activities"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-16", "3rd Saturday Holiday"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-16", "Course Exit Surveys Start"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-19", "Final Attendance Generation"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-22", "Final Attendance Submission"));
+        holidayDates.add(new AbstractMap.SimpleEntry<>("2024-11-25", "Sessional/Practical Exams Begin"));
 
         Date expiryDate = parseDate("2024-11-20");
 
@@ -74,7 +136,7 @@ public class HolidayManager extends AppCompatActivity {
     }
 
 
-    public static void checkHolidays(List<String> holidays, Context context) {
+    public static void checkHolidays(List<Map.Entry<String, String>> holidays, Context context) {
         Calendar calendar = Calendar.getInstance();
         int currentYear = calendar.get(Calendar.YEAR);
 
@@ -84,19 +146,23 @@ public class HolidayManager extends AppCompatActivity {
             calendar.set(Calendar.DAY_OF_MONTH, 1);
 
             int counter = 0;
-            while (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.SUNDAY) {
+            while (calendar.get(Calendar.MONTH) == month) {
                 if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY && (counter == 0 || counter == 2)) {
                     String dateString = formatDate(calendar.getTime());
-                    holidays.add(dateString);
+                    holidays.add(new AbstractMap.SimpleEntry<>(dateString, "Saturday Holiday")); // Adding Saturday holidays
                 }
                 counter = (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) ? counter + 1 : counter;
                 calendar.add(Calendar.DAY_OF_MONTH, 1);
             }
+        }
 
-            String todaysDate = formatDate(Calendar.getInstance().getTime());
-            if (holidays.contains(todaysDate)) {
+        // Check if today is a holiday
+        String todaysDate = formatDate(Calendar.getInstance().getTime());
+        for (Map.Entry<String, String> entry : holidays) {
+            if (entry.getKey().equals(todaysDate)) {
                 checkHoliday(todaysDate, context);
-                holidays.remove(todaysDate); // Remove processed holiday for the day
+                holidays.remove(entry); // Remove processed holiday
+                break; // Exit loop as we found today's holiday
             }
         }
     }
