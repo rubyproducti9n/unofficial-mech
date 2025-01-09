@@ -32,7 +32,6 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        //Some Text edited! One more
         setupVersionInfo();
         setupDynamicLayout();
         setupToolbar();
