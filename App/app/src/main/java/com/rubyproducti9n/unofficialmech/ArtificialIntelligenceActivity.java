@@ -94,6 +94,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
+
         ImageView bgImg = view.findViewById(R.id.blurBg);
         preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
@@ -179,6 +180,11 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         txt.setTextSize(20);
         txt.setTextColor(getResources().getColor(R.color.DynamicWhite));
 
+
+        if (getArguments() !=null){
+            String receivedCmd = getArguments().getString("cmd");
+            initializeGemini(receivedCmd, txt);
+        }
 
         promptEditTxt.addTextChangedListener(new TextWatcher() {
             @Override

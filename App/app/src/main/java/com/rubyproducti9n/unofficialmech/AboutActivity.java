@@ -22,7 +22,7 @@ import com.squareup.picasso.Picasso;
 import java.util.Objects;
 
 public class AboutActivity extends AppCompatActivity {
-    1
+    //1
     private TextView instruction;
     private ImageView profile;
     private MaterialButton google, insta, coffee;
