@@ -184,6 +184,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         if (getArguments() !=null){
             String receivedCmd = getArguments().getString("cmd");
             initializeGemini(receivedCmd, txt);
+            Toast.makeText(requireContext(), receivedCmd, Toast.LENGTH_SHORT).show();
         }
 
         promptEditTxt.addTextChangedListener(new TextWatcher() {

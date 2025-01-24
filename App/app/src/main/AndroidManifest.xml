@@ -13,7 +13,9 @@
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" /> <!-- <uses-permission android:name="android.permission.CAMERA" /> -->
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_CAMERA" /> -->
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" /> <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" /> -->
+<!--    FOREGROUND_SERVICE has been commented out because of Play Console Policy issue-->
+<!--    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />-->
+    <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" /> -->
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" /> -->
     <!-- <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" /> -->
     <!-- <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> -->
@@ -97,10 +99,10 @@
             android:name=".QuickMenuActivity"
             android:exported="false" />
 
-        <property
-            android:name="android.adservices.AD_SERVICES_CONFIG"
-            android:resource="@xml/ga_ad_services_config"
-            tools:replace="android:resource" />
+<!--        <property-->
+<!--            android:name="android.adservices.AD_SERVICES_CONFIG"-->
+<!--            android:resource="@xml/ga_ad_services_config"-->
+<!--            tools:replace="android:resource" />-->
 
         <activity
             android:name=".NavigationAIActivity"
