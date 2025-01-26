@@ -211,43 +211,47 @@ GestureDetector gesture;
         gemini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArtificialIntelligenceActivity gem = new ArtificialIntelligenceActivity();
-                Bundle bundle = new Bundle();
-                bundle.putString("cmd", "Act like a chatbot for my project {name} With all features like:\n" +
-                        "\n" +
-                        "{\n" +
-                        "\n" +
-                        "Blueprint AI - Provide an overview of recent trends by first asking the filed of interest\n" +
-                        "\n" +
-                        "Unofficial Mech - An Android app for sharing memories\n" +
-                        "\n" +
-                        "}\n" +
-                        "\n" +
-                        "\n" +
-                        "\n" +
-                        "contact for help:\n" +
-                        "\n" +
-                        "{\n" +
-                        "\n" +
-                        "Email: mechanical.official73@gmail.com\n" +
-                        "\n" +
-                        "}\n" +
-                        "\n" +
-                        "\n" +
-                        "\n" +
-                        "Avoid to answers questions like: {Any bad words or disrespectful questions}\n" +
-                        "\n" +
-                        "\n" +
-                        "\n" +
-                        "Give this response if you can't answer the query:\n" +
-                        "\n" +
-                        "Sorry, Torque AI is still under development and may not satisfy your question\n" +
-                        "\n" +
-                        "\n" +
-                        "\n" +
-                        "For this chat your name will be Torque AI powered by Google Gemini");
-                gem.setArguments(bundle);
-                gem.show(getSupportFragmentManager(), "tag");
+
+        Snackbar.make(findViewById(R.id.bottom_navigation), "Gemini is on a break, try again later", Snackbar.LENGTH_SHORT)
+                            .setAnchorView(R.id.bottom_navigation).show();
+
+//                ArtificialIntelligenceActivity gem = new ArtificialIntelligenceActivity();
+//                Bundle bundle = new Bundle();
+//                bundle.putString("cmd", "Act like a chatbot for my project {name} With all features like:\n" +
+//                        "\n" +
+//                        "{\n" +
+//                        "\n" +
+//                        "Blueprint AI - Provide an overview of recent trends by first asking the filed of interest\n" +
+//                        "\n" +
+//                        "Unofficial Mech - An Android app for sharing memories\n" +
+//                        "\n" +
+//                        "}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "contact for help:\n" +
+//                        "\n" +
+//                        "{\n" +
+//                        "\n" +
+//                        "Email: mechanical.official73@gmail.com\n" +
+//                        "\n" +
+//                        "}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "Avoid to answers questions like: {Any bad words or disrespectful questions}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "Give this response if you can't answer the query:\n" +
+//                        "\n" +
+//                        "Sorry, Torque AI is still under development and may not satisfy your question\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "For this chat your name will be Torque AI powered by Google Gemini");
+//                gem.setArguments(bundle);
+//                gem.show(getSupportFragmentManager(), "tag");
 //                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
             }
         });

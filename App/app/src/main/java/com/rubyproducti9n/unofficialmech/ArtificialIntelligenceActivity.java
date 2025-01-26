@@ -181,11 +181,11 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         txt.setTextColor(getResources().getColor(R.color.DynamicWhite));
 
 
-        if (getArguments() !=null){
-            String receivedCmd = getArguments().getString("cmd");
-            initializeGemini(receivedCmd, txt);
-            Toast.makeText(requireContext(), receivedCmd, Toast.LENGTH_SHORT).show();
-        }
+//        if (getArguments() !=null){
+//            String receivedCmd = getArguments().getString("cmd");
+//            initializeGemini(receivedCmd, txt);
+//            //Toast.makeText(requireContext(), receivedCmd, Toast.LENGTH_SHORT).show();
+//        }
 
         promptEditTxt.addTextChangedListener(new TextWatcher() {
             @Override
@@ -440,7 +440,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //        String apiKey = BuildConfig.MY_API_KEY;
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk");
+        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash-latest", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk");
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -475,6 +475,63 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
     }
 
+    public void initializeGeminiUpdated(String prompt, TextView txt) {
+        progressIndicator.setIndeterminate(true);
+        txt.setTextSize(14);
+        txt.setTextColor(getResources().getColor(R.color.matte_White));
+
+        // Configure generation parameters
+        GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
+        configBuilder.temperature = 0.8f;  // Updated recommended value
+        configBuilder.topK = 16;// Increased for improved output variety
+        configBuilder.topP = 0.1f;// Adjusted for fine-tuning
+        configBuilder.maxOutputTokens = 1200;// Increased output tokens limit
+        configBuilder.stopSequences = Collections.singletonList("end");// Updated stop sequence
+
+        GenerationConfig generationConfig = configBuilder.build();
+
+        // Use the latest Gemini model identifier
+        GenerativeModel gm = new GenerativeModel("gemini-2.0-latest", "YOUR_NEW_API_KEY");
+        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+
+        // Build the content request
+        com.google.ai.client.generativeai.type.Content content = new com.google.ai.client.generativeai.type.Content.Builder()
+                .addText(prompt)
+                .build();
+
+        // Use an updated executor for better performance
+        Executor executor = Executors.newCachedThreadPool();
+
+        // Make the API call
+        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+
+        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            @Override
+            public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
+                String resultText = result.getText();
+                requireActivity().runOnUiThread(() -> {
+                    txt.setAlpha(1.0f);
+                    txt.setText(resultText);
+                    ProjectToolkit.fadeIn(txt);
+                    ProjectToolkit.fadeOut(progressIndicator);
+                    promptEditTxt.setText("");
+                    btn.setEnabled(false);
+                    ProjectToolkit.fadeIn(txt);
+                });
+                System.out.println(resultText);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                requireActivity().runOnUiThread(() -> {
+                    txt.setText("Oops! Something went wrong. Please try again later.");
+                    ProjectToolkit.fadeOut(progressIndicator);
+                });
+                Log.e("GeminiAPI", "Error: ", t);
+            }
+        }, executor);
+    }
 
 
 }
