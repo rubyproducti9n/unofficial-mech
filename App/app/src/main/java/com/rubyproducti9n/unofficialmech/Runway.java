@@ -54,7 +54,7 @@ public class Runway {
                 .addHeader("Content-Type", "application/json");
 
         // Add the Authorization header if an API key is required.
-        if (!API_KEY.equals("YOUR_API_KEY")) {
+        if (!API_KEY.equals("key_7633b7900388c67542e443bcfd33e280eb3d025c902e66d7941914c2f26dd8cb3767e0f62e3bd5dac54ba36a7510ff1bf84aced8232d8644fc3d758592163ec9")) {
             requestBuilder.addHeader("Authorization", "Bearer " + API_KEY);
         }
 
