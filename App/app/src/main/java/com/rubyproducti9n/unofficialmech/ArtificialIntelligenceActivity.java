@@ -114,7 +114,12 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
+
+        ImageView runwayImg = view.findViewById(R.id.runway);
+
         new Gemini(requireContext(), "Heyy!!!");
+
+        new Runway("A cute kitten on Moon", runwayImg);
 
         try {
 

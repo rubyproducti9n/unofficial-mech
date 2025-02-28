@@ -21,8 +21,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:translationY="600dp"
-        android:visibility="gone"
+        android:translationY="00dp"
+        android:visibility="visible"
         android:src="@drawable/ellipse_3"
         app:tint="#EDC9DD" />
 
@@ -193,6 +193,14 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    <ImageView
+        android:id="@+id/runway"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scaleType="center"
+        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
+        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView15"
