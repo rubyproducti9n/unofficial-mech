@@ -212,7 +212,9 @@
         <activity
             android:name=".ArtificialIntelligenceActivity"
             android:exported="false"
-            android:theme="@style/Theme.Material3.Dark.NoActionBar" />
+            android:enableOnBackInvokedCallback="true"
+            android:theme="@style/Theme.Material3.Dark.NoActionBar"
+            tools:targetApi="tiramisu" />
         <activity
             android:name=".PrivacyPolicyActivity"
             android:exported="false"
@@ -239,6 +241,7 @@
         <activity
             android:name=".AboutActivity"
             android:exported="false"
+            android:enableOnBackInvokedCallback="true"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
         <activity

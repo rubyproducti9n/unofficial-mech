@@ -40,6 +40,7 @@ import com.google.ai.client.generativeai.GenerativeModel;
 //import com.google.ai.client.generativeai.internal.api.GenerateContentRequest;
 //import com.google.ai.client.generativeai.internal.api.GenerateContentResponse;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
+import com.google.ai.client.generativeai.type.Content;
 import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.ai.client.generativeai.type.GenerationConfig;
 import com.google.android.gms.ads.AdRequest;
@@ -82,6 +83,8 @@ import okhttp3.Response;
 
 public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
+    GemmaModel gemmaModel;
+
     //OpenAI (Removed)
     private static final String API_KEY = System.getenv("OPENAI_API_KEY"); // Replace with your API Key
     private static final String GPT_URL = "https://api.openai.com/v1/chat/completions";
@@ -111,9 +114,33 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
-        String response = generateTextResponse("Hello, How are you?");
-        Log.d("OpenAI - ChatGPT", response);
-        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show();
+        new Gemini(requireContext(), "Heyy!!!");
+
+        try {
+
+            gemmaModel = new GemmaModel(requireContext());
+
+            // Example question
+            String question = "What is the capital of India?";
+
+            // Get model response
+            String answer = gemmaModel.runInference(question);
+
+            // Log and display answer
+            Log.d("Gemma Output", answer);
+            new MaterialAlertDialogBuilder(requireContext())
+                    .setMessage(answer)
+                    .show();
+            Toast.makeText(requireContext(), answer, Toast.LENGTH_SHORT).show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+//        String response = generateTextResponse("Hello, How are you?");
+//        Log.d("OpenAI - ChatGPT", response);
+//        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show();
 
         ImageView bgImg = view.findViewById(R.id.blurBg);
         preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
@@ -495,62 +522,57 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
     }
 
-    public void initializeGeminiUpdated(String prompt, TextView txt) {
-        progressIndicator.setIndeterminate(true);
-        txt.setTextSize(14);
-        txt.setTextColor(getResources().getColor(R.color.matte_White));
+    public void initializeGeminiUpdated(String prompt) {
+//        progressIndicator.setIndeterminate(true);
+//        txt.setTextSize(14);
+//        txt.setTextColor(getResources().getColor(R.color.matte_White));
 
-        // Configure generation parameters
         GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
-        configBuilder.temperature = 0.8f;  // Updated recommended value
-        configBuilder.topK = 16;// Increased for improved output variety
-        configBuilder.topP = 0.1f;// Adjusted for fine-tuning
-        configBuilder.maxOutputTokens = 1200;// Increased output tokens limit
-        configBuilder.stopSequences = Collections.singletonList("end");// Updated stop sequence
+        configBuilder.responseMimeType = "application/json";
 
         GenerationConfig generationConfig = configBuilder.build();
 
-        // Use the latest Gemini model identifier
-        GenerativeModel gm = new GenerativeModel("gemini-2.0-latest", "YOUR_NEW_API_KEY");
+// Specify a Gemini model appropriate for your use case
+        GenerativeModel gm =
+                new GenerativeModel(
+                        /* modelName */ "gemini-1.5-flash",
+                        // Access your API key as a Build Configuration variable (see "Set up your API key"
+                        // above)
+                        /* apiKey */ "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk",
+                        /* generationConfig */ generationConfig);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
-        // Build the content request
-        com.google.ai.client.generativeai.type.Content content = new com.google.ai.client.generativeai.type.Content.Builder()
-                .addText(prompt)
-                .build();
+        Content content =
+                new Content.Builder()
+                        .addText(
+                                "List a few popular cookie recipes using this JSON schema:\n"
+                                        + "Recipe = {'recipeName': string}\n"
+                                        + "Return: Array<Recipe>")
+                        .build();
 
-        // Use an updated executor for better performance
-        Executor executor = Executors.newCachedThreadPool();
+// For illustrative purposes only. You should use an executor that fits your needs.
+        Executor executor = Executors.newSingleThreadExecutor();
 
-        // Make the API call
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+        Futures.addCallback(
+                response,
+                new FutureCallback<GenerateContentResponse>() {
+                    @Override
+                    public void onSuccess(GenerateContentResponse result) {
+                        String resultText = result.getText();
+                        System.out.println(resultText);
+                        new MaterialAlertDialogBuilder(requireContext())
+                                .setTitle("Gemini")
+                                .setMessage(resultText)
+                                .show();
+                    }
 
-        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
-            @Override
-            public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
-                String resultText = result.getText();
-                requireActivity().runOnUiThread(() -> {
-                    txt.setAlpha(1.0f);
-                    txt.setText(resultText);
-                    ProjectToolkit.fadeIn(txt);
-                    ProjectToolkit.fadeOut(progressIndicator);
-                    promptEditTxt.setText("");
-                    btn.setEnabled(false);
-                    ProjectToolkit.fadeIn(txt);
-                });
-                System.out.println(resultText);
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                t.printStackTrace();
-                requireActivity().runOnUiThread(() -> {
-                    txt.setText("Oops! Something went wrong. Please try again later.");
-                    ProjectToolkit.fadeOut(progressIndicator);
-                });
-                Log.e("GeminiAPI", "Error: ", t);
-            }
-        }, executor);
+                    @Override
+                    public void onFailure(Throwable t) {
+                        t.printStackTrace();
+                    }
+                },
+                executor);
     }
 
 //OpenAI
@@ -648,4 +670,16 @@ public String generateTextResponse(String prompt) {
         }
     }
 
+
+    private void initiateModel(){
+
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (gemmaModel != null) {
+//            gemmaModel.close();
+        }
+    }
 }
