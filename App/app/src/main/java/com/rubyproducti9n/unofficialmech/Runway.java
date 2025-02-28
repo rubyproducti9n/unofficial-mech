@@ -3,6 +3,8 @@ package com.rubyproducti9n.unofficialmech;
 import android.util.Log;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+
 import com.google.common.net.MediaType;
 import com.squareup.picasso.Picasso;
 
@@ -69,9 +71,10 @@ public class Runway {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (response.isSuccessful()) {
                     // Process the response – typically you may get a JSON containing the image URL or image data.
+                    assert response.body() != null;
                     final String responseData = response.body().string();
                     Log.d("ImageGen", "Response: " + responseData);
                     Picasso.get().load(responseData).into(img);
