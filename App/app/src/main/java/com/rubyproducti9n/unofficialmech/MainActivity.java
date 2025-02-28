@@ -212,10 +212,10 @@ GestureDetector gesture;
             @Override
             public void onClick(View v) {
 
-        Snackbar.make(findViewById(R.id.bottom_navigation), "Gemini is on a break, try again later", Snackbar.LENGTH_SHORT)
-                            .setAnchorView(R.id.bottom_navigation).show();
+//        Snackbar.make(findViewById(R.id.bottom_navigation), "Gemini is on a break, try again later", Snackbar.LENGTH_SHORT)
+//                            .setAnchorView(R.id.bottom_navigation).show();
 
-//                ArtificialIntelligenceActivity gem = new ArtificialIntelligenceActivity();
+                ArtificialIntelligenceActivity gem = new ArtificialIntelligenceActivity();
 //                Bundle bundle = new Bundle();
 //                bundle.putString("cmd", "Act like a chatbot for my project {name} With all features like:\n" +
 //                        "\n" +
@@ -251,7 +251,7 @@ GestureDetector gesture;
 //                        "\n" +
 //                        "For this chat your name will be Torque AI powered by Google Gemini");
 //                gem.setArguments(bundle);
-//                gem.show(getSupportFragmentManager(), "tag");
+                gem.show(getSupportFragmentManager(), "tag");
 //                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
             }
         });

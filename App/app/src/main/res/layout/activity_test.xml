@@ -11,7 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/request"
@@ -776,6 +777,48 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Input field for the video prompt -->
+        <EditText
+            android:id="@+id/editPrompt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Enter video prompt" />
+
+        <!-- Radio group for video duration selection -->
+        <RadioGroup
+            android:id="@+id/radioGroupDuration"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp">
+
+            <RadioButton
+                android:id="@+id/radio5Sec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="5 sec" />
+
+            <RadioButton
+                android:id="@+id/radio10Sec"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="10 sec" />
+        </RadioGroup>
+
+        <!-- Button to trigger UPI payment and video generation -->
+        <Button
+            android:id="@+id/buttonPay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pay and Generate Video"
+            android:layout_marginTop="24dp"/>
+    </LinearLayout>
 
 <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
 <!--        android:layout_width="wrap_content"-->

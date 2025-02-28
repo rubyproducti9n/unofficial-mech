@@ -60,6 +60,10 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,7 +74,20 @@ import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
+
+    //OpenAI (Removed)
+    private static final String API_KEY = System.getenv("OPENAI_API_KEY"); // Replace with your API Key
+    private static final String GPT_URL = "https://api.openai.com/v1/chat/completions";
+    private static final String DALL_E_URL = "https://api.openai.com/v1/images/generations";
+    private static final MediaType JSON =MediaType.get("application/json; charset=utf-8");
+    private final OkHttpClient client = new OkHttpClient();
 
     View view;
 
@@ -94,6 +111,9 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
+        String response = generateTextResponse("Hello, How are you?");
+        Log.d("OpenAI - ChatGPT", response);
+        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show();
 
         ImageView bgImg = view.findViewById(R.id.blurBg);
         preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
@@ -533,5 +553,99 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         }, executor);
     }
 
+//OpenAI
+// Function to generate text response from ChatGPT
+public String generateTextResponse(String prompt) {
+    try {
+        // Debug Log
+        Log.d("ChatGPT", "Sending request: " + prompt);
+
+        // Build JSON request body
+        JSONObject jsonBody = new JSONObject();
+        jsonBody.put("model", "gpt-3.5-turbo");  // Free-tier model
+        JSONArray messages = new JSONArray();
+        messages.put(new JSONObject().put("role", "system").put("content", "You are a helpful assistant."));
+        messages.put(new JSONObject().put("role", "user").put("content", prompt));
+        jsonBody.put("messages", messages);
+        jsonBody.put("temperature", 0.7); // Adjust randomness
+
+        // Create request
+        RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+        Request request = new Request.Builder()
+                .url(GPT_URL)
+                .header("Authorization", "Bearer " + API_KEY)
+                .header("Content-Type", "application/json")
+                .post(body)
+                .build();
+
+        // Make API call
+        try (Response response = client.newCall(request).execute()) {
+            if (!response.isSuccessful()) {
+                return "Error: " + response.message() + " (Code: " + response.code() + ")";
+            }
+
+            // Get response body
+            String responseBody = response.body() != null ? response.body().string() : null;
+            Log.d("ChatGPT", "Raw Response: " + responseBody);  // Debugging
+
+            if (responseBody == null || responseBody.isEmpty()) {
+                return "Error: Empty response from OpenAI";
+            }
+
+            // Parse JSON response
+            JSONObject jsonResponse = new JSONObject(responseBody);
+            JSONArray choices = jsonResponse.optJSONArray("choices");
+            if (choices == null || choices.length() == 0) {
+                return "Error: Unexpected API response (no choices found)";
+            }
+
+            return choices.getJSONObject(0)
+                    .getJSONObject("message")
+                    .optString("content", "Error: No valid response").trim();
+        }
+    } catch (IOException e) {
+        Log.e("ChatGPT", "Network error", e);
+        return "Error: Network issue - " + e.getMessage();
+    } catch (JSONException e) {
+        Log.e("ChatGPT", "JSON parsing error", e);
+        return "Error: Invalid JSON response from OpenAI";
+    } catch (Exception e) {
+        Log.e("ChatGPT", "Unknown error", e);
+        return "Error: " + e.getMessage();
+    }
+}
+
+
+
+    // Function to generate an image from text using DALL·E
+    public String generateImageFromText(String prompt) {
+        try {
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("model", "dall-e-2");  // Free-tier model (if available)
+            jsonBody.put("prompt", prompt);
+            jsonBody.put("n", 1);
+            jsonBody.put("size", "1024x1024");
+
+            RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
+            Request request = new Request.Builder()
+                    .url(DALL_E_URL)
+                    .header("Authorization", "Bearer " + API_KEY)
+                    .post(body)
+                    .build();
+
+            try (Response response = client.newCall(request).execute()) {
+                if (!response.isSuccessful()) {
+                    return "Error: " + response.message();
+                }
+                JSONObject jsonResponse = new JSONObject(response.body().string());
+                return jsonResponse.getJSONArray("data")
+                        .getJSONObject(0)
+                        .getString("url");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Error: " + e.getMessage();
+        }
+    }
 
 }

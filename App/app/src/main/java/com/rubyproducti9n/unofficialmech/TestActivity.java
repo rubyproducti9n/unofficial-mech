@@ -10,15 +10,21 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -36,8 +42,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.database.annotations.NotNull;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -51,9 +62,34 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class TestActivity extends AppCompatActivity {
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
-//    MaterialButton likeBtn, commentBtn,u1,u2,u3,u4;
+public class TestActivity extends AppCompatActivity {
+    private EditText editPrompt;
+    private RadioButton radio5Sec, radio10Sec;
+    private Button buttonPay;
+
+    // Values determined by the user selection.
+    private String selectedDuration; // "5" or "10"
+    private double amountUSD; // 0.25 for 5 sec, 0.50 for 10 sec
+
+    // Using modern Activity Result API for UPI payment intent.
+    private ActivityResultLauncher<Intent> upiPaymentLauncher;
+
+    // OkHttp client instance for API calls.
+    private OkHttpClient httpClient = new OkHttpClient();
+
+    // JSON media type for our HTTP POST.
+    private static final MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+
+
+    //    MaterialButton likeBtn, commentBtn,u1,u2,u3,u4;
     int likeCount = 0;
     int commentCount = 0;
     private static final String CHANNEL_ID = "default";
@@ -116,6 +152,7 @@ public class TestActivity extends AppCompatActivity {
                     }
                 }
         ).start();
+
 
         // Initialize Firebase Storage
         firebaseStorage = FirebaseStorage.getInstance();
@@ -185,7 +222,134 @@ public class TestActivity extends AppCompatActivity {
 //            }
 //        });
 
+
+        // Initialize UI elements
+        editPrompt = findViewById(R.id.editPrompt);
+        radio5Sec = findViewById(R.id.radio5Sec);
+        radio10Sec = findViewById(R.id.radio10Sec);
+        buttonPay = findViewById(R.id.buttonPay);
+
+        // Register the ActivityResultLauncher to handle UPI payment responses.
+        upiPaymentLauncher = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        String response = result.getData().getStringExtra("response");
+                        if (isUpiPaymentSuccessful(response)) {
+                            // Payment successful; now call the Runway ML API.
+                            callRunwayMLApi(editPrompt.getText().toString().trim(), selectedDuration);
+                        } else {
+                            Toast.makeText(TestActivity.this, "Payment failed or cancelled.", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(TestActivity.this, "Payment cancelled.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+        );
+
+        buttonPay.setOnClickListener(view -> {
+            String prompt = editPrompt.getText().toString().trim();
+            if (prompt.isEmpty()) {
+                Toast.makeText(TestActivity.this, "Please enter a prompt.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            if (radio5Sec.isChecked()) {
+                selectedDuration = "5";
+                amountUSD = 1;
+//                amountUSD = 0.25;
+            } else if (radio10Sec.isChecked()) {
+                selectedDuration = "10";
+                amountUSD = 1;
+//                amountUSD = 0.50;
+            } else {
+                Toast.makeText(TestActivity.this, "Please select a video duration.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            // Start the UPI payment flow.
+            initiateUpiPayment(prompt, selectedDuration, amountUSD);
+        });
+
     }
+
+    /**
+     * Initiates a UPI payment via an Intent.
+     * Replace 'yourupi@bank' and name with your actual UPI credentials.
+     */
+    private void initiateUpiPayment(String prompt, String duration, double amount) {
+        String upiId = "om.lokhande34@oksbi"; // TODO: Replace with your UPI ID
+        String name = "Unofficial Mech";     // TODO: Replace with your business or personal name
+        String note = "Payment for " + duration + " sec video";
+        String amountStr = String.valueOf(amount);
+        String merchantCode = "6596-8373-5506"; // Replace with your actual merchant cod
+
+        Uri uri = Uri.parse("upi://pay").buildUpon()
+                .appendQueryParameter("pa", upiId)
+                .appendQueryParameter("pn", name)
+                .appendQueryParameter("tn", note)
+                .appendQueryParameter("am", amountStr)
+                .appendQueryParameter("cu", "INR")
+                .appendQueryParameter("mc", merchantCode) // Merchant code
+                .build();
+
+        Intent upiPayIntent = new Intent(Intent.ACTION_VIEW, uri);
+        Intent chooser = Intent.createChooser(upiPayIntent, "Pay with UPI");
+        if (chooser.resolveActivity(getPackageManager()) != null) {
+            upiPaymentLauncher.launch(chooser);
+        } else {
+            Toast.makeText(this, "No UPI app found. Please install one to continue.", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * A basic check for UPI payment success.
+     * (For production, perform robust parsing and server-side verification.)
+     */
+    private boolean isUpiPaymentSuccessful(String response) {
+        return response != null && response.toLowerCase().contains("success");
+    }
+
+    /**
+     * Calls the Runway ML API to generate a video based on the prompt and duration.
+     * Replace the URL, endpoint, and headers with your actual Runway ML API configuration.
+     */
+    private void callRunwayMLApi(String prompt, String duration) {
+        // Build JSON payload – adjust keys as per your API's requirements.
+        String jsonPayload = "{\"prompt\": \"" + prompt + "\", \"duration\": " + duration + "}";
+
+        RequestBody body = RequestBody.create(jsonPayload, JSON);
+        Request request = new Request.Builder()
+                .url("https://api.runwayml.com/v1/key_f997e68cf34b9676269d563f93672e5ac62464854035ab230504b9528cb5a67ccb163f8e84697ac87c4677d51f24cd330fc2e814d424459ccd693faf3a8de1fd") // TODO: Replace with your endpoint URL
+                .post(body)
+                .addHeader("Content-Type", "application/json")
+                // Uncomment and update if authentication is needed:
+                // .addHeader("Authorization", "Bearer YOUR_API_KEY")
+                .build();
+
+        httpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                runOnUiThread(() ->
+                        Toast.makeText(TestActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_LONG).show()
+                );
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    runOnUiThread(() ->
+                            Toast.makeText(TestActivity.this, "Video generated successfully!", Toast.LENGTH_LONG).show()
+                    );
+                } else {
+                    runOnUiThread(() ->
+                            Toast.makeText(TestActivity.this, "Runway ML API error: " + response.code(), Toast.LENGTH_LONG).show()
+                    );
+                }
+                response.close();
+            }
+        });
+    }
+
+
 
     private void sendRequest(){
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests/final/");
@@ -629,5 +793,7 @@ public class AttendanceRequest{
         isValid = valid;
     }
 }
+
+
 
 }

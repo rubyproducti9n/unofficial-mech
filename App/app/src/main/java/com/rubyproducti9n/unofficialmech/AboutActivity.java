@@ -27,6 +27,7 @@ public class AboutActivity extends AppCompatActivity {
     private ImageView profile;
     private MaterialButton google, insta, coffee;
 
+    //Update
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
