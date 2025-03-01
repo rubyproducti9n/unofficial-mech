@@ -2,6 +2,8 @@ package com.rubyproducti9n.unofficialmech;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
+
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
@@ -19,59 +21,123 @@ import java.util.concurrent.Executors;
 
 public class Gemini {
 
+    private static final String[] MODELS = {
+            "gemini-2.0-flash-001",
+            "gemini-1.5-flash",
+            "gemini-1.5-flash-8b-001",};
+    private static String selectedModel;
+    private String prompt;
+    private static String response;
+
     //Model last updated: 01 Mar 2025
 
-    public Gemini(Context context, String prompt) {
-        processPrompt(context, prompt);
+    public Gemini(int modelIndex, String prompt, GeminiCallback callback) {
+        this.prompt = prompt;
+        this.selectedModel = chooseModel(modelIndex);
+        // Call initiate with a callback to store the response
+        initiate(modelIndex, prompt, new GeminiCallback() {
+            @Override
+            public void onSuccess(String result) {
+                response = result; // Store response when available
+                if (callback != null) {
+                    callback.onSuccess(result); // Pass response to caller
+                }
+            }
+
+            @Override
+            public void onFailure(String error) {
+                response = "Error: " + error; // Handle error response
+                if (callback != null) {
+                    callback.onFailure(error);
+                }
+            }
+        });
+
     }
 
+    // Method to choose a model based on an integer value
+    private String chooseModel(int index) {
+        if (index >= 0 && index < MODELS.length) {
+            return MODELS[index];
+        } else {
+            return MODELS[0]; // Default to gemini-pro if index is invalid
+        }
+    }
+//    private String chooseModel(int index) {
+//        String[] models = {
+//                "gemini-2.0-flash-001",
+//                "gemini-1.5-flash",
+//                "gemini-1.5-flash-8b-001",};
+//        return models[Math.max(0, Math.min(index, models.length - 1))]; // Ensure valid index
+//    }
+
+    // Function to be triggered upon object creation
+    private void initiate() {
+        System.out.println("Initiating Gemini with model: " + selectedModel);
+        System.out.println("Prompt: " + prompt);
+        // TODO: Add API call logic here
+    }
+
+    // Getter for the selected model
+    public String getSelectedModel() {
+        return selectedModel;
+    }
+    // Getter for response
+    public String getResponse() {
+        return response;
+    }
     //Text Generation Model
-    public static void initiate(Context context, String prompt) {
+    public interface GeminiCallback {
+        void onSuccess(String result);
+        void onFailure(String error);
+    }
+    public static void initiate(int modelIndex, String prompt, GeminiCallback callback) {
         GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
-        configBuilder.responseMimeType = "application/json";
+        configBuilder.responseMimeType = "text/plain";
 
         GenerationConfig generationConfig = configBuilder.build();
 
-// Specify a Gemini model appropriate for your use case
-        GenerativeModel gm =
-                new GenerativeModel(
-                        /* modelName */ String.valueOf(R.string.gem_text),
-                        // Access your API key as a Build Configuration variable (see "Set up your API key"
-                        // above)
-                        /* apiKey */ BuildConfig.apiKey,
-                        /* generationConfig */ generationConfig);
+        // Array of Gemini models
+        String[] models = {
+                "gemini-2.0-flash-001",
+                "gemini-1.5-flash",
+                "gemini-1.5-flash-8b-001",};
+        String selectedModel = models[Math.max(0, Math.min(modelIndex, models.length - 1))]; // Ensure valid index
+
+        GenerativeModel gm = new GenerativeModel(
+                selectedModel,
+                BuildConfig.apiKey,
+                generationConfig
+        );
+
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 
-        Content content =
-                new Content.Builder()
-                        .addText(
-                                "Heyy!!")
-                        .build();
+        Content content = new Content.Builder()
+                .addText(prompt)
+                .build();
 
-// For illustrative purposes only. You should use an executor that fits your needs.
         Executor executor = Executors.newSingleThreadExecutor();
 
         ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
-        Futures.addCallback(
-                response,
-                new FutureCallback<GenerateContentResponse>() {
-                    @Override
-                    public void onSuccess(GenerateContentResponse result) {
-                        String resultText = result.getText();
-                        System.out.println(resultText);
-                        new MaterialAlertDialogBuilder(context)
-                                .setTitle("Gemini")
-                                .setMessage(resultText)
-                                .show();
-                    }
+        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            @Override
+            public void onSuccess(GenerateContentResponse result) {
+                String resultText = result.getText();
+                if (callback != null) {
+                    callback.onSuccess(resultText); // Pass result to callback
+                }
+            }
 
-                    @Override
-                    public void onFailure(Throwable t) {
-                        t.printStackTrace();
-                    }
-                },
-                executor);
+            @Override
+            public void onFailure(@NonNull Throwable t) {
+                t.printStackTrace();
+                if (callback != null) {
+                    callback.onFailure(t.getMessage());
+                }
+            }
+        }, executor);
     }
+
 
     private static final List<String> DISALLOWED_KEYWORDS = Arrays.asList(
             "hate", "violence", "explicitContent", "illegal", "terrorism"
@@ -91,13 +157,13 @@ public class Gemini {
 
     // Process the prompt: show a toast (or a message) if disallowed keywords are found,
     // otherwise proceed to send the prompt to the Gemini model.
-    public static void processPrompt(Context context, String prompt) {
+    public static void processPrompt(int model, String prompt) {
         if (containsDisallowedKeywords(prompt)) {
             // In an Android app, you might use Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             // For this example, we'll simply print the message to the console.
             System.out.println("Input contains disallowed content. Please modify your prompt.");
         } else {
-            initiate(context, prompt);
+            //initiate(model, prompt);
             System.out.println("Prompt is acceptable. Proceeding to send it to the Gemini model...");
             // Call your Gemini model processing code here.
         }

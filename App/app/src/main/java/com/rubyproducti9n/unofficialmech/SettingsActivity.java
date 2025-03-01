@@ -27,6 +27,9 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -51,7 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
     TextView versionTxt;
     MaterialSwitch notificationSwitch, albumShuffleSwitch, dashboardSwitch, themeSwitch;
     String version;
-
+    private int selectedModel;
+    private static final String KEY_SELECTED_MODEL = "selected_model";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +63,39 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         getWindow().setAllowEnterTransitionOverlap(true);
+
+        // Initialize SharedPreferences
+        SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+
+        // Get stored value or default to 0
+        selectedModel = modelPref.getInt(KEY_SELECTED_MODEL, 0);
+
+        // Find the dropdown menu
+        AutoCompleteTextView dropdownMenu = findViewById(R.id.dropdown_menu);
+
+        // Get string array from resources
+        String[] items = getResources().getStringArray(R.array.dropdown_items);
+
+        // Create an ArrayAdapter
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, items);
+
+        // Set adapter to AutoCompleteTextView
+        dropdownMenu.setAdapter(adapter);
+
+        // Set default selected item in dropdown
+        dropdownMenu.setText(items[selectedModel], false);
+
+        // Handle user selection
+        dropdownMenu.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                selectedModel = position; // Store selected index (0, 1, or 2)
+
+                SharedPreferences.Editor editor = modelPref.edit();
+                editor.putInt(KEY_SELECTED_MODEL, position);
+                editor.apply(); // Save to SharedPreferences
+            }
+        });
 
         MaterialCardView uploadQualityCrdView = findViewById(R.id.uploadQuality);
         uploadQualityCrdView.setOnClickListener(new View.OnClickListener() {

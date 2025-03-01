@@ -1,6 +1,7 @@
 package com.rubyproducti9n.unofficialmech;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.VISIBLE;
 import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
@@ -32,7 +33,9 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +56,11 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
@@ -122,10 +128,41 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
+        // Delay execution to ensure the view is attached
+        view.post(() -> {
+            BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+            if (dialog != null) {
+                FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+                if (bottomSheet != null) {
+                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+                    behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+                    behavior.setHideable(true);
+                    behavior.setFitToContents(true);
+                }
+            }
+
+            // Fix scrolling issue
+            ScrollView scrollView = view.findViewById(R.id.scroll_view);
+            if (scrollView != null) {
+                scrollView.setOnTouchListener((v, event) -> {
+                    v.getParent().requestDisallowInterceptTouchEvent(false); // Prevent BottomSheet from intercepting
+                    return false;
+                });
+            }
+        });
         //new Gemini(requireContext(), "Heyy!!!");
 
         //initializeGeminiUpdated("Heyy");
 
+
+        Chip chip = view.findViewById(R.id.latest);
+        SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        int model = modelPref.getInt("selected_model", 0);
+        if (model == 0){
+            chip.setVisibility(VISIBLE);
+        }else{
+            chip.setVisibility(View.GONE);
+        }
 
         //TODO: Google Gemma Model in Test (Alpha-Beta-01)
 //        try {
@@ -282,7 +319,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                                     Toast.makeText(requireContext(), "Processing...", Toast.LENGTH_SHORT).show();
                                 }
 
-                                progressIndicator.setVisibility(View.VISIBLE);
+                                progressIndicator.setVisibility(VISIBLE);
                                 ProjectToolkit.pulseAmin(1, txt);
                                 txt.setText(" ");
                                 txt.setAlpha(0.5f);
@@ -593,8 +630,31 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
 
     private void initiateModel(String prompt, TextView txt){
+        //Gemini res = new Gemini(0, prompt);
+                Gemini.initiate(0, prompt, new Gemini.GeminiCallback() {
+                    @Override
+                    public void onSuccess(String result) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt.setTextSize(14);
+                                txt.setText(result); // Update UI with response
+                            }
+                        });
+                    }
 
-        initializeGeminiUpdated(prompt);
+                    @Override
+                    public void onFailure(String error) {
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                txt.setTextSize(12);
+                                txt.setText("Error: " + error);
+                            }
+                        });
+                    }
+                });
+
     }
 
     @Override

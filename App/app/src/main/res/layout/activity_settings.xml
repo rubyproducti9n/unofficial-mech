@@ -132,7 +132,7 @@
                     android:layout_centerInParent="true"
                     android:padding="8dp"
                     android:hint="Gemini Flash"
-                    android:enabled="false"
+                    android:enabled="true"
                     app:hintAnimationEnabled="true"
                     app:hintEnabled="true">
 

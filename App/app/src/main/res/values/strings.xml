@@ -18,10 +18,13 @@
     <!--    <string name="def_ic_corners">18dp</string>-->
 
 
+    "gemini-2.0-flash-001",
+    "gemini-1.5-flash",
+    "gemini-1.5-flash-8b-001"
     <string-array name="dropdown_items">
-        <item>Gemini Pro</item>
+        <item>Gemini 2.0 Flash</item>
         <item>Gemini 1.5 Flash</item>
-        <item>Gemini 1.5 Pro</item>
+        <item>Gemini 1.5 Flash 8b 001</item>
     </string-array>
 
 
