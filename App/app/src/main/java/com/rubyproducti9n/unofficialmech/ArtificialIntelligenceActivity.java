@@ -114,7 +114,9 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
-        new Gemini(requireContext(), "Heyy!!!");
+        //new Gemini(requireContext(), "Heyy!!!");
+
+        initializeGeminiUpdated("Heyy");
 
         try {
             gemmaModel = new GemmaModel(requireContext());
@@ -246,7 +248,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (promptEditTxt.getText().toString().isEmpty()){
+                if (Objects.requireNonNull(promptEditTxt.getText()).toString().isEmpty()){
                     btn.setEnabled(false);
                     ProjectToolkit.setButtonDisabledAnim(btn);
                 }else{
@@ -434,7 +436,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         configBuilder.stopSequences = Collections.singletonList("red");
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_vision), String.valueOf(R.string.gemini_api));
+        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_vision), BuildConfig.apiKey);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -486,7 +488,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //        String apiKey = BuildConfig.MY_API_KEY;
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_text), String.valueOf(R.string.gemini_api));
+        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_text), BuildConfig.apiKey);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -537,7 +539,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                         /* modelName */ "gemini-1.5-flash",
                         // Access your API key as a Build Configuration variable (see "Set up your API key"
                         // above)
-                        /* apiKey */ String.valueOf(R.string.gemini_api),
+                        /* apiKey */ BuildConfig.apiKey,
                         /* generationConfig */ generationConfig);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 

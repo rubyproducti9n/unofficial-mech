@@ -36,7 +36,7 @@ public class Gemini {
                         /* modelName */ String.valueOf(R.string.gem_text),
                         // Access your API key as a Build Configuration variable (see "Set up your API key"
                         // above)
-                        /* apiKey */ String.valueOf(R.string.gemini_api),
+                        /* apiKey */ BuildConfig.apiKey,
                         /* generationConfig */ generationConfig);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 

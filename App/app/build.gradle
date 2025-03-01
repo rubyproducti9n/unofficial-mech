@@ -19,22 +19,28 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    def localProperties = new Properties()
+    localProperties.load(project.rootProject.file("local.properties").newDataInputStream())
+
     buildTypes {
-//        debug {
-//            buildConfigField "String", "MY_API_KEY", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk"
-//        }
+        debug {
+            // ... debug configurations ...
+            buildConfigField "String", "apiKey", localProperties['apiKey']
+        }
         release {
             minifyEnabled true
             shrinkResources true
-//            buildConfigField "String", "MY_API_KEY", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk"
+            buildConfigField "String", "apiKey", localProperties['apiKey']
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
 
     buildFeatures{
         viewBinding true
-        buildConfig = true
+        buildConfig true
     }
+
+
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
