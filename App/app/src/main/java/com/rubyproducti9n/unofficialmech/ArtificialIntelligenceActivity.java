@@ -21,6 +21,7 @@ import android.graphics.BlurMaskFilter;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -80,6 +82,12 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.Request;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
@@ -116,28 +124,30 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         //new Gemini(requireContext(), "Heyy!!!");
 
-        initializeGeminiUpdated("Heyy");
+        //initializeGeminiUpdated("Heyy");
 
-        try {
-            gemmaModel = new GemmaModel(requireContext());
 
-            // Example question
-            String question = "What is the capital of India?";
-
-            // Get model response
-            String answer = gemmaModel.runInference(question);
-
-            // Log and display answer
-            Log.d("Gemma Output", answer);
-            new MaterialAlertDialogBuilder(requireContext())
-                    .setMessage(answer)
-                    .show();
-            Toast.makeText(requireContext(), answer, Toast.LENGTH_SHORT).show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            throw new RuntimeException(e);
-        }
+        //TODO: Google Gemma Model in Test (Alpha-Beta-01)
+//        try {
+//            gemmaModel = new GemmaModel(requireContext());
+//
+//            // Example question
+//            String question = "What is the capital of India?";
+//
+//            // Get model response
+//            String answer = gemmaModel.runInference(question);
+//
+//            // Log and display answer
+//            Log.d("Gemma Output", answer);
+//            new MaterialAlertDialogBuilder(requireContext())
+//                    .setMessage(answer)
+//                    .show();
+//            Toast.makeText(requireContext(), answer, Toast.LENGTH_SHORT).show();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (JSONException e) {
+//            throw new RuntimeException(e);
+//        }
 
 //        String response = generateTextResponse("Hello, How are you?");
 //        Log.d("OpenAI - ChatGPT", response);
@@ -277,7 +287,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                                 txt.setText(" ");
                                 txt.setAlpha(0.5f);
                                 setLimit();
-                                initializeGemini(promptEditTxt.getText().toString(), txt);
+                                initiateModel(promptEditTxt.getText().toString(), txt);
                                 promptEditTxt.setText("");
                                 //IntelligentProcessingHub.googleBarcodeScanner(requireContext());
                             }
@@ -331,6 +341,9 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                     }
                 }
         );
+
+
+
 
         return view;
 
@@ -529,7 +542,8 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //        txt.setTextColor(getResources().getColor(R.color.matte_White));
 
         GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
-        configBuilder.responseMimeType = "application/json";
+//        configBuilder.responseMimeType = "application/json";  //For JSON formatted response
+        configBuilder.responseMimeType = "text/plain";
 
         GenerationConfig generationConfig = configBuilder.build();
 
@@ -545,10 +559,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         Content content =
                 new Content.Builder()
-                        .addText(
-                                "List a few popular cookie recipes using this JSON schema:\n"
-                                        + "Recipe = {'recipeName': string}\n"
-                                        + "Return: Array<Recipe>")
+                        .addText(prompt)
                         .build();
 
 // For illustrative purposes only. You should use an executor that fits your needs.
@@ -562,10 +573,13 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                     public void onSuccess(GenerateContentResponse result) {
                         String resultText = result.getText();
                         System.out.println(resultText);
-                        new MaterialAlertDialogBuilder(requireContext())
-                                .setTitle("Gemini")
-                                .setMessage(resultText)
-                                .show();
+                        new Thread(() -> {
+                            Looper.prepare();
+                            new Handler(Looper.getMainLooper()).post(() -> {
+                                txt.setText(resultText);
+                            });
+                            Looper.loop();
+                        }).start();
                     }
 
                     @Override
@@ -576,104 +590,11 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                 executor);
     }
 
-//OpenAI
-// Function to generate text response from ChatGPT
-public String generateTextResponse(String prompt) {
-    try {
-        // Debug Log
-        Log.d("ChatGPT", "Sending request: " + prompt);
-
-        // Build JSON request body
-        JSONObject jsonBody = new JSONObject();
-        jsonBody.put("model", "gpt-3.5-turbo");  // Free-tier model
-        JSONArray messages = new JSONArray();
-        messages.put(new JSONObject().put("role", "system").put("content", "You are a helpful assistant."));
-        messages.put(new JSONObject().put("role", "user").put("content", prompt));
-        jsonBody.put("messages", messages);
-        jsonBody.put("temperature", 0.7); // Adjust randomness
-
-        // Create request
-        RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
-        Request request = new Request.Builder()
-                .url(GPT_URL)
-                .header("Authorization", "Bearer " + API_KEY)
-                .header("Content-Type", "application/json")
-                .post(body)
-                .build();
-
-        // Make API call
-        try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful()) {
-                return "Error: " + response.message() + " (Code: " + response.code() + ")";
-            }
-
-            // Get response body
-            String responseBody = response.body() != null ? response.body().string() : null;
-            Log.d("ChatGPT", "Raw Response: " + responseBody);  // Debugging
-
-            if (responseBody == null || responseBody.isEmpty()) {
-                return "Error: Empty response from OpenAI";
-            }
-
-            // Parse JSON response
-            JSONObject jsonResponse = new JSONObject(responseBody);
-            JSONArray choices = jsonResponse.optJSONArray("choices");
-            if (choices == null || choices.length() == 0) {
-                return "Error: Unexpected API response (no choices found)";
-            }
-
-            return choices.getJSONObject(0)
-                    .getJSONObject("message")
-                    .optString("content", "Error: No valid response").trim();
-        }
-    } catch (IOException e) {
-        Log.e("ChatGPT", "Network error", e);
-        return "Error: Network issue - " + e.getMessage();
-    } catch (JSONException e) {
-        Log.e("ChatGPT", "JSON parsing error", e);
-        return "Error: Invalid JSON response from OpenAI";
-    } catch (Exception e) {
-        Log.e("ChatGPT", "Unknown error", e);
-        return "Error: " + e.getMessage();
-    }
-}
 
 
+    private void initiateModel(String prompt, TextView txt){
 
-    // Function to generate an image from text using DALL·E
-    public String generateImageFromText(String prompt) {
-        try {
-            JSONObject jsonBody = new JSONObject();
-            jsonBody.put("model", "dall-e-2");  // Free-tier model (if available)
-            jsonBody.put("prompt", prompt);
-            jsonBody.put("n", 1);
-            jsonBody.put("size", "1024x1024");
-
-            RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
-            Request request = new Request.Builder()
-                    .url(DALL_E_URL)
-                    .header("Authorization", "Bearer " + API_KEY)
-                    .post(body)
-                    .build();
-
-            try (Response response = client.newCall(request).execute()) {
-                if (!response.isSuccessful()) {
-                    return "Error: " + response.message();
-                }
-                JSONObject jsonResponse = new JSONObject(response.body().string());
-                return jsonResponse.getJSONArray("data")
-                        .getJSONObject(0)
-                        .getString("url");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Error: " + e.getMessage();
-        }
-    }
-
-
-    private void initiateModel(){
-
+        initializeGeminiUpdated(prompt);
     }
 
     @Override
