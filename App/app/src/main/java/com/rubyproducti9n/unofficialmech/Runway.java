@@ -41,7 +41,7 @@ public class Runway {
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("prompt", prompt);
-            jsonBody.put("model", "stable-diffusion"); // Example model; adjust per API documentation.
+            jsonBody.put("model", "gen-2"); // Example model; adjust per API documentation.
             // Add additional parameters as needed.
         } catch (JSONException e) {
             e.printStackTrace();
