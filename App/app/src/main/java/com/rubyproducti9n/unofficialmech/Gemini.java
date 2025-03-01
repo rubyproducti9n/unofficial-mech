@@ -19,6 +19,8 @@ import java.util.concurrent.Executors;
 
 public class Gemini {
 
+    //Model last updated: 01 Mar 2025
+
     public Gemini(Context context, String prompt) {
         processPrompt(context, prompt);
     }
