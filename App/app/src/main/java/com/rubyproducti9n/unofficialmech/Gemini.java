@@ -23,6 +23,7 @@ public class Gemini {
         processPrompt(context, prompt);
     }
 
+    //Text Generation Model
     public static void initiate(Context context, String prompt) {
         GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
         configBuilder.responseMimeType = "application/json";
@@ -32,10 +33,10 @@ public class Gemini {
 // Specify a Gemini model appropriate for your use case
         GenerativeModel gm =
                 new GenerativeModel(
-                        /* modelName */ "gemini-1.5-flash",
+                        /* modelName */ String.valueOf(R.string.gem_text),
                         // Access your API key as a Build Configuration variable (see "Set up your API key"
                         // above)
-                        /* apiKey */ "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk",
+                        /* apiKey */ String.valueOf(R.string.gemini_api),
                         /* generationConfig */ generationConfig);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 

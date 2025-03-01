@@ -114,15 +114,9 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
 
-
-        ImageView runwayImg = view.findViewById(R.id.runway);
-
         new Gemini(requireContext(), "Heyy!!!");
 
-        new Runway("A cute kitten on Moon", runwayImg);
-
         try {
-
             gemmaModel = new GemmaModel(requireContext());
 
             // Example question
@@ -440,7 +434,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         configBuilder.stopSequences = Collections.singletonList("red");
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel("gemini-pro-vision", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk");
+        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_vision), String.valueOf(R.string.gemini_api));
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -492,7 +486,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //        String apiKey = BuildConfig.MY_API_KEY;
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel("gemini-1.5-flash-latest", "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk");
+        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_text), String.valueOf(R.string.gemini_api));
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -543,7 +537,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                         /* modelName */ "gemini-1.5-flash",
                         // Access your API key as a Build Configuration variable (see "Set up your API key"
                         // above)
-                        /* apiKey */ "AIzaSyDwswACZZRz2015E4yTNmcDn-8GlXyBovk",
+                        /* apiKey */ String.valueOf(R.string.gemini_api),
                         /* generationConfig */ generationConfig);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
 

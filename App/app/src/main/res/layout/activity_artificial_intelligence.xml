@@ -22,7 +22,7 @@
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
         android:translationY="00dp"
-        android:visibility="visible"
+        android:visibility="gone"
         android:src="@drawable/ellipse_3"
         app:tint="#EDC9DD" />
 
@@ -53,13 +53,13 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:fontFamily="@font/montserrat_medium"
             android:text="Torque AI"
             android:textAlignment="center"
-            android:textSize="18sp"
+            android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -193,14 +193,6 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
-
-    <ImageView
-        android:id="@+id/runway"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scaleType="center"
-        app:layout_constraintBottom_toBottomOf="@+id/scrollView2"
-        app:layout_constraintTop_toBottomOf="@+id/progress_bar" />
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView15"

@@ -7,6 +7,10 @@
     <string name="default_role">Student</string>
 
 
+    <string name="gemini_api">AIzaSyAIrJLlqF3pIqDJR8eFnNpKVOilHZB9GDk</string>
+    <string name="gem_vision">gemini-pro-vision</string>
+    <string name="gem_text">gemini-1.5-flash-latest</string>
+
     <string name="host">https://rubyproducti9n.github.io/mech/</string>
 
     <string name="contentDescription">Default</string>
