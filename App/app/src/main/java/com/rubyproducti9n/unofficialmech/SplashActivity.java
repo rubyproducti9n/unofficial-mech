@@ -18,6 +18,7 @@ import android.Manifest;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.ActivityManager;
+import android.app.ActivityOptions;
 import android.app.DownloadManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -743,10 +744,13 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void loadActivity(Class c) {
+        View view = findViewById(R.id.img_logo);
         Log.d("Activity Load", "Initiating Activity...");
-        startActivity(new Intent(SplashActivity.this, c));
-        overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
-        finish();
+        Intent i = new Intent(this, c);
+        startActivity(i, ActivityOptions.makeSceneTransitionAnimation(this, view, "sharedElement").toBundle());
+        //startActivity(new Intent(SplashActivity.this, c));
+        //overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
+        //finish();
     }
 
     private final ConnectionReceiver broadcastReceiver = new ConnectionReceiver() {
