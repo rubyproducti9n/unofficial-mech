@@ -2,12 +2,14 @@ package com.rubyproducti9n.unofficialmech;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
+import android.app.PictureInPictureParams;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -15,13 +17,16 @@ import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Rational;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
@@ -57,6 +62,14 @@ public class AlbumActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.appBar);
 
+
+        FloatingActionButton fab = findViewById(R.id.pip);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPiPButtonClick(v);
+            }
+        });
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         TabLayout.Tab photos = tabLayout.newTab().setIcon(R.drawable.round_notifications_24);
@@ -164,6 +177,31 @@ public class AlbumActivity extends AppCompatActivity {
             unregisteredNetwork(broadcastReceiver);
         }catch (IllegalArgumentException e){
             e.printStackTrace();
+        }
+    }
+
+    // Call this method to enter PiP mode
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void enterPiPMode() {
+        Rational aspectRatio = new Rational(9, 16); // Adjust aspect ratio as needed
+        PictureInPictureParams params = new PictureInPictureParams.Builder()
+                .setAspectRatio(aspectRatio)
+                .build();
+        enterPictureInPictureMode(params);
+    }
+
+    // Trigger PiP mode when a button is clicked
+    public void onPiPButtonClick(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPiPMode();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPiPMode(); // Enter PiP when the user presses the home button
         }
     }
 

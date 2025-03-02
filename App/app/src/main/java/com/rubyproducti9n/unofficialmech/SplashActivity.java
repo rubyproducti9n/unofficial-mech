@@ -750,7 +750,12 @@ public class SplashActivity extends AppCompatActivity {
         startActivity(i, ActivityOptions.makeSceneTransitionAnimation(this, view, "sharedElement").toBundle());
         //startActivity(new Intent(SplashActivity.this, c));
         //overridePendingTransition(R.anim.slide_right, R.anim.slide_left);
-        //finish();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        }, 2000);
     }
 
     private final ConnectionReceiver broadcastReceiver = new ConnectionReceiver() {

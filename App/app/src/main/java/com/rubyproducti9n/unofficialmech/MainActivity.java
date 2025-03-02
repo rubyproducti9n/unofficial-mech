@@ -195,6 +195,7 @@ GestureDetector gesture;
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
 
+
 //        goPremium();
         likeAnim= findViewById(R.id.lottieLikeAnim);
 
