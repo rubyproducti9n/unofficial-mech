@@ -3,7 +3,6 @@ package com.rubyproducti9n.unofficialmech;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.content.Intent;
@@ -27,6 +26,7 @@ public class EventScheduleActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_schedule);
+
 
         //Views
         createEvent = findViewById(R.id.createEvent);
@@ -62,12 +62,9 @@ public class EventScheduleActivity extends BaseActivity {
             eventDetails.setText("Book your tickets for DJ night in Sanjivani University for first time in history of Snjivani.");
             register.setText("Book your ticket");
 
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    ProjectToolkit.fadeIn(eventDetailsCard);
-                    ProjectToolkit.fadeOut(progress);
-                }
+            new Handler().postDelayed(() -> {
+                ProjectToolkit.fadeIn(eventDetailsCard);
+                ProjectToolkit.fadeOut(progress);
             }, 1000);
 
         }else{
