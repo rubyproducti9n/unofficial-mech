@@ -14,6 +14,7 @@ import static com.rubyproducti9n.unofficialmech.ProjectToolkit.startF;
 //import com.dcastalia.localappupdate.DownloadApk;
 
 
+import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
@@ -193,6 +194,7 @@ GestureDetector gesture;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        EdgeToEdge.enable(this);
         getWindow().setAllowEnterTransitionOverlap(true);
 
 

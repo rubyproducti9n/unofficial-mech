@@ -1,5 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -45,7 +46,7 @@ public class AlbumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
 
-//IMP: DO NOT DELETE ==========================================
+        //IMP: DO NOT DELETE ==========================================
         broadcastReceiver = new ConnectionReceiver();
         registerNetworkBroadcast();
 
@@ -63,13 +64,7 @@ public class AlbumActivity extends AppCompatActivity {
         appBarLayout = findViewById(R.id.appBar);
 
 
-        FloatingActionButton fab = findViewById(R.id.pip);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onPiPButtonClick(v);
-            }
-        });
+        EdgeToEdge.enable(this);
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         TabLayout.Tab photos = tabLayout.newTab().setIcon(R.drawable.round_notifications_24);
@@ -180,30 +175,7 @@ public class AlbumActivity extends AppCompatActivity {
         }
     }
 
-    // Call this method to enter PiP mode
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    private void enterPiPMode() {
-        Rational aspectRatio = new Rational(9, 16); // Adjust aspect ratio as needed
-        PictureInPictureParams params = new PictureInPictureParams.Builder()
-                .setAspectRatio(aspectRatio)
-                .build();
-        enterPictureInPictureMode(params);
-    }
 
-    // Trigger PiP mode when a button is clicked
-    public void onPiPButtonClick(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPiPMode();
-        }
-    }
-
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            enterPiPMode(); // Enter PiP when the user presses the home button
-        }
-    }
 
     @Override
     protected void onDestroy() {

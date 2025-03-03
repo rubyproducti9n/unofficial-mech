@@ -49,7 +49,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="31">
+        tools:targetApi="tiramisu">
         <activity
             android:name=".LoginActivity"
             android:exported="false" />
@@ -141,7 +141,10 @@
             android:exported="false" />
         <activity
             android:name=".ImageMagnifierActivity"
-            android:exported="false" />
+            android:exported="true"
+            android:resizeableActivity="true"
+            android:supportsPictureInPicture="true"
+            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation" />
         <activity
             android:name=".WebViewActivity"
             android:exported="false" />
@@ -224,9 +227,6 @@
             android:name=".AlbumActivity"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:resizeableActivity="true"
-            android:supportsPictureInPicture="true"
-            android:configChanges="screenSize|smallestScreenSize|screenLayout|orientation"
             android:parentActivityName=".DeveloperActivity"
             android:screenOrientation="portrait"
             android:showWhenLocked="true"
@@ -250,7 +250,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".DeveloperActivity"
-            android:exported="false"
+            android:exported="true"
             android:parentActivityName=".PasswordActivity"
             android:screenOrientation="portrait">
             <intent-filter android:autoVerify="true">

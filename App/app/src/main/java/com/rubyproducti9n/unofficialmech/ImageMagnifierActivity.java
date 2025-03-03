@@ -1,9 +1,11 @@
 package com.rubyproducti9n.unofficialmech;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DownloadManager;
+import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +16,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.telephony.mbms.DownloadRequest;
+import android.util.Rational;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -24,6 +27,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -59,6 +63,14 @@ public class ImageMagnifierActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String url = intent.getStringExtra("link");
         String activity = intent.getStringExtra("activity");
+
+        ExtendedFloatingActionButton pipMode = findViewById(R.id.pipBtn);
+        pipMode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onPiPButtonClick(v);
+            }
+        });
 
         FloatingActionButton fab = findViewById(R.id.downloadBtn);
 
@@ -233,6 +245,31 @@ public class ImageMagnifierActivity extends AppCompatActivity {
     private void download(String url){
         DownloadManager downloadManager = (DownloadManager) getSystemService(this.DOWNLOAD_SERVICE);
 //        DownloadRequest downloadRequest = downloadManager.(Uri.parse(url));
+    }
+
+    // Call this method to enter PiP mode
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void enterPiPMode() {
+        Rational aspectRatio = new Rational(9, 16); // Adjust aspect ratio as needed
+        PictureInPictureParams params = new PictureInPictureParams.Builder()
+                .setAspectRatio(aspectRatio)
+                .build();
+        enterPictureInPictureMode(params);
+    }
+
+    // Trigger PiP mode when a button is clicked
+    public void onPiPButtonClick(View view) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPiPMode();
+        }
+    }
+
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            enterPiPMode(); // Enter PiP when the user presses the home button
+        }
     }
 
 }

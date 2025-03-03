@@ -12,9 +12,24 @@
         android:id="@+id/downloadBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginRight="28dp"
+        android:layout_marginBottom="12dp"
+        android:enabled="true"
+        android:alpha="0.7"
+        android:src="@drawable/round_arrow_downward_24"
+        app:icon="@drawable/picture_in_picture_128dp_434343_fill0_wght400_grad0_opsz48"
+        app:layout_constraintBottom_toTopOf="@+id/pipBtn"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/pipBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="28dp"
         android:enabled="true"
-        android:src="@drawable/round_arrow_downward_24"
+        android:text="PIP Mode"
+        app:icon="@drawable/picture_in_picture_128dp_434343_fill0_wght400_grad0_opsz48"
+        android:src="@drawable/picture_in_picture_128dp_434343_fill0_wght400_grad0_opsz48"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -22,7 +37,7 @@
         android:id="@+id/img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitCenter"
-        android:elevation="1dp"/>
+        android:elevation="1dp"
+        android:scaleType="fitCenter" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
