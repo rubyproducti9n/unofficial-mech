@@ -6,189 +6,283 @@
     android:layout_height="match_parent"
     tools:context=".EventScheduleActivity">
 
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appBar"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/createEvent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:title="Schedule Event"
-            app:titleTextAppearance="@style/ToolBarTheme"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:indeterminate="true"
-        android:max="100"
-        android:progress="0"
-        app:indeterminateAnimationType="disjoint"
-        app:layout_constraintTop_toBottomOf="@+id/appBar" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/alert"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="12dp"
-        style="@style/Widget.Material3.CardView.Elevated"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:text="Users will get notified for the upcoming events"
-            android:textStyle="bold"
-            android:drawableStart="@drawable/round_info_24"
-            android:drawablePadding="8dp"/>
-
-    </com.google.android.material.card.MaterialCardView>
-
-    <com.google.android.material.chip.Chip
-        android:id="@+id/back"
-        style="@style/Widget.MaterialComponents.Chip.Filter"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="Back"
-        android:layout_margin="12dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/alert" />
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/scroll_view"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@+id/back">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:ignore="ScrollViewSize">
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView8"
-                style="@style/Widget.Material3.CardView.Elevated"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_margin="18dp"
-                app:cardCornerRadius="18dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawableStart="@drawable/round_info_24"
-                    android:drawablePadding="6dp"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/round_account_circle_24"
-                    tools:ignore="UseCompatTextViewDrawableXml" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <TextView
-                android:id="@+id/username"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="user_name"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@+id/materialCardView8"
-                app:layout_constraintTop_toTopOf="@+id/materialCardView8" />
-
-            <TextView
-                android:id="@+id/div"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="From division"
-                android:textSize="12sp"
-                app:layout_constraintStart_toEndOf="@+id/materialCardView8"
-                app:layout_constraintTop_toBottomOf="@+id/username" />
-
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/caption"
-                style="@style/NoBorderEditText"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:hint="Write about the event"
-                android:inputType="textMultiLine"
+                app:title="Schedule Event"
+                app:titleTextAppearance="@style/ToolBarTheme"/>
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.progressindicator.LinearProgressIndicator
+            android:id="@+id/progressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:max="100"
+            android:progress="0"
+            app:indeterminateAnimationType="disjoint"
+            app:layout_constraintTop_toBottomOf="@+id/appBar" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/alert"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:cardCornerRadius="12dp"
+            style="@style/Widget.Material3.CardView.Elevated"
+            app:layout_constraintTop_toBottomOf="@+id/progressBar">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:textSize="14sp"
-                app:layout_constraintStart_toStartOf="@+id/materialCardView8"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+                android:text="Users will get notified for the upcoming events"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/round_info_24"
+                android:drawablePadding="8dp"/>
 
+        </com.google.android.material.card.MaterialCardView>
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView7"
+        <com.google.android.material.chip.Chip
+            android:id="@+id/back"
+            style="@style/Widget.MaterialComponents.Chip.Filter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="Back"
+            android:layout_margin="12dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/alert" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/scroll_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintTop_toBottomOf="@+id/back">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="280dp"
-                android:layout_margin="18dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="0dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/caption">
+                android:layout_height="match_parent"
+                tools:ignore="ScrollViewSize">
 
-                <ImageView
-                    android:id="@+id/img"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="TODO"
-                    android:scaleType="fitCenter"
-                    android:tooltipText="Post preview"
-                    app:layout_constraintEnd_toEndOf="parent"
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView8"
+                    style="@style/Widget.Material3.CardView.Elevated"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="18dp"
+                    app:cardCornerRadius="18dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toTopOf="parent">
 
+                    <ImageView
+                        android:id="@+id/avatar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawableStart="@drawable/round_info_24"
+                        android:drawablePadding="6dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/round_account_circle_24"
+                        tools:ignore="UseCompatTextViewDrawableXml" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_image"
-                    style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="end|bottom"
+                    android:layout_marginStart="12dp"
+                    android:text="user_name"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView8"
+                    app:layout_constraintTop_toTopOf="@+id/materialCardView8" />
+
+                <TextView
+                    android:id="@+id/div"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="From division"
+                    android:textSize="12sp"
+                    app:layout_constraintStart_toEndOf="@+id/materialCardView8"
+                    app:layout_constraintTop_toBottomOf="@+id/username" />
+
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/caption"
+                    style="@style/NoBorderEditText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:hint="Write about the event"
+                    android:inputType="textMultiLine"
+                    android:padding="12dp"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toStartOf="@+id/materialCardView8"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView8" />
+
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView7"
+                    android:layout_width="match_parent"
+                    android:layout_height="280dp"
                     android:layout_margin="18dp"
-                    app:icon="@drawable/round_attach_file_24"
+                    app:cardCornerRadius="28dp"
+                    app:cardElevation="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/caption">
+
+                    <ImageView
+                        android:id="@+id/img"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:contentDescription="TODO"
+                        android:scaleType="fitCenter"
+                        android:tooltipText="Post preview"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/add_image"
+                        style="@style/Widget.Material3.Button.IconButton.Filled.Tonal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end|bottom"
+                        android:layout_margin="18dp"
+                        app:icon="@drawable/round_attach_file_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="18dp"
+                    android:text="Schedule event"
+                    app:chipIcon="@drawable/round_notifications_24"
+                    style="@style/Widget.MaterialComponents.Chip.Filter"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-            </com.google.android.material.card.MaterialCardView>
-
-
-            <com.google.android.material.chip.Chip
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="18dp"
-                android:text="Schedule event"
-                app:chipIcon="@drawable/round_notifications_24"
-                style="@style/Widget.MaterialComponents.Chip.Filter"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/materialCardView7" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView7" />
 
 
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/evenDetails"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="12dp"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="6dp"
+            app:strokeWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="12dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/materialCardView41"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="18dp"
+                    app:strokeWidth="0dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:id="@+id/eventImg"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/nav_header_img" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/eventTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:ellipsize="end"
+                    android:lineHeight="1dp"
+                    android:text="Event title"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/materialCardView41" />
+
+                <TextView
+                    android:id="@+id/eventDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="Event description"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventTitle" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="12dp"
+                    android:text="Register"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventDescription" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

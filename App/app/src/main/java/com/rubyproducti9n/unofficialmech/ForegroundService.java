@@ -224,7 +224,21 @@ public class ForegroundService extends Service {
     }
 
     private void updateNotification(String countdownText) {
+        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        // Check if the notification already exists
+        StatusBarNotification[] notifications = notificationManager.getActiveNotifications();
+        boolean isNotificationPresent = false;
+
+        for (StatusBarNotification notification : notifications) {
+            if (notification.getId() == 1001) { // Check if our notification ID exists
+                isNotificationPresent = true;
+                break;
+            }
+        }
+
         Intent intent = new Intent(this, EventScheduleActivity.class);
+        intent.putExtra("eventId", "Shirley Setia Concert");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, LIVE_CHANNEL_ID)
@@ -234,15 +248,20 @@ public class ForegroundService extends Service {
                 .setLargeIcon(eventImage)
                 .setOngoing(true)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(false)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true)
                 .setStyle(new NotificationCompat.BigPictureStyle()
                         .bigPicture(eventImage)
                         .bigLargeIcon((Icon) null)
-                        .setSummaryText(countdownText));
+                        .setSummaryText("⏳ Countdown: " + countdownText));
 
-        startForeground(1001, builder.build());
+        if (!isNotificationPresent) {
+            notificationManager.notify(1001, builder.build()); // ✅ Show only if not present
+        } else {
+            notificationManager.notify(1001, builder.setContentText(countdownText).build()); // ✅ Just update content
+        }
     }
+
 
     private String formatCountdownTime(long millis) {
         long days = TimeUnit.MILLISECONDS.toDays(millis);
@@ -288,7 +307,7 @@ public class ForegroundService extends Service {
 
     private void createNotificationChannelLive() {
         NotificationChannel channel = new NotificationChannel(
-                LIVE_CHANNEL_ID, "Live Event Countdown", NotificationManager.IMPORTANCE_HIGH);
+                LIVE_CHANNEL_ID, "Live Event Countdown", NotificationManager.IMPORTANCE_DEFAULT);
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 
@@ -300,16 +319,14 @@ public class ForegroundService extends Service {
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Post Upload Channel",
-                    NotificationManager.IMPORTANCE_DEFAULT
-            );
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+        NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                "Post Upload Channel",
+                NotificationManager.IMPORTANCE_DEFAULT
+        );
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.createNotificationChannel(channel);
         }
     }
 
