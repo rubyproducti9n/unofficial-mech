@@ -24,6 +24,7 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
 import androidx.core.view.WindowCompat;
@@ -40,6 +41,10 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Activity;
 import android.app.DownloadManager;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -119,12 +124,16 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.Executors;
@@ -197,7 +206,7 @@ GestureDetector gesture;
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
 
-
+        startCountDown("🎟️LIVE CONCERT IN", "2025-03-08 18:00", "https://instagram.fnag6-2.fna.fbcdn.net/v/t51.29350-15/479492605_1365822141496718_2075561964178648938_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fnag6-2.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2AGnLvOMH4hqyApQwuQtAr0Zs0vAc0xRQ8Q2PB_kzNPLll-XXtJX2WEU7FFV7xM0_HI8GlrcnC6VzotVTJG4Bsn0&_nc_ohc=76HFKHiXNPEQ7kNvgGPklJQ&_nc_gid=9b221b3f1bc74398acfb62264226e4e8&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU2OTMwMTg4NzEwOTY4NDU2MA%3D%3D.3-ccb7-5&oh=00_AYDJULNl01LEF7Iis8fRnaR-mBUUBV0H5DARxpM4Lg62Eg&oe=67CB6ADC&_nc_sid=7a9f4b");
 //        goPremium();
         likeAnim= findViewById(R.id.lottieLikeAnim);
 
@@ -344,6 +353,10 @@ GestureDetector gesture;
                             Intent receivedIntent = getIntent();
                             String action = receivedIntent.getAction();
                             String type = receivedIntent.getType();
+                            Uri data = receivedIntent.getData();
+                            if (data != null && Objects.equals(data.getPath(), "/voice")) {
+                                Toast.makeText(MainActivity.this, "Voice Command Triggered", Toast.LENGTH_SHORT).show();
+                            }
                             if (Intent.ACTION_SEND.equals(action) && type!=null){
                                 if ("text/plain".equals(type) || "image/*".equals(type)){
                                     String sharedText = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
@@ -1214,8 +1227,51 @@ GestureDetector gesture;
 
             }
         });
+
+
     }
 
+    private void startCountDown(String eventTitle, String eventDateTime, String imageUrl) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            Date eventDate = sdf.parse(eventDateTime);
+            if (eventDate == null) return;
+
+            long eventTimeMillis = eventDate.getTime();
+            long currentTimeMillis = System.currentTimeMillis();
+            long countdownTimeMillis = eventTimeMillis - currentTimeMillis;
+
+            if (countdownTimeMillis <= 0) {
+                Log.d("LiveActivity", "Event time has already passed.");
+                return;
+            }
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            String channelId = "event_countdown_channel";
+
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Event Countdown",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setDescription("Shows countdown for the upcoming event.");
+            notificationManager.createNotificationChannel(channel);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            // Start Foreground Service for Countdown
+            Intent serviceIntent = new Intent(this, ForegroundService.class);
+            serviceIntent.putExtra("eventTitle", eventTitle);
+            serviceIntent.putExtra("eventTimeMillis", eventTimeMillis);
+            serviceIntent.putExtra("imageUrl", imageUrl);
+            ContextCompat.startForegroundService(this, serviceIntent);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
