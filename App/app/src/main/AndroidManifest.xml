@@ -206,13 +206,11 @@
         <activity
             android:name=".AccountInfo"
             android:exported="false"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".UploadMemories"
             android:exported="false"
-            android:parentActivityName=".AlbumActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".AlbumActivity"/>
         <activity
             android:name=".ArtificialIntelligenceActivity"
             android:exported="false"
@@ -221,38 +219,32 @@
             tools:targetApi="tiramisu" />
         <activity
             android:name=".PrivacyPolicyActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false" />
         <activity
             android:name=".AlbumActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:parentActivityName=".DeveloperActivity"
-            android:screenOrientation="portrait"
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
         <activity
             android:name=".BetaActivity"
             android:exported="false"
             android:hardwareAccelerated="true"
-            android:parentActivityName=".AccountInfo"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".AccountInfo"/>
         <activity
             android:name=".SettingsActivity"
             android:exported="false"
-            android:parentActivityName=".DeveloperActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".DeveloperActivity"/>
         <activity
             android:name=".AboutActivity"
             android:exported="false"
             android:enableOnBackInvokedCallback="true"
-            android:parentActivityName=".MainActivity"
-            android:screenOrientation="portrait" />
+            android:parentActivityName=".MainActivity"/>
         <activity
             android:name=".DeveloperActivity"
             android:exported="true"
-            android:parentActivityName=".PasswordActivity"
-            android:screenOrientation="portrait">
+            android:parentActivityName=".PasswordActivity">
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
 
@@ -266,14 +258,12 @@
         </activity>
         <activity
             android:name=".AccessDeniedActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
+            android:exported="false"/>
         <activity
             android:name=".PasswordActivity"
             android:excludeFromRecents="true"
             android:exported="true"
             android:hardwareAccelerated="true"
-            android:screenOrientation="portrait"
             android:showWhenLocked="true"
             android:turnScreenOn="true" />
         <activity
@@ -289,7 +279,6 @@
             android:name=".MainActivity"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:showOnLockScreen="true"
             android:showWhenLocked="true"
             android:turnScreenOn="true">

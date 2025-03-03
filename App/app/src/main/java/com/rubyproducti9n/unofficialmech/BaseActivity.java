@@ -1,5 +1,7 @@
 package com.rubyproducti9n.unofficialmech;
 
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -27,5 +29,8 @@ public class BaseActivity extends AppCompatActivity {
             v.setPadding(0, topInset, 0, 0); // Add padding at the top to avoid overlap
             return insets;
         });
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
     }
 }
