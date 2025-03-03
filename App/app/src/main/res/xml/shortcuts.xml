@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="open_album"
+        android:icon="@drawable/round_photo_album_24"
+        android:targetClass="com.rubyproducti9n.unofficialmech.AlbumActivity"
+        android:targetPackage="com.rubyproducti9n.unofficialmech"/>
+</shortcuts>
