@@ -50,7 +50,7 @@ import com.google.zxing.qrcode.QRCodeWriter;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class QuickMenuActivity extends AppCompatActivity {
+public class QuickMenuActivity extends BaseActivity {
 
     MaterialButton fab;
     MaterialCardView timeTable, panicBtn;

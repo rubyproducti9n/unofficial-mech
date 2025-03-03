@@ -42,7 +42,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Objects;
 
-public class ImageMagnifierActivity extends AppCompatActivity {
+public class ImageMagnifierActivity extends BaseActivity {
     private Matrix matrix = new Matrix();
     private float scaleFactor = 1.0f;
     ImageView img;

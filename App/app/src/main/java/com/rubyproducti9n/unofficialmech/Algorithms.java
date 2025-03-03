@@ -28,7 +28,7 @@ import com.rubyproducti9n.Example;
 import java.util.Calendar;
 import java.util.Objects;
 
-public class Algorithms extends AppCompatActivity {
+public class Algorithms extends BaseActivity {
 
     public interface PaymentServiceCheckCallBack{
         void onResult(Boolean result);

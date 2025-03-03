@@ -21,7 +21,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.Objects;
 
-public class AboutActivity extends AppCompatActivity {
+public class AboutActivity extends BaseActivity {
     //1
     private TextView instruction;
     private ImageView profile;

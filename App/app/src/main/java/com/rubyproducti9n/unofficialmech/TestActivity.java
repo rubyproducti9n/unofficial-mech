@@ -70,7 +70,7 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-public class TestActivity extends AppCompatActivity {
+public class TestActivity extends BaseActivity {
     private EditText editPrompt;
     private RadioButton radio5Sec, radio10Sec;
     private Button buttonPay;

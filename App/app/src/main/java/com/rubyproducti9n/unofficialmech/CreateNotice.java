@@ -65,7 +65,7 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CreateNotice extends AppCompatActivity {
+public class CreateNotice extends BaseActivity {
     private ActivityResultLauncher<Intent> startActivityForResult;
     LinearProgressIndicator progressBar;
     MaterialButton upload, addImageBtn;

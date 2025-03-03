@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class CreateLetter extends AppCompatActivity {
+public class CreateLetter extends BaseActivity {
 
     TextInputEditText dateInputTxt, toInputTxt, subjectInputTxt, bodyInputText;
     MaterialButton loadTemplate, submit;

@@ -45,7 +45,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends BaseActivity {
     static LinearProgressIndicator progress;
     static MaterialToolbar toolbar;
     static MaterialCardView webErr;

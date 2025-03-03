@@ -19,7 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.material.button.MaterialButton;
 
-public class TourActivity extends AppCompatActivity {
+public class TourActivity extends BaseActivity {
 
     MaterialButton n1, n2, n3, n4, n5, n6, n7, skipTour;
     ViewFlipper viewFlipper;

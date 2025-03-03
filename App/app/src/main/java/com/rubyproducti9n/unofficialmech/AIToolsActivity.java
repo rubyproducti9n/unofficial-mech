@@ -1,5 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -28,13 +29,7 @@ public class AIToolsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aitools);
-
-        if (Build.VERSION.SDK_INT >= 21) {
-            Window window = this.getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(this.getResources().getColor(R.color.matte_black));
-        }
+        EdgeToEdge.enable(this);
 
         MaterialCardView mc1 = findViewById(R.id.mc1);
         ImageView img1 = findViewById(R.id.img1);
@@ -126,73 +121,11 @@ public class AIToolsActivity extends AppCompatActivity {
             }
         });
 
-//        createCard(container, "Title", "about the model", "https://rubyproducti9n.github.io/mech/avatar/dev_avatar.jpg");
-//        createCard(container, "Title", "about the model (Alphabet model)", "https://rubyproducti9n.github.io/mech/avatar/dev_avatar.jpg");
     }
 
     private void parseUrl(String url){
         Intent intent = new Intent(this, WebViewActivity.class);
         intent.putExtra("link", url);
         startActivity(intent);
-    }
-
-//    private void createCard(ConstraintLayout constraintLayout, String title, String description, String url){
-//        View cardView = LayoutInflater.from(this).inflate(R.layout.ai_tool_item, null);
-//
-//        MaterialCardView materialCardView = cardView.findViewById(R.id.materialCard);
-//        TextView titleTextView = cardView.findViewById(R.id.title);
-//        TextView descriptionTextView = cardView.findViewById(R.id.description);
-//
-//        materialCardView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                openUrl(url);
-//            }
-//        });
-//        int id = (int) System.currentTimeMillis();
-//        materialCardView.setId(id);
-//        materialCardView.setTag(id);
-//        titleTextView.setText(title);
-//        descriptionTextView.setText(description);
-//        constraintLayout.addView(cardView);
-//
-////        MaterialCardView card = new MaterialCardView(this);
-////        card.setLayoutParams(new ViewGroup.LayoutParams(
-////                ViewGroup.LayoutParams.MATCH_PARENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-////        ));
-////        card.setUseCompatPadding(true);
-////
-////        LinearLayout cardContent = new LinearLayout(this);
-////        cardContent.setLayoutParams(new ViewGroup.LayoutParams(
-////                LinearLayout.LayoutParams.MATCH_PARENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-////        ));
-////
-////        TextView textView = new TextView(this);
-////        textView.setLayoutParams(new ViewGroup.LayoutParams(
-////                ViewGroup.LayoutParams.MATCH_PARENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-////        ));
-////        textView.setText(title);
-////
-////        ImageView img = new ImageView(this);
-////        img.setLayoutParams(new ViewGroup.LayoutParams(
-////                ViewGroup.LayoutParams.MATCH_PARENT,
-////                ViewGroup.LayoutParams.WRAP_CONTENT
-////        ));
-////        Picasso.get().load(ic).into(img);
-////
-////        cardContent.addView(textView);
-////        cardContent.addView(img);
-////
-////        card.addView(cardContent);
-////
-////        container.addView(card);
-//    }
-
-    private void openUrl(String url){
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        this.startActivity(intent);
     }
 }

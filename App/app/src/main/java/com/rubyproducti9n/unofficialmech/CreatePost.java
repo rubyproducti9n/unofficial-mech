@@ -66,7 +66,7 @@ import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class CreatePost extends AppCompatActivity {
+public class CreatePost extends BaseActivity {
 
     ImageView postImg;
     MaterialCardView postImgContainer;

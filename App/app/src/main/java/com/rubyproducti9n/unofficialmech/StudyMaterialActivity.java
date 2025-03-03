@@ -36,7 +36,7 @@ import javax.security.auth.callback.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
 
-public class StudyMaterialActivity extends AppCompatActivity {
+public class StudyMaterialActivity extends BaseActivity {
     private ViewFlipper viewFlipper;
     private FileAdapter fileAdapter;
     private List<FileItem> fileList;

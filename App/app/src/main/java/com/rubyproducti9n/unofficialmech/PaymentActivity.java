@@ -67,7 +67,7 @@ import java.util.concurrent.TimeUnit;
 
 //import com.paypal.android.sdk.payments.PayPalConfiguration;
 
-public class PaymentActivity extends AppCompatActivity {
+public class PaymentActivity extends BaseActivity {
 
     TextView current_plan;
 

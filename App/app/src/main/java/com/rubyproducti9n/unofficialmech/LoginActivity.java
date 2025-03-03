@@ -54,7 +54,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.Date;
 import java.util.HashSet;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends BaseActivity {
     BroadcastReceiver broadcastReceiver;
     TextInputEditText materialText;
     TextInputEditText materialEmail;

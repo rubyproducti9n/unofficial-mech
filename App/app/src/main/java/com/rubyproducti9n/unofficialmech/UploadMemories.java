@@ -39,7 +39,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 
-public class UploadMemories extends AppCompatActivity {
+public class UploadMemories extends BaseActivity {
 
     private ActivityResultLauncher<Intent> startActivityForResult;
     private Uri imgUri;

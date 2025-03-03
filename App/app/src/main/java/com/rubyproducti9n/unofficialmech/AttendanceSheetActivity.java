@@ -32,7 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class AttendanceSheetActivity extends AppCompatActivity {
+public class AttendanceSheetActivity extends BaseActivity {
 
     TextView txt;
     RecyclerView recyclerView;

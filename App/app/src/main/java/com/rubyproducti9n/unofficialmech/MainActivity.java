@@ -72,6 +72,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.webkit.URLUtil;
 import android.widget.ImageView;
@@ -128,7 +129,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "InAppReviewHelper";
     private ReviewManager reviewManager;
@@ -194,7 +195,6 @@ GestureDetector gesture;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EdgeToEdge.enable(this);
         getWindow().setAllowEnterTransitionOverlap(true);
 
 

@@ -56,7 +56,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
-public class DeveloperActivity extends AppCompatActivity {
+public class DeveloperActivity extends BaseActivity {
     Context mcontext;
     DrawerLayout drawerLayout;
     NavigationView navigationView;

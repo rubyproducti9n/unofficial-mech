@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.airbnb.lottie.LottieAnimationView;
 
-public class AccessDeniedActivity extends AppCompatActivity {
+public class AccessDeniedActivity extends BaseActivity {
 
     private TextView errTitle, errMsg;
     private LottieAnimationView animDenied;

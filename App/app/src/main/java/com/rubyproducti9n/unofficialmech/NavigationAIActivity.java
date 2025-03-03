@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NavigationAIActivity extends AppCompatActivity {
+public class NavigationAIActivity extends BaseActivity {
 
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 

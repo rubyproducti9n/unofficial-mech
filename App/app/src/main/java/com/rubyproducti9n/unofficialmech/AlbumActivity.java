@@ -32,7 +32,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
 
-public class AlbumActivity extends AppCompatActivity {
+public class AlbumActivity extends BaseActivity {
 
     BroadcastReceiver broadcastReceiver;
     private ImageView imgView;
@@ -62,9 +62,6 @@ public class AlbumActivity extends AppCompatActivity {
         Picasso.get().load(imgUrl).into(imgView);
 
         appBarLayout = findViewById(R.id.appBar);
-
-
-        EdgeToEdge.enable(this);
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         TabLayout.Tab photos = tabLayout.newTab().setIcon(R.drawable.round_notifications_24);

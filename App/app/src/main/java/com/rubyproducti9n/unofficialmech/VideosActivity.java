@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class VideosActivity extends AppCompatActivity {
+public class VideosActivity extends BaseActivity {
     private PlayerView videoView;
     private SimpleExoPlayer player;
     StyledPlayerView styledPlayerView;

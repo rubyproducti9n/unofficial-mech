@@ -45,7 +45,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class BetaActivity extends AppCompatActivity{
+public class BetaActivity extends BaseActivity{
     //Defined variables
     private Home2Adapter adapter;
     private InterstitialAd mInterstitialAd;

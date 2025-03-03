@@ -27,7 +27,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class PluginsActivity extends AppCompatActivity {
+public class PluginsActivity extends BaseActivity {
 
     MaterialCardView backBtn, aiPlugin;
 

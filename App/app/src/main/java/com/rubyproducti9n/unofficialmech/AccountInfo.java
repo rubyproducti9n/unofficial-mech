@@ -72,7 +72,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class AccountInfo extends AppCompatActivity {
+public class AccountInfo extends BaseActivity {
 
 
     DatabaseReference userRef;

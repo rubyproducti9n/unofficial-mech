@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-public class EventScheduleActivity extends AppCompatActivity {
+public class EventScheduleActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

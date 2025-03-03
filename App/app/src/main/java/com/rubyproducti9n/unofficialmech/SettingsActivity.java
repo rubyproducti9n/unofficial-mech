@@ -49,7 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.File;
 
 
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends BaseActivity {
 
     TextView versionTxt;
     MaterialSwitch notificationSwitch, albumShuffleSwitch, dashboardSwitch, themeSwitch;

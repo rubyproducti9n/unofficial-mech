@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 
-public class UploadsActivity extends AppCompatActivity {
+public class UploadsActivity extends BaseActivity {
 
     long backPressedTime;
     boolean backPressDisabled;

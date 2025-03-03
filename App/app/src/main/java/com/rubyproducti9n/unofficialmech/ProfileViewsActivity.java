@@ -51,7 +51,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class ProfileViewsActivity extends AppCompatActivity {
+public class ProfileViewsActivity extends BaseActivity {
     TextView un, det;
     ImageView img;
     ConstraintLayout layout;

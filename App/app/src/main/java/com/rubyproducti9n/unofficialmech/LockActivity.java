@@ -28,7 +28,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-public class LockActivity extends AppCompatActivity {
+public class LockActivity extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

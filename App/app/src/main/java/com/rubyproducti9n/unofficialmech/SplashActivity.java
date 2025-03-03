@@ -109,7 +109,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
 
     ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;

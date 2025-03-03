@@ -68,7 +68,7 @@ import java.util.concurrent.Executor;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class BottomSheetCreateAccount extends AppCompatActivity {
+public class BottomSheetCreateAccount extends BaseActivity {
     private ConstraintLayout adContainer;
     private MaterialAutoCompleteTextView divDrop, deptDrop;
     private DatabaseReference databaseReference;

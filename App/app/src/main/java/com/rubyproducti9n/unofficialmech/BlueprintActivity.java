@@ -32,7 +32,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-public class BlueprintActivity extends AppCompatActivity {
+public class BlueprintActivity extends BaseActivity {
 
     com.google.ai.client.generativeai.type.Content content;
     List<ItemBlueprint> articles = new ArrayList<>();

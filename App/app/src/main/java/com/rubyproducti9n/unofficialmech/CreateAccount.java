@@ -49,7 +49,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccount extends BaseActivity {
     DatabaseReference databaseReference;
 
     TextInputEditText editFName, editLName, editDiv, editrollNo, editDept, editPrn, editClgMail, editGender, editMail, editMob, editPass;

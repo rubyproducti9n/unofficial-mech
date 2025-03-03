@@ -74,7 +74,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 
-public class PasswordActivity extends AppCompatActivity {
+public class PasswordActivity extends BaseActivity {
 
     ImageView bgImg2;
     MaterialCardView blurMc;

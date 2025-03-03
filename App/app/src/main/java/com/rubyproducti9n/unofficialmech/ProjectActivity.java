@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ProjectActivity extends AppCompatActivity {
+public class ProjectActivity extends BaseActivity {
 
     private ProjectAdapter adapter;
     private static SharedPreferences sharedPreferences;

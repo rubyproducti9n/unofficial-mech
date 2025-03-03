@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class FAQActivity extends AppCompatActivity {
+public class FAQActivity extends BaseActivity {
     ConstraintLayout faqContainer;
     List<ItemFaq> faqList;
     FaqAdapter faqAdapter;

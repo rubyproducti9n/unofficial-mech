@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class AttendenceTrackerActivity extends AppCompatActivity {
+public class AttendenceTrackerActivity extends BaseActivity {
 
     int currentNumber;
     int endNumber;

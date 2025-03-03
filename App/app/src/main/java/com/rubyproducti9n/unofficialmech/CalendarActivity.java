@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class CalendarActivity extends AppCompatActivity {
+public class CalendarActivity extends BaseActivity {
     private static final int PERMISSION_REQUEST_CODE = 100;
     List<ItemCalendar> items = new ArrayList<>();
     @Override
