@@ -5,24 +5,15 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:gravity="center"
-    android:padding="18dp"
     android:background="@drawable/widget_bg">
-
-    <TextView
-        android:id="@+id/widget_title"
+    <ImageView
+        android:id="@+id/widgetImg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Countdown Timer"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#FFFFFF"/>
+        android:src="@drawable/nav_header_img"
+        android:background="@drawable/widget_bg"
+        android:adjustViewBounds="true"
+        android:scaleType="centerCrop"/>
 
-    <TextView
-        android:id="@+id/widget_timer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="00:00:00"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:textColor="#FFD700"/>
+
 </LinearLayout>

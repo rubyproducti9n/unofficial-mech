@@ -11,15 +11,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
+
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -208,19 +214,38 @@ public class SmartWidget extends AppWidgetProvider {
     private static void updateWidget(Context context, AppWidgetManager appWidgetManager, int appWidgetId) {
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
 
-        // Calculate remaining time
-        long currentTime = System.currentTimeMillis();
-        long timeLeft = EVENT_TIME - currentTime;
+        String url = "https://instagram.fnag6-2.fna.fbcdn.net/v/t51.29350-15/479492605_1365822141496718_2075561964178648938_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fnag6-2.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2AGnLvOMH4hqyApQwuQtAr0Zs0vAc0xRQ8Q2PB_kzNPLll-XXtJX2WEU7FFV7xM0_HI8GlrcnC6VzotVTJG4Bsn0&_nc_ohc=76HFKHiXNPEQ7kNvgGPklJQ&_nc_gid=9b221b3f1bc74398acfb62264226e4e8&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU2OTMwMTg4NzEwOTY4NDU2MA%3D%3D.3-ccb7-5&oh=00_AYDJULNl01LEF7Iis8fRnaR-mBUUBV0H5DARxpM4Lg62Eg&oe=67CB6ADC&_nc_sid=7a9f4b";
+        Picasso.get().load(url).into(new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                views.setImageViewBitmap(R.id.widgetImg, bitmap);
+                appWidgetManager.updateAppWidget(appWidgetId, views);
+            }
 
-        if (timeLeft > 0) {
-            long hours = TimeUnit.MILLISECONDS.toHours(timeLeft);
-            long minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60;
-            long seconds = TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60;
-            String countdownText = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-            views.setTextViewText(R.id.widget_timer, countdownText);
-        } else {
-            views.setTextViewText(R.id.widget_timer, "00:00:00");
-        }
+            @Override
+            public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        });
+
+        // Calculate remaining time
+//        long currentTime = System.currentTimeMillis();
+//        long timeLeft = EVENT_TIME - currentTime;
+//
+//        if (timeLeft > 0) {
+//            long hours = TimeUnit.MILLISECONDS.toHours(timeLeft);
+//            long minutes = TimeUnit.MILLISECONDS.toMinutes(timeLeft) % 60;
+//            long seconds = TimeUnit.MILLISECONDS.toSeconds(timeLeft) % 60;
+//            String countdownText = String.format("%02d:%02d:%02d", hours, minutes, seconds);
+//            views.setTextViewText(R.id.widget_timer, countdownText);
+//        } else {
+//            views.setTextViewText(R.id.widget_timer, "00:00:00");
+//        }
 
         // Set onClickListener to open DeveloperActivity
         Intent intent = new Intent(context, DeveloperActivity.class);

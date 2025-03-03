@@ -132,13 +132,14 @@ public class ForegroundService extends Service {
         startForeground(NOTIFICATION_ID, builder.build());
 
 
-        eventTitle = intent.getStringExtra("eventTitle");
-        eventTimeMillis = intent.getLongExtra("eventTimeMillis", 0);
-        String imageUrl = intent.getStringExtra("imageUrl");
+        if (intent !=null){
+            eventTitle = intent.getStringExtra("eventTitle");
+            eventTimeMillis = intent.getLongExtra("eventTimeMillis", 0);
+            String imageUrl = intent.getStringExtra("imageUrl");
 
-        new Thread(() -> eventImage = getBitmapFromURL(imageUrl)).start();
-
-        startCountdown();
+            new Thread(() -> eventImage = getBitmapFromURL(imageUrl)).start();
+            startCountdown();
+        }
         return START_STICKY;
     }
     private Bitmap getBitmapFromURL(String src) {
@@ -248,8 +249,7 @@ public class ForegroundService extends Service {
                 .setLargeIcon(eventImage)
                 .setOngoing(true)
                 .setContentIntent(pendingIntent)
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_MIN)
                 .setStyle(new NotificationCompat.BigPictureStyle()
                         .bigPicture(eventImage)
                         .bigLargeIcon((Icon) null)
@@ -307,7 +307,7 @@ public class ForegroundService extends Service {
 
     private void createNotificationChannelLive() {
         NotificationChannel channel = new NotificationChannel(
-                LIVE_CHANNEL_ID, "Live Event Countdown", NotificationManager.IMPORTANCE_DEFAULT);
+                LIVE_CHANNEL_ID, "Live Event Countdown", NotificationManager.IMPORTANCE_LOW);
         getSystemService(NotificationManager.class).createNotificationChannel(channel);
     }
 

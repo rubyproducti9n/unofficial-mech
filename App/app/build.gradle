@@ -13,8 +13,8 @@ android {
         applicationId "com.rubyproducti9n.unofficialmech"
         minSdk 29
         targetSdk 35
-        versionCode 70
-        versionName "10.7.9"
+        versionCode 72
+        versionName "10.7.10"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
