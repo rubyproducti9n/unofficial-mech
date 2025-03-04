@@ -3,9 +3,11 @@ package com.rubyproducti9n.unofficialmech;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 
+import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -14,6 +16,7 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.squareup.picasso.Picasso;
@@ -31,11 +35,13 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EventScheduleActivity extends BaseActivity {
 
     ConstraintLayout createEvent, eventDetailsCard, noEvent;
     CircularProgressIndicator progress;
+    LinearProgressIndicator progressBar;
 
     private static final int PICK_IMAGE_REQUEST = 1;
 
@@ -58,6 +64,7 @@ public class EventScheduleActivity extends BaseActivity {
         eventDetailsCard = findViewById(R.id.evenDetails);
         noEvent = findViewById(R.id.noEvent);
         progress = findViewById(R.id.progress);
+        progressBar = findViewById(R.id.progressBar);
 
         eventTitle = findViewById(R.id.createEventTitle);
         eventDescription = findViewById(R.id.createEventHighlight);
@@ -105,7 +112,7 @@ public class EventScheduleActivity extends BaseActivity {
             createEvent.setVisibility(VISIBLE);
             eventDetails.setVisibility(GONE);
             noEvent.setVisibility(GONE);
-            Snackbar.make(register, "Event expired!", Snackbar.LENGTH_SHORT).show();
+            //Snackbar.make(register, "Event expired!", Snackbar.LENGTH_SHORT).show();
         }
 
 
@@ -143,25 +150,36 @@ public class EventScheduleActivity extends BaseActivity {
         });
 
         // Event Type Selection (Single Selection)
-        eventTypeGroup.setOnCheckedChangeListener((group, checkedId) -> {
-            Chip selectedChip = findViewById(checkedId);
-            if (selectedChip != null) {
-                selectedEventType = selectedChip.getText().toString();
+        eventTypeGroup.setSelectionRequired(true); // Ensures at least one selection
+        eventTypeGroup.setSingleSelection(true); // Enables single selection mode
+
+        eventTypeGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+                if (!checkedIds.isEmpty()) {
+                    Chip selectedChip = findViewById(checkedIds.get(0));
+                    if (selectedChip != null) {
+                        selectedEventType = selectedChip.getText().toString();
+                    }
+                } else {
+                    selectedEventType = null; // No selection
+                }
             }
         });
 
         // Department Selection (Multiple Selection)
-        for (int i = 0; i < departmentGroup.getChildCount(); i++) {
-            Chip chip = (Chip) departmentGroup.getChildAt(i);
-            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                String dept = buttonView.getText().toString();
-                if (isChecked) {
-                    selectedDepartments.add(dept);
-                } else {
-                    selectedDepartments.remove(dept);
+        departmentGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+            @Override
+            public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+                selectedDepartments.clear(); // Clear previous selections
+                for (int id : checkedIds) {
+                    Chip chip = findViewById(id);
+                    if (chip != null) {
+                        selectedDepartments.add(chip.getText().toString());
+                    }
                 }
-            });
-        }
+            }
+        });
 
         // Image Selection
         attachImageButton.setOnClickListener(v -> selectImage());
@@ -196,9 +214,9 @@ public class EventScheduleActivity extends BaseActivity {
 
     // Validate and Submit Details
     private void submitEventDetails() {
-        String title = eventTitle.getText().toString().trim();
-        String description = eventDescription.getText().toString().trim();
-        String link = registrationLink.getText().toString().trim();
+        String title = Objects.requireNonNull(eventTitle.getText()).toString().trim();
+        String description = Objects.requireNonNull(eventDescription.getText()).toString().trim();
+        String link = Objects.requireNonNull(registrationLink.getText()).toString().trim();
 
         if (title.isEmpty() || title.length() > 25) {
             Toast.makeText(this, "Enter a valid Event Title (Max 25 characters)", Toast.LENGTH_SHORT).show();
@@ -206,6 +224,16 @@ public class EventScheduleActivity extends BaseActivity {
         }
         if (description.isEmpty() || description.length() > 500) {
             Toast.makeText(this, "Enter a valid Event Description (Max 500 characters)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (link.isEmpty()) {
+            Toast.makeText(this, "Please enter registration link", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Validate Registration Link Format
+        if (!link.startsWith("https://")) {
+            Toast.makeText(this, "Registration link must start with https://", Toast.LENGTH_SHORT).show();
             return;
         }
         if (selectedEventType == null) {
@@ -227,12 +255,63 @@ public class EventScheduleActivity extends BaseActivity {
         new MaterialAlertDialogBuilder(EventScheduleActivity.this)
                 .setTitle("Schedule Event?")
                         .setMessage(
-                                eventModel + "\n"
+                                "Event Details:" + "\n" +
+                                        title + "\n" +
+                                        description + "\n" +
+                                        selectedEventType + "\n" +
+                                        selectedDepartments + "\n" +
+                                        imageUri + "\n"
                                 + "Are you sure you want to schedule this event?")
-                                .show();
+                .setPositiveButton("Schedule", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        progressBar.setVisibility(VISIBLE);
+                        disableAllInputs();
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                //TODO: Push to Firebase
+                                Toast.makeText(EventScheduleActivity.this, "Event Submitted Successfully!", Toast.LENGTH_SHORT).show();
+                                finish();
+                                progressBar.setVisibility(GONE);
+                            }
+                        }, 5000);
+                    }
+                }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
 
-        // TODO: Upload eventModel to Firebase
-        Toast.makeText(this, "Event Submitted Successfully!", Toast.LENGTH_SHORT).show();
+    }
+    private void disableAllInputs() {
+        // Disable EditText fields
+        eventTitle.setEnabled(false);
+        eventDescription.setEnabled(false);
+        registrationLink.setEnabled(false);
+
+        // Disable Event Type Chips (Single Selection)
+        for (int i = 0; i < eventTypeGroup.getChildCount(); i++) {
+            View child = eventTypeGroup.getChildAt(i);
+            if (child instanceof Chip) {
+                child.setEnabled(false);
+            }
+        }
+
+        // Disable Department Selection Chips (Multi-Selection)
+        for (int i = 0; i < departmentGroup.getChildCount(); i++) {
+            View child = departmentGroup.getChildAt(i);
+            if (child instanceof Chip) {
+                child.setEnabled(false);
+            }
+        }
+
+        // Disable Upload Poster Button
+        attachImageButton.setEnabled(false);
+
+        // Disable Submit Button
+        submitButton.setEnabled(false);
     }
 
     public class EventModel {

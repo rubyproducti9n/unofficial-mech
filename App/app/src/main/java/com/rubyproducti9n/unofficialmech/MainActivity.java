@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.Toolbar;
@@ -72,6 +73,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -83,6 +85,7 @@ import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -98,6 +101,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -329,7 +333,10 @@ GestureDetector gesture;
 //        }).start();
 
         FloatingActionButton fab = findViewById(R.id.fab0);
-        fab.setOnClickListener(view -> ProjectToolkit.initiatePanicMode(MainActivity.this));
+        fab.setOnClickListener(view ->
+                        Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
+                //ProjectToolkit.initiatePanicMode(MainActivity.this)
+        );
 
 //        ImageView bgImg = findViewById(R.id.bgView);
 
@@ -1301,6 +1308,96 @@ GestureDetector gesture;
                     }
                 })
                 .show();
+    }
+    private void showEventListDialog() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event");
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> eventTitles = new ArrayList<>();
+                final List<String> eventKeys = new ArrayList<>();
+
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    String title = eventSnapshot.child("eventTitle").getValue(String.class);
+                    if (title != null) {
+                        eventTitles.add(title);
+                        eventKeys.add(eventSnapshot.getKey()); // Store event keys for details
+                    }
+                }
+
+                if (eventTitles.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "No events found!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Convert list to array for AlertDialog
+                String[] eventArray = eventTitles.toArray(new String[0]);
+
+                new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle("Select an Event")
+                        .setItems(eventArray, (dialog, which) -> {
+                            String selectedEventKey = eventKeys.get(which);
+                            showEventDetailsDialog(selectedEventKey); // Open details dialog
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showEventDetailsDialog(String eventKey) {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event").child(eventKey);
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Toast.makeText(MainActivity.this, "Event details not found!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                String title = snapshot.child("eventTitle").getValue(String.class);
+                String description = snapshot.child("eventDescription").getValue(String.class);
+                String imageUrl = snapshot.child("eventImage").getValue(String.class); // Assuming image URL is stored
+
+                // Inflate the custom layout
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                View view = inflater.inflate(R.layout.dialog_event_details, null);
+
+                // Reference UI elements
+                ImageView eventImage = view.findViewById(R.id.eventImage);
+                TextView eventTitle = view.findViewById(R.id.eventTitle);
+                TextView eventDescription = view.findViewById(R.id.eventDescription);
+                MaterialButton eventButton = view.findViewById(R.id.eventButton);
+
+                // Set data
+                eventTitle.setText(title);
+                eventDescription.setText(description);
+
+                // Load image using Glide (or Picasso)
+                Picasso.get().load(imageUrl).into(eventImage);
+
+                // Build the dialog
+                AlertDialog alertDialog = new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setView(view)
+                        .setCancelable(true)
+                        .show();
+
+                // Close button action
+                eventButton.setOnClickListener(v -> alertDialog.dismiss());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to load event details", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

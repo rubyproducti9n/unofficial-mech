@@ -145,7 +145,7 @@
             android:layout_margin="28dp"
             android:contentDescription="@string/panic_button"
             android:elevation="0dp"
-            android:src="@drawable/round_warning_24"
+            android:src="@drawable/round_calendar_today_24"
             app:elevation="4dp"
             app:fabSize="mini"
             app:layout_constraintBottom_toBottomOf="@+id/view_pager"

@@ -36,6 +36,7 @@
             android:indeterminate="true"
             android:max="100"
             android:progress="0"
+            android:visibility="gone"
             app:indeterminateAnimationType="disjoint"
             app:layout_constraintTop_toBottomOf="@+id/appBar" />
 
@@ -75,7 +76,7 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/titleLayout"
-                    style="?attr/textInputFilledStyle"
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
@@ -93,19 +94,14 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/createEventTitle"
-                        style="@style/NoBorderEditText"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:inputType="textMultiLine"
-                        android:padding="12dp"
-                        android:textSize="14sp" />
+                        android:layout_height="wrap_content"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/highlightLayout"
-                    style="?attr/textInputFilledStyle"
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
@@ -121,13 +117,9 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/createEventHighlight"
-                        style="@style/NoBorderEditText"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
                         android:inputType="textMultiLine"
-                        android:padding="12dp"
-                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/createEventTitle" />
@@ -136,13 +128,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/registrationLayout"
-                    style="?attr/textInputFilledStyle"
+                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
+                    app:counterEnabled="false"
                     android:hint="Registration Link"
-                    app:errorEnabled="true"
-                    app:hintAnimationEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/highlightLayout">
@@ -153,10 +144,6 @@
                         style="@style/Widget.Material3.TextInputEditText.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:inputType="textMultiLine"
-                        android:padding="12dp"
-                        android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/createEventHighlight" />
@@ -168,91 +155,113 @@
                     android:id="@+id/t1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="12dp"
                     android:text="Select Event Type:"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/registrationLayout" />
+                <HorizontalScrollView
+                    android:id="@+id/hv1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:fillViewport="true"
+                    app:layout_constraintTop_toBottomOf="@+id/t1">
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/eventType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="12dp"
-                    android:scrollbars="horizontal"
-                    app:layout_constraintTop_toBottomOf="@+id/t1">
+                    android:paddingEnd="12dp"
+                    android:scrollbars="horizontal">
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Annual Gathering" />
+                        android:text="Annual Gathering"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"/>
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Project Competition" />
+                        android:text="Project Competition"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"/>
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Exhibition" />
+                        android:text="Exhibition"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"/>
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Live Concert" />
+                        android:text="Live Concert"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"/>
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Other" />
+                        android:text="Other"
+                    style="@style/Widget.Material3.Chip.Suggestion.Elevated"/>
 
                 </com.google.android.material.chip.ChipGroup>
+                </HorizontalScrollView>
 
 
                 <TextView
                     android:id="@+id/t2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginStart="12dp"
                     android:text="Select Departments to get notified:"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/eventType" />
+                    app:layout_constraintTop_toBottomOf="@+id/hv1" />
                 <com.google.android.material.chip.ChipGroup
                     android:id="@+id/eventDept"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
                     android:scrollbars="horizontal"
                     app:layout_constraintTop_toBottomOf="@+id/t2">
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mechanical" />
+                        android:text="Mechanical"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Mechatronix" />
+                        android:text="Mechatronix"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IT" />
+                        android:text="IT"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="EnTC" />
+                        android:text="EnTC"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Civil" />
+                        android:text="Civil"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Structural" />
+                        android:text="Structural"
+                        style="@style/Widget.Material3.Chip.Filter" />
 
                 </com.google.android.material.chip.ChipGroup>
 
@@ -260,7 +269,8 @@
                     android:id="@+id/t3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginStart="12dp"
                     android:text="Add event poster*"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/eventDept" />
@@ -306,8 +316,9 @@
                     android:id="@+id/registerEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="18dp"
+                    android:layout_margin="28dp"
                     android:text="Schedule"
+                    android:textStyle="bold"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -427,6 +438,7 @@
         android:layout_height="wrap_content"
         android:indeterminateBehavior="repeat"
         android:indeterminateOnly="true"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
