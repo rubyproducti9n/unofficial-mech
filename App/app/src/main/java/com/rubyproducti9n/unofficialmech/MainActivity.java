@@ -209,7 +209,7 @@ GestureDetector gesture;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
-        checkForUpcomingEvent();
+        showEventDetailsDialog("eid");
         startCountDown("🎟️LIVE CONCERT IN", "2025-03-08 18:00", "https://instagram.fnag6-2.fna.fbcdn.net/v/t51.29350-15/479492605_1365822141496718_2075561964178648938_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fnag6-2.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2AGnLvOMH4hqyApQwuQtAr0Zs0vAc0xRQ8Q2PB_kzNPLll-XXtJX2WEU7FFV7xM0_HI8GlrcnC6VzotVTJG4Bsn0&_nc_ohc=76HFKHiXNPEQ7kNvgGPklJQ&_nc_gid=9b221b3f1bc74398acfb62264226e4e8&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU2OTMwMTg4NzEwOTY4NDU2MA%3D%3D.3-ccb7-5&oh=00_AYDJULNl01LEF7Iis8fRnaR-mBUUBV0H5DARxpM4Lg62Eg&oe=67CB6ADC&_nc_sid=7a9f4b");
 //        goPremium();
         likeAnim= findViewById(R.id.lottieLikeAnim);
@@ -334,7 +334,8 @@ GestureDetector gesture;
 
         FloatingActionButton fab = findViewById(R.id.fab0);
         fab.setOnClickListener(view ->
-                        Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
+                        showEventListDialog()
+                        //Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
                 //ProjectToolkit.initiatePanicMode(MainActivity.this)
         );
 
@@ -1280,37 +1281,8 @@ GestureDetector gesture;
         }
     }
 
-    private void checkForUpcomingEvent(){
-        String ad = "" +
-                "\uD83D\uDD25 Experience History in the Making! \uD83D\uDD25\n" +
-                "\n" +
-                "\uD83C\uDFA7 DJ Night at Sanjivani University! \uD83C\uDFB6\n" +
-                "For the FIRST TIME EVER, Sanjivani is turning up the volume! Don't miss out on this electrifying night of music, dance, and unforgettable memories.\n" +
-                "\n" +
-                "\uD83D\uDCC5 Book Your Tickets Now! \uD83C\uDFC6\n" +
-                "\n" +
-                "⚡ Limited Slots Available – Reserve Yours Today! ⚡";
-        new MaterialAlertDialogBuilder(MainActivity.this)
-                .setTitle("Upcoming event")
-                .setMessage(ad)
-                .setPositiveButton("Book ticket", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(MainActivity.this, EventScheduleActivity.class);
-                        intent.putExtra("eventId", "Shirley Setia Concert");
-                        startActivity(intent);
-                    }
-                })
-                .setNegativeButton("Close", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-    }
     private void showEventListDialog() {
-        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event");
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events");
 
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1319,7 +1291,7 @@ GestureDetector gesture;
                 final List<String> eventKeys = new ArrayList<>();
 
                 for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
-                    String title = eventSnapshot.child("eventTitle").getValue(String.class);
+                    String title = eventSnapshot.child("title").getValue(String.class);
                     if (title != null) {
                         eventTitles.add(title);
                         eventKeys.add(eventSnapshot.getKey()); // Store event keys for details
@@ -1352,7 +1324,7 @@ GestureDetector gesture;
     }
 
     private void showEventDetailsDialog(String eventKey) {
-        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("Event").child(eventKey);
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events").child(eventKey);
 
         eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -1362,9 +1334,11 @@ GestureDetector gesture;
                     return;
                 }
 
-                String title = snapshot.child("eventTitle").getValue(String.class);
-                String description = snapshot.child("eventDescription").getValue(String.class);
-                String imageUrl = snapshot.child("eventImage").getValue(String.class); // Assuming image URL is stored
+                String title = snapshot.child("title").getValue(String.class);
+                String description = snapshot.child("highlights").getValue(String.class);
+                String type = snapshot.child("type").getValue(String.class);
+                String imageUrl = snapshot.child("poster").getValue(String.class); // Assuming image URL is stored
+                String registration = snapshot.child("registration").getValue(String.class);
 
                 // Inflate the custom layout
                 LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
@@ -1374,7 +1348,12 @@ GestureDetector gesture;
                 ImageView eventImage = view.findViewById(R.id.eventImage);
                 TextView eventTitle = view.findViewById(R.id.eventTitle);
                 TextView eventDescription = view.findViewById(R.id.eventDescription);
+                MaterialButton eventRegistration = view.findViewById(R.id.register);
                 MaterialButton eventButton = view.findViewById(R.id.eventButton);
+
+                if (type.equals("Concert")){
+                    eventRegistration.setText("Buy ticket");
+                }
 
                 // Set data
                 eventTitle.setText(title);
@@ -1389,6 +1368,8 @@ GestureDetector gesture;
                         .setCancelable(true)
                         .show();
 
+
+                eventRegistration.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(registration))));
                 // Close button action
                 eventButton.setOnClickListener(v -> alertDialog.dismiss());
             }
