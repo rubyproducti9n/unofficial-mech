@@ -25,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:title="Schedule Event"
-                app:titleTextAppearance="@style/ToolBarTheme"/>
+                app:titleTextAppearance="@style/ToolBarTheme" />
 
         </com.google.android.material.appbar.AppBarLayout>
 
@@ -41,21 +41,22 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/alert"
+            style="@style/Widget.Material3.CardView.Elevated"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="12dp"
+            android:visibility="gone"
             app:cardCornerRadius="12dp"
-            style="@style/Widget.Material3.CardView.Elevated"
             app:layout_constraintTop_toBottomOf="@+id/progressBar">
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:drawablePadding="8dp"
                 android:padding="12dp"
                 android:text="Users will get notified for the upcoming events"
                 android:textStyle="bold"
-                android:drawableStart="@drawable/round_info_24"
-                android:drawablePadding="8dp"/>
+                app:drawableStartCompat="@drawable/round_info_24" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -63,6 +64,7 @@
             android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/alert">
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -76,14 +78,14 @@
                     style="?attr/textInputFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Event Title"
                     android:layout_margin="12dp"
-                    app:endIconMode="clear_text"
+                    android:hint="Event Title"
                     app:counterEnabled="true"
                     app:counterMaxLength="25"
-                    app:helperTextEnabled="true"
-                    app:helperText="Keep it short and attractive"
+                    app:endIconMode="clear_text"
                     app:errorEnabled="true"
+                    app:helperText="Keep it short and attractive"
+                    app:helperTextEnabled="true"
                     app:hintAnimationEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -106,12 +108,12 @@
                     style="?attr/textInputFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Write about the event"
                     android:layout_margin="12dp"
+                    android:hint="Write about the event"
                     app:counterEnabled="true"
                     app:counterMaxLength="500"
-                    app:hintAnimationEnabled="true"
                     app:errorEnabled="true"
+                    app:hintAnimationEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/titleLayout">
@@ -137,10 +139,10 @@
                     style="?attr/textInputFilledStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Registration Link"
                     android:layout_margin="12dp"
-                    app:hintAnimationEnabled="true"
+                    android:hint="Registration Link"
                     app:errorEnabled="true"
+                    app:hintAnimationEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/highlightLayout">
@@ -148,9 +150,9 @@
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/createEventRegistration"
+                        style="@style/Widget.Material3.TextInputEditText.FilledBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        style="@style/Widget.Material3.TextInputEditText.FilledBox"
                         android:layout_margin="8dp"
                         android:inputType="textMultiLine"
                         android:padding="12dp"
@@ -174,8 +176,8 @@
                     android:id="@+id/eventType"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="horizontal"
                     android:paddingStart="12dp"
+                    android:scrollbars="horizontal"
                     app:layout_constraintTop_toBottomOf="@+id/t1">
 
                     <com.google.android.material.chip.Chip
@@ -218,39 +220,52 @@
                     android:id="@+id/eventDept"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="horizontal"
                     android:paddingStart="12dp"
-                    app:layout_constraintTop_toBottomOf="@+id/t1">
+                    android:scrollbars="horizontal"
+                    app:layout_constraintTop_toBottomOf="@+id/t2">
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Annual Gathering" />
+                        android:text="Mechanical" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Project Competition" />
+                        android:text="Mechatronix" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Exhibition" />
+                        android:text="IT" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Live Concert" />
+                        android:text="EnTC" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Other" />
+                        android:text="Civil" />
+
+                    <com.google.android.material.chip.Chip
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Structural" />
 
                 </com.google.android.material.chip.ChipGroup>
 
+                <TextView
+                    android:id="@+id/t3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:text="Add event poster*"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/eventDept" />
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/materialCardView7"
+                    android:id="@+id/eventPoster"
                     android:layout_width="match_parent"
                     android:layout_height="280dp"
                     android:layout_margin="18dp"
@@ -258,7 +273,7 @@
                     app:cardElevation="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/eventDept">
+                    app:layout_constraintTop_toBottomOf="@+id/t3">
 
                     <ImageView
                         android:id="@+id/img"
@@ -288,7 +303,7 @@
 
 
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/materialButton2"
+                    android:id="@+id/registerEvent"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="18dp"
@@ -296,8 +311,7 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/materialCardView7" />
-
+                    app:layout_constraintTop_toBottomOf="@+id/eventPoster" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -318,11 +332,11 @@
             android:layout_margin="12dp"
             app:cardCornerRadius="28dp"
             app:cardElevation="6dp"
-            app:strokeWidth="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:strokeWidth="0dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
@@ -334,10 +348,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:cardCornerRadius="18dp"
-                    app:strokeWidth="0dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:strokeWidth="0dp">
 
                     <ImageView
                         android:id="@+id/eventImg"
@@ -401,9 +415,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_margin="18dp"
+            android:gravity="center"
             android:text="Event has been expired, please contact the Admin for more details."
-            android:textAlignment="center"
-            android:gravity="center"/>
+            android:textAlignment="center" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
