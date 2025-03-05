@@ -66,6 +66,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
+import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
@@ -125,7 +126,8 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
     Bitmap bitmap;
     private static InterstitialAd mInterstitialAd;
 
-    SharedPreferences preferences;
+    SharedPreferences preferences, modelPref;
+    int model;
     LottieAnimationView l;
 
     @Override
@@ -162,10 +164,11 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 
 
         Chip chip = findViewById(R.id.latest);
-        SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(ArtificialIntelligenceActivity.this);
-        int model = modelPref.getInt("selected_model", 0);
+        modelPref = PreferenceManager.getDefaultSharedPreferences(ArtificialIntelligenceActivity.this);
+        model = modelPref.getInt("selected_model", 0);
         if (model == 0){
-            chip.setVisibility(GONE);
+            chip.setVisibility(VISIBLE);
+            chip.setText("Thinking");
         }else{
             chip.setVisibility(GONE);
         }
@@ -371,18 +374,9 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 //                                txt.setText("Unsupported media type.");
 //                            }
                         }
-                    } else {
-                        initializeGemini(Objects.requireNonNull(promptEditTxt.getText()).toString(), txt);
                     }
                 }
         );
-
-
-
-
-
-
-
     }
 
     private boolean verifyLogin(){
@@ -654,7 +648,7 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 //        String apiKey = BuildConfig.MY_API_KEY;
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_text), BuildConfig.apiKey);
+        GenerativeModel gm = new GenerativeModel("gemini-2.0-flash-thinking-exp", BuildConfig.apiKey);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
@@ -746,33 +740,34 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 
 
     private void initiateModel(String prompt, TextView txt){
-        //Gemini res = new Gemini(0, prompt);
-
-
-                Gemini.initiate(0, prompt, new Gemini.GeminiCallback() {
+        if (rawSelectedImageUri !=null){
+            initializeGeminiVision(prompt, rawSelectedImageUri, txt);
+        }else{Gemini.initiate(model, prompt, new Gemini.GeminiCallback() {
+            @Override
+            public void onSuccess(String result) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
                     @Override
-                    public void onSuccess(String result) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressIndicator.setVisibility(GONE);
-                                txt.setTextSize(14);
-                                txt.setText(result); // Update UI with response
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onFailure(String error) {
-                        new Handler(Looper.getMainLooper()).post(new Runnable() {
-                            @Override
-                            public void run() {
-                                txt.setTextSize(12);
-                                txt.setText("Error: " + error);
-                            }
-                        });
+                    public void run() {
+                        progressIndicator.setVisibility(GONE);
+                        txt.setTextSize(14);
+                        txt.setText(result); // Update UI with response
                     }
                 });
+            }
+
+            @Override
+            public void onFailure(String error) {
+                new Handler(Looper.getMainLooper()).post(new Runnable() {
+                    @Override
+                    public void run() {
+                        txt.setTextSize(12);
+                        txt.setText("Error: " + error);
+                    }
+                });
+            }
+        });
+        }
+
 
     }
 

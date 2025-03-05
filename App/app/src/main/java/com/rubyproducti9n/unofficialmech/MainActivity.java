@@ -19,6 +19,7 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
@@ -100,6 +101,8 @@ import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
@@ -204,6 +207,7 @@ GestureDetector gesture;
         return super.onTouchEvent(event);
     }
 
+    @OptIn(markerClass = ExperimentalBadgeUtils.class)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -517,6 +521,9 @@ GestureDetector gesture;
     private void initiatePager(){
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
+        BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.action_home);
+        badge.setVisible(true);
+        badge.setNumber(1);
         viewPager = findViewById(R.id.view_pager);
         setupViewPager(viewPager);
         bottomNavigationView.setOnNavigationItemSelectedListener(

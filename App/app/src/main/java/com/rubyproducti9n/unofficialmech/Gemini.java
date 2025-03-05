@@ -99,6 +99,7 @@ public class Gemini {
 
         // Array of Gemini models
         String[] models = {
+                "gemini-2.0-flash-thinking-exp",
                 "gemini-2.0-flash-001",
                 "gemini-1.5-flash",
                 "gemini-1.5-flash-8b-001",};
