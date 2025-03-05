@@ -96,7 +96,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.http.Body;
 import retrofit2.http.POST;
 
-public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
+public class ArtificialIntelligenceActivity extends BaseActivity {
 
     GemmaModel gemmaModel;
 
@@ -107,7 +107,6 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
     private static final MediaType JSON =MediaType.get("application/json; charset=utf-8");
     private final OkHttpClient client = new OkHttpClient();
 
-    View view;
 
     TextView txt;
 
@@ -122,42 +121,43 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
     private static InterstitialAd mInterstitialAd;
 
     SharedPreferences preferences;
+    LottieAnimationView l;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        view = inflater.inflate(R.layout.activity_artificial_intelligence, container, false);
+        setContentView(R.layout.activity_artificial_intelligence);
 
         // Delay execution to ensure the view is attached
-        view.post(() -> {
-            BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
-            if (dialog != null) {
-                FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
-                if (bottomSheet != null) {
-                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
-                    behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
-                    behavior.setHideable(true);
-                    behavior.setFitToContents(true);
-                }
-            }
+//        view.post(() -> {
+//            BottomSheetDialog dialog = (BottomSheetDialog) getDialog();
+//            if (dialog != null) {
+//                FrameLayout bottomSheet = dialog.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+//                if (bottomSheet != null) {
+//                    BottomSheetBehavior<FrameLayout> behavior = BottomSheetBehavior.from(bottomSheet);
+//                    behavior.setPeekHeight(BottomSheetBehavior.PEEK_HEIGHT_AUTO);
+//                    behavior.setHideable(true);
+//                    behavior.setFitToContents(true);
+//                }
+//            }
+//
+//            // Fix scrolling issue
+//            ScrollView scrollView = view.findViewById(R.id.scroll_view);
+//            if (scrollView != null) {
+//                scrollView.setOnTouchListener((v, event) -> {
+//                    v.getParent().requestDisallowInterceptTouchEvent(false); // Prevent BottomSheet from intercepting
+//                    return false;
+//                });
+//            }
+//        });
 
-            // Fix scrolling issue
-            ScrollView scrollView = view.findViewById(R.id.scroll_view);
-            if (scrollView != null) {
-                scrollView.setOnTouchListener((v, event) -> {
-                    v.getParent().requestDisallowInterceptTouchEvent(false); // Prevent BottomSheet from intercepting
-                    return false;
-                });
-            }
-        });
-        //new Gemini(requireContext(), "Heyy!!!");
+        //new Gemini(ArtificialIntelligenceActivity.this, "Heyy!!!");
 
         //initializeGeminiUpdated("Heyy");
 
 
-        Chip chip = view.findViewById(R.id.latest);
-        SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        Chip chip = findViewById(R.id.latest);
+        SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(ArtificialIntelligenceActivity.this);
         int model = modelPref.getInt("selected_model", 0);
         if (model == 0){
             chip.setVisibility(GONE);
@@ -167,7 +167,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         //TODO: Google Gemma Model in Test (Alpha-Beta-01)
 //        try {
-//            gemmaModel = new GemmaModel(requireContext());
+//            gemmaModel = new GemmaModel(ArtificialIntelligenceActivity.this);
 //
 //            // Example question
 //            String question = "What is the capital of India?";
@@ -177,10 +177,10 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //
 //            // Log and display answer
 //            Log.d("Gemma Output", answer);
-//            new MaterialAlertDialogBuilder(requireContext())
+//            new MaterialAlertDialogBuilder(ArtificialIntelligenceActivity.this)
 //                    .setMessage(answer)
 //                    .show();
-//            Toast.makeText(requireContext(), answer, Toast.LENGTH_SHORT).show();
+//            Toast.makeText(ArtificialIntelligenceActivity.this, answer, Toast.LENGTH_SHORT).show();
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        } catch (JSONException e) {
@@ -189,29 +189,27 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
 //        String response = generateTextResponse("Hello, How are you?");
 //        Log.d("OpenAI - ChatGPT", response);
-//        Toast.makeText(requireContext(), response, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ArtificialIntelligenceActivity.this, response, Toast.LENGTH_SHORT).show();
 
-        ImageView bgImg = view.findViewById(R.id.blurBg);
-        preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        ImageView bgImg = findViewById(R.id.blurBg);
+        preferences = PreferenceManager.getDefaultSharedPreferences(ArtificialIntelligenceActivity.this);
 
-        Window window = requireActivity().getWindow();
+        Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(this.getResources().getColor(R.color.DynamicBlack));
 
-        LottieAnimationView l = view.findViewById(R.id.lottie);
+        l = findViewById(R.id.lottie);
         l.setAnimation(R.raw.anim_gemini_nm);
-        l.loop(true);
-        l.playAnimation();
 
 
-        MaterialCardView ad_container = view.findViewById(R.id.ad_container);
+        MaterialCardView ad_container = findViewById(R.id.ad_container);
         getAdValue(ad_container, new Callbacks.AdValue() {
             @Override
             public void onAdValue(boolean value) {
                 if (value){
-                    AdView adView = view.findViewById(R.id.adView);
-                    MobileAds.initialize(requireContext(), new OnInitializationCompleteListener() {
+                    AdView adView = findViewById(R.id.adView);
+                    MobileAds.initialize(ArtificialIntelligenceActivity.this, new OnInitializationCompleteListener() {
                         @Override
                         public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
                             if (initializationStatus != null){
@@ -227,7 +225,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                     AdRequest adRequest = new AdRequest.Builder().build();
                     adView.loadAd(adRequest);
 
-                    InterstitialAd.load(requireContext(), "ca-app-pub-5180621516690353/8609265521", new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
+                    InterstitialAd.load(ArtificialIntelligenceActivity.this, "ca-app-pub-5180621516690353/8609265521", new AdRequest.Builder().build(), new InterstitialAdLoadCallback() {
                         @Override
                         public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                             super.onAdFailedToLoad(loadAdError);
@@ -248,13 +246,13 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             }
         });
 
-        progressIndicator = view.findViewById(R.id.progress_bar);
-        ImageView img = view.findViewById(R.id.img);
-        txt = view.findViewById(R.id.textView);
-        btn = view.findViewById(R.id.btn);
-        promptEditTxt = view.findViewById(R.id.prompt);
-        model_info = view.findViewById(R.id.model_info);
-        MaterialButton img_selector = view.findViewById(R.id.img_btn);
+        progressIndicator = findViewById(R.id.progress_bar);
+        ImageView img = findViewById(R.id.img);
+        txt = findViewById(R.id.textView);
+        btn = findViewById(R.id.btn);
+        promptEditTxt = findViewById(R.id.prompt);
+        model_info = findViewById(R.id.model_info);
+        MaterialButton img_selector = findViewById(R.id.img_btn);
 
         img_selector.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,6 +271,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
         progressIndicator.setIndeterminate(false);
         progressIndicator.setProgress(0);
+        progressIndicator.setVisibility(GONE);
         txt.setTextSize(20);
         txt.setTextColor(getResources().getColor(R.color.DynamicWhite));
 
@@ -280,7 +279,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 //        if (getArguments() !=null){
 //            String receivedCmd = getArguments().getString("cmd");
 //            initializeGemini(receivedCmd, txt);
-//            //Toast.makeText(requireContext(), receivedCmd, Toast.LENGTH_SHORT).show();
+//            //Toast.makeText(ArtificialIntelligenceActivity.this, receivedCmd, Toast.LENGTH_SHORT).show();
 //        }
 
         promptEditTxt.addTextChangedListener(new TextWatcher() {
@@ -315,19 +314,21 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                             @Override
                             public void onClick(View v) {
                                 if (mInterstitialAd!=null){
-                                    mInterstitialAd.show(requireActivity());
+                                    mInterstitialAd.show(ArtificialIntelligenceActivity.this);
                                 }else{
-                                    Toast.makeText(requireContext(), "Processing...", Toast.LENGTH_SHORT).show();
+                                    progressIndicator.setIndeterminate(true);
+                                    progressIndicator.setVisibility(VISIBLE);
+                                    Toast.makeText(ArtificialIntelligenceActivity.this, "Processing...", Toast.LENGTH_SHORT).show();
                                 }
-
-                                progressIndicator.setVisibility(VISIBLE);
+                                l.loop(true);
+                                l.playAnimation();
                                 ProjectToolkit.pulseAmin(1, txt);
                                 txt.setText(" ");
                                 txt.setAlpha(0.5f);
                                 setLimit();
                                 initiateModel(promptEditTxt.getText().toString(), txt);
                                 promptEditTxt.setText("");
-                                //IntelligentProcessingHub.googleBarcodeScanner(requireContext());
+                                //IntelligentProcessingHub.googleBarcodeScanner(ArtificialIntelligenceActivity.this);
                             }
                         });
                     }
@@ -383,7 +384,6 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
 
 
 
-        return view;
 
     }
 
@@ -398,7 +398,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
     }
 
     private void warningDialog(int credits){
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(ArtificialIntelligenceActivity.this)
                 .setTitle("Warning!")
                 .setCancelable(false)
                 .setMessage("You have " + credits + " credit to use Gemini Pro for free. To enjoy unlimited Gemini Pro and Gemini Flash please create a account or login")
@@ -417,14 +417,14 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
     }
 
     private void initiateLimitDialog(){
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(requireContext())
+        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(ArtificialIntelligenceActivity.this)
                 .setTitle("Exhausted!")
                 .setCancelable(false)
                 .setMessage("You have exhausted your one-time limit with no account logged-in")
                 .setPositiveButton("Re-new", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(ArtificialIntelligenceActivity.this);
                         SharedPreferences.Editor e = p.edit();
                         e.putInt("limit", 3);
                         e.apply();
@@ -434,7 +434,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        requireActivity().finish();
+                        finish();
                     }
                 });
         builder.show();
@@ -469,7 +469,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         txt.setTextSize(14);
         txt.setTextColor(getResources().getColor(R.color.matte_White));
         try {
-        InputStream inputStream = requireActivity().getContentResolver().openInputStream(imgUri);
+        InputStream inputStream = getContentResolver().openInputStream(imgUri);
         bitmap = BitmapFactory.decodeStream(inputStream);
 
         if (inputStream!=null){
@@ -502,13 +502,13 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             @Override
             public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
                 String resultText = result.getText();
-                requireActivity().runOnUiThread(() -> txt.setAlpha(1.0f));
-                requireActivity().runOnUiThread(() -> txt.setText(resultText));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.fadeIn(txt));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
-                requireActivity().runOnUiThread(() -> promptEditTxt.setText(""));
-                requireActivity().runOnUiThread(() -> btn.setEnabled(false));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.pulseAmin(0, txt));
+                runOnUiThread(() -> txt.setAlpha(1.0f));
+                runOnUiThread(() -> txt.setText(resultText));
+                runOnUiThread(() -> ProjectToolkit.fadeIn(txt));
+                runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
+                runOnUiThread(() -> promptEditTxt.setText(""));
+                runOnUiThread(() -> btn.setEnabled(false));
+                runOnUiThread(() -> ProjectToolkit.pulseAmin(0, txt));
                 System.out.println(resultText);
             }
 
@@ -516,7 +516,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             public void onFailure(Throwable t) {
                 t.printStackTrace();
                 Looper.prepare();
-                requireActivity().runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
+                runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
                 Log.d("===Reason===", "R:- " + t);
                 System.out.println("====Reason:- " + t);
             }
@@ -552,13 +552,13 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             @Override
             public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
                 String resultText = result.getText();
-                requireActivity().runOnUiThread(() -> txt.setAlpha(1.0f));
-                requireActivity().runOnUiThread(() -> txt.setText(resultText));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.fadeIn(txt));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
-                requireActivity().runOnUiThread(() -> promptEditTxt.setText(""));
-                requireActivity().runOnUiThread(() -> btn.setEnabled(false));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.pulseAmin(0, txt));
+                runOnUiThread(() -> txt.setAlpha(1.0f));
+                runOnUiThread(() -> txt.setText(resultText));
+                runOnUiThread(() -> ProjectToolkit.fadeIn(txt));
+                runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
+                runOnUiThread(() -> promptEditTxt.setText(""));
+                runOnUiThread(() -> btn.setEnabled(false));
+                runOnUiThread(() -> ProjectToolkit.pulseAmin(0, txt));
                 System.out.println(resultText);
             }
 
@@ -566,8 +566,8 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
             public void onFailure(Throwable t) {
                 t.printStackTrace();
                 Looper.prepare();
-                requireActivity().runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
-                requireActivity().runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
+                runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
+                runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
                 Log.d("===Reason===", "R:- " + t);
             }
         }, executor);
@@ -638,6 +638,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                         new Handler(Looper.getMainLooper()).post(new Runnable() {
                             @Override
                             public void run() {
+                                progressIndicator.setVisibility(GONE);
                                 txt.setTextSize(14);
                                 txt.setText(result); // Update UI with response
                             }

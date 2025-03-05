@@ -267,8 +267,8 @@ GestureDetector gesture;
 //                        "\n" +
 //                        "For this chat your name will be Torque AI powered by Google Gemini");
 //                gem.setArguments(bundle);
-                gem.show(getSupportFragmentManager(), "tag");
-//                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
+                //gem.show(getSupportFragmentManager(), "tag");
+                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
             }
         });
 
