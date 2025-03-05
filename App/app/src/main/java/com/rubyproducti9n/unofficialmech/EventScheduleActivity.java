@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +19,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,12 +32,23 @@ import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class EventScheduleActivity extends BaseActivity {
@@ -53,11 +67,17 @@ public class EventScheduleActivity extends BaseActivity {
     private ArrayList<String> selectedDepartments = new ArrayList<>();
     private MaterialButton submitButton, attachImageButton;
 
+    private EditText eventDateTime;
+    private String selectedDateTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_schedule);
 
+// Open Date-Time Picker when clicking on EditText
+        eventDateTime = findViewById(R.id.eventDateTime);
+        eventDateTime.setOnClickListener(v -> showDateTimePicker());
 
         //Views
         createEvent = findViewById(R.id.createEvent);
@@ -189,6 +209,36 @@ public class EventScheduleActivity extends BaseActivity {
 
     }
 
+    private void showDateTimePicker() {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+                    int minute = calendar.get(Calendar.MINUTE);
+
+                    TimePickerDialog timePickerDialog = new TimePickerDialog(this,
+                            (timeView, selectedHour, selectedMinute) -> {
+                                // Format selected date & time
+                                Calendar selectedCalendar = Calendar.getInstance();
+                                selectedCalendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                                selectedDateTime = dateFormat.format(selectedCalendar.getTime());
+
+                                // Set formatted date in EditText
+                                eventDateTime.setText(selectedDateTime);
+                            }, hour, minute, true);
+
+                    timePickerDialog.show();
+                }, year, month, day);
+
+        datePickerDialog.getDatePicker().setMinDate(System.currentTimeMillis()); // Prevent past dates
+        datePickerDialog.show();
+    }
+
     // Open gallery to select image
     private void selectImage() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -236,6 +286,25 @@ public class EventScheduleActivity extends BaseActivity {
             Toast.makeText(this, "Registration link must start with https://", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (selectedDateTime == null || selectedDateTime.isEmpty()) {
+            Toast.makeText(this, "Please select an event date & time!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Parse the selected date and check if it's in the future
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+        try {
+            Date eventDate = dateFormat.parse(selectedDateTime);
+            Date currentDate = new Date();
+
+            if (eventDate != null && eventDate.before(currentDate)) {
+                Toast.makeText(this, "Event date must be in the future!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        } catch (ParseException e) {
+            Toast.makeText(this, "Invalid event date format!", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (selectedEventType == null) {
             Toast.makeText(this, "Select an Event Type", Toast.LENGTH_SHORT).show();
             return;
@@ -249,33 +318,71 @@ public class EventScheduleActivity extends BaseActivity {
             return;
         }
 
+        // Generate a unique filename
+        String fileName = "event_" + System.currentTimeMillis() + ".jpg";
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference("events/poster/" + fileName);
+
+        // Upload image
+        storageRef.putFile(imageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Get download URL after successful upload
+                    storageRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        String imageUrl = uri.toString();
+                        saveEventToDatabase(imageUrl); // Save event details with image URL
+                    });
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Image upload failed!", Toast.LENGTH_SHORT).show()
+                );
+
+
+
+    }
+
+    private void saveEventToDatabase(String imageUrl) {
         // Prepare Data for Firebase
-        EventModel eventModel = new EventModel(title, description, link, selectedEventType, selectedDepartments, imageUri.toString());
+        EventModel eventModel = new EventModel(eventTitle.getText().toString().trim(), eventDescription.getText().toString().trim(), registrationLink.getText().toString().trim(), selectedEventType, selectedDepartments, imageUrl, selectedDateTime);
 
         new MaterialAlertDialogBuilder(EventScheduleActivity.this)
                 .setTitle("Schedule Event?")
-                        .setMessage(
-                                "Event Details:" + "\n" +
-                                        title + "\n" +
-                                        description + "\n" +
-                                        selectedEventType + "\n" +
-                                        selectedDepartments + "\n" +
-                                        imageUri + "\n"
+                .setMessage(
+                        "Event Details:" + "\n" +
+                                eventTitle.getText().toString().trim() + "\n" +
+                                eventDescription.getText().toString().trim() + "\n" +
+                                selectedEventType + "\n" +
+                                selectedDepartments + "\n" +
+                                imageUri + "\n"
                                 + "Are you sure you want to schedule this event?")
                 .setPositiveButton("Schedule", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         progressBar.setVisibility(VISIBLE);
                         disableAllInputs();
-                        new Handler().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                //TODO: Push to Firebase
-                                Toast.makeText(EventScheduleActivity.this, "Event Submitted Successfully!", Toast.LENGTH_SHORT).show();
-                                finish();
-                                progressBar.setVisibility(GONE);
-                            }
-                        }, 5000);
+                        // Proceed to store data in Firebase
+                        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events").push();
+                        eventRef.setValue(eventModel)
+                                .addOnSuccessListener(aVoid ->
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //TODO: Push to Firebase
+                                                Toast.makeText(EventScheduleActivity.this, "Event Scheduled Successfully!", Toast.LENGTH_SHORT).show();
+                                                finish();
+                                                progressBar.setVisibility(GONE);
+                                        }
+                                    }, 1000)
+                                )
+                                .addOnFailureListener(e ->
+                                        new Handler().postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                //TODO: Push to Firebase
+                                                Snackbar.make(registrationLink, "Oops! Something went wrong, try again later", Snackbar.LENGTH_SHORT).show();
+                                                progressBar.setVisibility(GONE);
+                                            }
+                                        }, 8000)
+                                );
+
                     }
                 }).setNegativeButton("Back", new DialogInterface.OnClickListener() {
                     @Override
@@ -283,8 +390,8 @@ public class EventScheduleActivity extends BaseActivity {
                         dialog.dismiss();
                     }
                 }).show();
-
     }
+
     private void disableAllInputs() {
         // Disable EditText fields
         eventTitle.setEnabled(false);
@@ -321,16 +428,18 @@ public class EventScheduleActivity extends BaseActivity {
         private String eventType;
         private List<String> departments;
         private String eventPosterUri;
+        private String date;
 
         public EventModel() {}
 
-        public EventModel(String title, String description, String registrationLink, String eventType, List<String> departments, String eventPosterUri) {
+        public EventModel(String title, String description, String registrationLink, String eventType, List<String> departments, String eventPosterUri, String eventDate) {
             this.title = title;
             this.description = description;
             this.registrationLink = registrationLink;
             this.eventType = eventType;
             this.departments = departments;
             this.eventPosterUri = eventPosterUri;
+            this.date = eventDate;
         }
 
         public String getTitle() { return title; }
@@ -339,5 +448,9 @@ public class EventScheduleActivity extends BaseActivity {
         public String getEventType() { return eventType; }
         public List<String> getDepartments() { return departments; }
         public String getEventPosterUri() { return eventPosterUri; }
+
+        public String getDate() {
+            return date;
+        }
     }
 }

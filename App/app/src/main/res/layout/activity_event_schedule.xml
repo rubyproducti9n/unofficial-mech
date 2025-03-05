@@ -76,7 +76,6 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/titleLayout"
-                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
@@ -101,7 +100,6 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/highlightLayout"
-                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
@@ -128,12 +126,12 @@
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/registrationLayout"
-                    style="?attr/textInputOutlinedDenseStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="12dp"
                     app:counterEnabled="false"
                     android:hint="Registration Link"
+                    style="@style/Widget.Material3.TextInputLayout.FilledBox"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/highlightLayout">
@@ -150,6 +148,20 @@
 
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <EditText
+                    android:id="@+id/eventDateTime"
+                    style="@style/Widget.Material3.TextInputEditText.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="12dp"
+                    android:clickable="true"
+                    android:drawableEnd="@drawable/round_calendar_today_24"
+                    android:focusable="false"
+                    android:hint="Select Event Date"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/registrationLayout" />
+
 
                 <TextView
                     android:id="@+id/t1"
@@ -159,7 +171,7 @@
                     android:layout_marginStart="12dp"
                     android:text="Select Event Type:"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/registrationLayout" />
+                    app:layout_constraintTop_toBottomOf="@+id/eventDateTime" />
                 <HorizontalScrollView
                     android:id="@+id/hv1"
                     android:layout_width="match_parent"

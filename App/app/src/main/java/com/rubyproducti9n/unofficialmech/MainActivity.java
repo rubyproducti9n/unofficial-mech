@@ -1307,7 +1307,7 @@ GestureDetector gesture;
                 String[] eventArray = eventTitles.toArray(new String[0]);
 
                 new MaterialAlertDialogBuilder(MainActivity.this)
-                        .setTitle("Select an Event")
+                        .setTitle("Events")
                         .setItems(eventArray, (dialog, which) -> {
                             String selectedEventKey = eventKeys.get(which);
                             showEventDetailsDialog(selectedEventKey); // Open details dialog
@@ -1335,10 +1335,28 @@ GestureDetector gesture;
                 }
 
                 String title = snapshot.child("title").getValue(String.class);
-                String description = snapshot.child("highlights").getValue(String.class);
+                String description = snapshot.child("description").getValue(String.class);
                 String type = snapshot.child("type").getValue(String.class);
-                String imageUrl = snapshot.child("poster").getValue(String.class); // Assuming image URL is stored
-                String registration = snapshot.child("registration").getValue(String.class);
+                String dept = snapshot.child("department").getValue(String.class);
+                String imageUrl = snapshot.child("eventPosterUri").getValue(String.class);
+                String registration = snapshot.child("registrationLink").getValue(String.class);
+                String eventDateTime = snapshot.child("date").getValue(String.class); // Fetching event date
+
+                // Parse event date
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                try {
+                    Date eventDate = dateFormat.parse(eventDateTime);
+                    Date currentDate = new Date();
+
+                    // If event date has passed, do not show the dialog
+                    if (eventDate != null && eventDate.before(currentDate)) {
+                        Toast.makeText(MainActivity.this, "This event has already ended!", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                } catch (ParseException e) {
+                    Toast.makeText(MainActivity.this, "Invalid event date!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 // Inflate the custom layout
                 LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
@@ -1351,15 +1369,15 @@ GestureDetector gesture;
                 MaterialButton eventRegistration = view.findViewById(R.id.register);
                 MaterialButton eventButton = view.findViewById(R.id.eventButton);
 
-                if (type.equals("Concert")){
-                    eventRegistration.setText("Buy ticket");
+                if ("Concert".equals(type)) {
+                    eventRegistration.setText("Buy Ticket");
                 }
 
                 // Set data
                 eventTitle.setText(title);
                 eventDescription.setText(description);
 
-                // Load image using Glide (or Picasso)
+                // Load image using Picasso
                 Picasso.get().load(imageUrl).into(eventImage);
 
                 // Build the dialog
@@ -1368,9 +1386,7 @@ GestureDetector gesture;
                         .setCancelable(true)
                         .show();
 
-
                 eventRegistration.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(registration))));
-                // Close button action
                 eventButton.setOnClickListener(v -> alertDialog.dismiss());
             }
 
@@ -1380,6 +1396,7 @@ GestureDetector gesture;
             }
         });
     }
+
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
