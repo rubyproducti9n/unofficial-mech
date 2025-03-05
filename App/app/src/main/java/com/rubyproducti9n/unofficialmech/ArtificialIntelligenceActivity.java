@@ -1,6 +1,7 @@
 package com.rubyproducti9n.unofficialmech;
 
 import static android.app.Activity.RESULT_OK;
+import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
@@ -159,9 +160,9 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
         SharedPreferences modelPref = PreferenceManager.getDefaultSharedPreferences(requireContext());
         int model = modelPref.getInt("selected_model", 0);
         if (model == 0){
-            chip.setVisibility(VISIBLE);
+            chip.setVisibility(GONE);
         }else{
-            chip.setVisibility(View.GONE);
+            chip.setVisibility(GONE);
         }
 
         //TODO: Google Gemma Model in Test (Alpha-Beta-01)
@@ -242,7 +243,7 @@ public class ArtificialIntelligenceActivity extends BottomSheetProfileEdit {
                     });
 
                 }else{
-                    ad_container.setVisibility(View.GONE);
+                    ad_container.setVisibility(GONE);
                 }
             }
         });
