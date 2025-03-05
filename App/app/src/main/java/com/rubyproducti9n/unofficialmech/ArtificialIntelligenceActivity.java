@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -27,7 +29,9 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,6 +78,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -108,7 +113,7 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
     private final OkHttpClient client = new OkHttpClient();
 
 
-    TextView txt;
+    TextView txt, uploadingtxt;
 
     String outputTxt;
     LinearProgressIndicator progressIndicator;
@@ -247,6 +252,7 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
         });
 
         progressIndicator = findViewById(R.id.progress_bar);
+        uploadingtxt = findViewById(R.id.uploadingTxt);
         ImageView img = findViewById(R.id.img);
         txt = findViewById(R.id.textView);
         btn = findViewById(R.id.btn);
@@ -350,36 +356,28 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
             Picasso.get().load("https://i0.wp.com/www.gyaaninfinity.com/wp-content/uploads/2023/12/gogle-gemini-ai.webp").into(img);
         }
 
-
-//        IntelligentProcessingHub.textRecognization(this, Uri.parse("https://rubyproducti9n.github.io/mech/img/movify.png"), new IntelligentProcessingHub.OnTextRecognizedListener() {
-//            @Override
-//            public void OnTextRecognized(String text) {
-//                if (text != null) {
-//                    txt.setText(text);
-//                }
-//            }
-//        });
-
-//        SharedPreferences darkPref = PreferenceManager.getDefaultSharedPreferences(this);
-//        boolean isDakrModeEnabled = darkPref.getBoolean("DarkMode", false);
-//        DeveloperActivity.applyTheme(isDakrModeEnabled);
-
         startActivityForResult = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            rawSelectedImageUri = data.getData();
-                            initializeGeminiVision(Objects.requireNonNull(promptEditTxt.getText()).toString(), rawSelectedImageUri, txt);
-                            String selectedImageUri = rawSelectedImageUri.toString();
-                        }else{
-                            rawSelectedImageUri = null;
-                            initializeGemini(Objects.requireNonNull(promptEditTxt.getText()).toString(), txt);
+                    if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                        Uri selectedUri = result.getData().getData();
+                        if (selectedUri != null) {
+                            String mimeType = getContentResolver().getType(selectedUri);
+                            initializeGeminiVision(promptEditTxt.toString(), selectedUri, txt);
+                            //Condition for Video, audio and image inputs (Currently on standby)
+//                            if (mimeType != null && (mimeType.startsWith("image/") || mimeType.startsWith("video/") || mimeType.startsWith("audio/"))) {
+//                                initializeGeminiWithFile(Objects.requireNonNull(promptEditTxt.getText()).toString(), selectedUri, mimeType, txt);
+//                            } else {
+//                                txt.setText("Unsupported media type.");
+//                            }
                         }
+                    } else {
+                        initializeGemini(Objects.requireNonNull(promptEditTxt.getText()).toString(), txt);
                     }
                 }
         );
+
+
 
 
 
@@ -459,13 +457,46 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
     }
 
     private void openGallery() {
+        //Use this when you want to select image from gallery
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.setType("image/*");
         startActivityForResult.launch(intent);
+
+        //For taking multiple media inputs (On Standby)
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+//        intent.setType("*/*"); // Accept all types initially
+//        intent.putExtra(Intent.EXTRA_MIME_TYPES, new String[]{"image/*", "video/*", "audio/*"});
+//        startActivityForResult.launch(intent);
+
     }
 
     private void initializeGeminiVision(String prompt, Uri imgUri, TextView txt){
+
+        txt.setText("");
         progressIndicator.setIndeterminate(true);
+        progressIndicator.setVisibility(VISIBLE);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Convert 30dp to pixels
+                float translationY = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, getResources().getDisplayMetrics());
+
+                // Move ProgressBar in Y-Axis
+                ObjectAnimator moveProgressBar = ObjectAnimator.ofFloat(progressIndicator, "translationY", translationY);
+                moveProgressBar.setDuration(500); // 500ms duration
+
+                // Fade in TextView
+                ObjectAnimator fadeInTextView = ObjectAnimator.ofFloat(uploadingtxt, "alpha", 0f, 1f);
+                fadeInTextView.setDuration(500); // 500ms duration
+
+                // Combine animations
+                AnimatorSet animatorSet = new AnimatorSet();
+                animatorSet.playTogether(moveProgressBar, fadeInTextView);
+                animatorSet.start();
+            }
+        },1000);
+
+
         txt.setTextSize(14);
         txt.setTextColor(getResources().getColor(R.color.matte_White));
         try {
@@ -487,11 +518,10 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
         configBuilder.stopSequences = Collections.singletonList("red");
 
         GenerationConfig generationConfig = configBuilder.build();
-        GenerativeModel gm = new GenerativeModel(String.valueOf(R.string.gem_vision), BuildConfig.apiKey);
+        GenerativeModel gm = new GenerativeModel("gemini-2.0-flash", BuildConfig.apiKey);
         GenerativeModelFutures model = GenerativeModelFutures.from(gm);
         content = new com.google.ai.client.generativeai.type.Content.Builder()
                 .addText(prompt)
-                .addImage(bitmap)
                 .addImage(bitmap)
                 .build();
 
@@ -502,26 +532,111 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
             @Override
             public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
                 String resultText = result.getText();
-                runOnUiThread(() -> txt.setAlpha(1.0f));
-                runOnUiThread(() -> txt.setText(resultText));
-                runOnUiThread(() -> ProjectToolkit.fadeIn(txt));
-                runOnUiThread(() -> ProjectToolkit.fadeOut(progressIndicator));
-                runOnUiThread(() -> promptEditTxt.setText(""));
-                runOnUiThread(() -> btn.setEnabled(false));
-                runOnUiThread(() -> ProjectToolkit.pulseAmin(0, txt));
-                System.out.println(resultText);
+                runOnUiThread(() -> {
+
+
+                    txt.setAlpha(1.0f);
+                    txt.setText(resultText);
+                    promptEditTxt.setText("");
+                    btn.setEnabled(false);
+                    uploadingtxt.setVisibility(GONE);
+                    ProjectToolkit.pulseAmin(0, txt);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            ProjectToolkit.fadeIn(txt);
+                            ProjectToolkit.fadeOut(progressIndicator);
+                        }
+                    },1000);
+                });
             }
 
             @Override
             public void onFailure(Throwable t) {
                 t.printStackTrace();
-                Looper.prepare();
                 runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
                 Log.d("===Reason===", "R:- " + t);
                 System.out.println("====Reason:- " + t);
             }
         }, executor);
     }
+    private void initializeGeminiWithFile(String prompt, Uri fileUri, String mimeType, TextView txt) {
+        progressIndicator.setIndeterminate(true);
+        txt.setTextSize(14);
+        txt.setTextColor(getResources().getColor(R.color.matte_White));
+
+        byte[] fileData = readFileAsByteArray(fileUri);
+        if (fileData == null) {
+            txt.setText("Failed to read file.");
+            return;
+        }
+
+        GenerationConfig.Builder configBuilder = new GenerationConfig.Builder();
+        configBuilder.temperature = 0.9f;
+        configBuilder.topK = 16;
+        configBuilder.topP = 0.1f;
+        configBuilder.maxOutputTokens = 1000;
+        configBuilder.stopSequences = Collections.singletonList("red");
+
+        GenerativeModel gm = new GenerativeModel("gemini-2.0-flash", BuildConfig.apiKey);
+        GenerativeModelFutures model = GenerativeModelFutures.from(gm);
+
+        content = new com.google.ai.client.generativeai.type.Content.Builder()
+                .addText(prompt)
+                .addFileData(Base64.encodeToString(fileData, Base64.NO_WRAP), mimeType)
+                .build();
+
+        processGeminiRequest(model, content, txt);
+    }
+
+    private byte[] readFileAsByteArray(Uri uri) {
+        try (InputStream inputStream = getContentResolver().openInputStream(uri);
+             ByteArrayOutputStream byteBuffer = new ByteArrayOutputStream()) {
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                byteBuffer.write(buffer, 0, bytesRead);
+            }
+            return byteBuffer.toByteArray();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    private void processGeminiRequest(GenerativeModelFutures model, com.google.ai.client.generativeai.type.Content content, TextView txt) {
+        Executor executor = Executors.newFixedThreadPool(15);
+
+        ListenableFuture<GenerateContentResponse> response = model.generateContent(content);
+        Futures.addCallback(response, new FutureCallback<GenerateContentResponse>() {
+            @Override
+            public void onSuccess(com.google.ai.client.generativeai.type.GenerateContentResponse result) {
+                String resultText = result.getText();
+                runOnUiThread(() -> {
+                    txt.setAlpha(1.0f);
+                    txt.setText(resultText);
+                    ProjectToolkit.fadeIn(txt);
+                    ProjectToolkit.fadeOut(progressIndicator);
+                    promptEditTxt.setText("");
+                    btn.setEnabled(false);
+                    ProjectToolkit.pulseAmin(0, txt);
+                });
+                System.out.println(resultText);
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                t.printStackTrace();
+                runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
+                Log.d("===Reason===", "R:- " + t);
+                System.out.println("====Reason:- " + t);
+            }
+        }, executor);
+    }
+
 
     public void initializeGemini(String prompt, TextView txt){
         progressIndicator.setIndeterminate(true);
@@ -632,6 +747,8 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 
     private void initiateModel(String prompt, TextView txt){
         //Gemini res = new Gemini(0, prompt);
+
+
                 Gemini.initiate(0, prompt, new Gemini.GeminiCallback() {
                     @Override
                     public void onSuccess(String result) {
