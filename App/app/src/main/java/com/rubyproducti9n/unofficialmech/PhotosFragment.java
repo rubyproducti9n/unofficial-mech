@@ -139,461 +139,38 @@ public class PhotosFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_photos, container, false);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                loadSingleMode(view);
-            }
-        }).start();
+        // Initialize UI elements
         err = view.findViewById(R.id.err);
-        err.setVisibility(View.GONE);
         progressBar = view.findViewById(R.id.shimmer);
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerViewStory = (RecyclerView) view.findViewById(R.id.recyclerViewStories);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
-        recyclerView.setVisibility(View.VISIBLE);
-         manager = view.findViewById(R.id.manager);
-        manager.setVisibility(View.GONE);
+        recyclerViewStory = view.findViewById(R.id.recyclerViewStories);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        manager = view.findViewById(R.id.manager);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         MaterialButton btn = view.findViewById(R.id.btn);
 
+        // Set initial visibility
+        err.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+        manager.setVisibility(View.GONE);
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        // Load user role from SharedPreferences
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String userRole = preferences.getString("auth_userole", null);
 
-
         handler = new Handler(Looper.getMainLooper());
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+        adapter = new PhotosAdapter(getContext(), null);
 
-
-        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-        recyclerView.setLayoutManager(layoutManager);
-        adapter = (PhotosAdapter) new PhotosAdapter(getContext(), null);
-
-
-        new Thread(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        optimized();
-                    }
-                }
-        ).start();
-
-//        serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {
-//            @Override
-//            public void onResult(Boolean result) {
-//                if (result.equals(true)){
-//                    if (userRole!=null && userRole.equals("Faculty")){
-//                        fab.setVisibility(View.GONE);
-//                        manager.setVisibility(View.GONE);
-//                        ProjectToolkit.fadeIn(recyclerView);
-//                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                        DatabaseReference postRef = database.getReference("appointment");
-//
-//                        ProjectToolkit.fadeIn(progressBar);
-//
-//                        ProjectToolkit.fadeOut(recyclerView);
-//                        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-//                        recyclerView.setLayoutManager(layoutManager);
-//
-//                        List<AppointmentItem> items = new ArrayList<>();
-//                        AppointmentAdapter adapter1 = (AppointmentAdapter) new AppointmentAdapter(getContext(), items);
-//                        postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                                items.clear();
-//                                long childNumber = snapshot.getChildrenCount();
-//
-//                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                                    String appointmentId = postSnapshot.child("appointmentId").getValue(String.class);
-//                                    String facultyId = postSnapshot.child("facultyId").getValue(String.class);
-//                                    String username = postSnapshot.child("user_name").getValue(String.class);
-//                                    String div = postSnapshot.child("div").getValue(String.class);
-//                                    String caption = postSnapshot.child("caption").getValue(String.class);
-//                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-//                                    String appointmentSlot = postSnapshot.child("appointmentTime").getValue(String.class);
-//                                    boolean status = Boolean.TRUE.equals(postSnapshot.child("status").getValue(Boolean.class));
-//
-//                                    AppointmentItem appointmentItem = new AppointmentItem(appointmentId, facultyId, username, div, caption, uploadTime, appointmentSlot, status);
-//                                    cachedAppointments.add(appointmentItem);
-//                                    items.add(appointmentItem);
-//                                }
-//                                Collections.reverse(items);
-//                                Handler handler = new Handler();
-//                                handler.postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        ProjectToolkit.fadeOut(progressBar);
-//                                        ProjectToolkit.fadeIn(recyclerView);
-//                                    }
-//                                }, 250);
-//                                adapter1.notifyDataSetChanged();
-//                            }
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) {
-//                                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                        recyclerView.setAdapter(adapter1);
-//                    }else if (userRole==null){
-//                        manager.setVisibility(View.VISIBLE);
-//                        recyclerView.setVisibility(View.GONE);
-//                        progressBar.setVisibility(View.GONE);
-//                        fab.setVisibility(View.GONE);
-//                    }
-//                    else{
-//
-//                        manager.setVisibility(View.GONE);
-//                        ProjectToolkit.fadeIn(recyclerView);
-//                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                        DatabaseReference postRef = database.getReference("posts");
-//
-//                        ProjectToolkit.fadeIn(progressBar);
-//
-//                        ProjectToolkit.fadeOut(recyclerView);
-//                        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-//                        recyclerView.setLayoutManager(layoutManager);
-//
-//                        List<Post> items = new ArrayList<>();
-//                        adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
-//                        postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-//                            @Override
-//                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//
-//                                items.clear();
-//                                long childNumber = snapshot.getChildrenCount();
-//
-//                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                                    String postId = postSnapshot.child("postId").getValue(String.class);
-//                                    String username = postSnapshot.child("userName").getValue(String.class);
-//                                    String div = postSnapshot.child("userDiv").getValue(String.class);
-//                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-//                                    String caption = postSnapshot.child("caption").getValue(String.class);
-//                                    String postUrl = postSnapshot.child("postUrl").getValue(String.class);
-//                                    Map<String, Boolean> likes = new HashMap<>();
-//
-//                                    Post postItem = new Post(postId, username, div, postUrl, caption, uploadTime, "public", likes);
-//                                    cachedPosts.add(postItem);
-//                                    items.add(postItem);
-//                                }
-//                                Collections.reverse(items);
-//                                Handler handler = new Handler();
-//                                handler.postDelayed(new Runnable() {
-//                                    @Override
-//                                    public void run() {
-//                                        ProjectToolkit.fadeOut(progressBar);
-//                                        ProjectToolkit.fadeIn(recyclerView);
-//                                    }
-//                                }, 500);
-//                                adapter.notifyDataSetChanged();
-//                            }
-//                            @Override
-//                            public void onCancelled(@NonNull DatabaseError error) {
-//                                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-//                            }
-//                        });
-//                        recyclerView.setAdapter(adapter);
-//                        fab.setVisibility(View.GONE);
-//                        fab.setOnClickListener(new View.OnClickListener() {
-//                            @Override
-//                            public void onClick(View v) {
-//                                Intent intent = new Intent(getActivity(), CreatePost.class);
-//                                startActivity(intent);
-//                            }
-//                        });
-//                    }
-//                }
-//                else{
-//                    manager.setVisibility(View.VISIBLE);
-//                    recyclerView.setVisibility(View.GONE);
-//                    progressBar.setVisibility(View.GONE);
-//                    fab.setVisibility(View.GONE);
-//                }
-//            }
-//        });
-
-
+        // Start background tasks
+        new Thread(() -> loadSingleMode(view)).start();
+        new Thread(this::optimized).start();
 
         return view;
     }
-
-    private void load(View view){
-        //Poor Thread management
-        ExecutorService exe = Executors.newFixedThreadPool(9);
-
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-        String userRole = preferences.getString("auth_userole", null);
-
-        serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {
-            @Override
-            public void onResult(Boolean result) {
-                if (result.equals(true)){
-                    if (userRole!=null && userRole.equals("Faculty")){
-                        recyclerViewStory.setVisibility(View.GONE);
-
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                fab.setVisibility(View.GONE);
-                                manager.setVisibility(View.GONE);
-                                ProjectToolkit.fadeIn(recyclerView);
-                            }
-                        });
-
-                        DatabaseReference postRef = database.getReference("appointment");
-                        ProjectToolkit.fadeIn(progressBar);
-                        ProjectToolkit.fadeOut(recyclerView);
-                        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-                        recyclerView.setLayoutManager(layoutManager);
-
-                        List<AppointmentItem> items = new ArrayList<>();
-                        AppointmentAdapter adapter1 = (AppointmentAdapter) new AppointmentAdapter(getContext(), items);
-                        exe.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                        items.clear();
-                                        long childNumber = snapshot.getChildrenCount();
-
-                                        if (snapshot.exists()){
-                                            err.setVisibility(View.GONE);
-                                            for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                                String appointmentId = postSnapshot.child("appointmentId").getValue(String.class);
-                                                String facultyId = postSnapshot.child("facultyId").getValue(String.class);
-                                                String username = postSnapshot.child("user_name").getValue(String.class);
-                                                String div = postSnapshot.child("div").getValue(String.class);
-                                                String caption = postSnapshot.child("caption").getValue(String.class);
-                                                String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-                                                String appointmentSlot = postSnapshot.child("appointmentTime").getValue(String.class);
-                                                boolean status = Boolean.TRUE.equals(postSnapshot.child("status").getValue(Boolean.class));
-
-                                                AppointmentItem appointmentItem = new AppointmentItem(appointmentId, facultyId, username, div, caption, uploadTime, appointmentSlot, status);
-                                                cachedAppointments.add(appointmentItem);
-                                                items.add(appointmentItem);
-                                            }
-
-                                        }else{
-                                            LottieAnimationView lottieAnimationView = view.findViewById(R.id.lottieAnimationView);
-                                            lottieAnimationView.setAnimation(R.raw.coming_soon);
-                                            lottieAnimationView.loop(true);
-                                            lottieAnimationView.playAnimation();
-                                            err.setVisibility(View.VISIBLE);
-                                        }
-                                        Collections.reverse(items);
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                handler.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        ProjectToolkit.fadeOut(progressBar);
-                                                        ProjectToolkit.fadeIn(recyclerView);
-                                                    }
-                                                });
-                                            }
-                                        }, 250);
-                                        adapter1.notifyDataSetChanged();
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                        recyclerView.setAdapter(adapter1);
-                        exe.shutdown();
-                    }else if (userRole==null){
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                err.setVisibility(View.VISIBLE);
-                                manager.setVisibility(View.VISIBLE);
-                                recyclerView.setVisibility(View.GONE);
-                                progressBar.setVisibility(View.GONE);
-                                fab.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-                    else{
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                manager.setVisibility(View.GONE);
-                                ProjectToolkit.fadeIn(recyclerView);
-                            }
-                        });
-                        FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        DatabaseReference postRef = database.getReference("posts");
-                        DatabaseReference storyRef = database.getReference("stories");
-
-
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                ProjectToolkit.fadeIn(progressBar);
-                                ProjectToolkit.fadeOut(recyclerView);
-                            }
-                        });
-
-                        ExecutorService ex = Executors.newFixedThreadPool(30);
-                        ex.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        recyclerView.setLayoutManager(layoutManager);
-                                    }
-                                },2000);
-
-                                List<Post> items = new ArrayList<>();
-                                adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
-                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                        items.clear();
-                                        long childNumber = snapshot.getChildrenCount();
-
-                                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                            String postId = postSnapshot.child("postId").getValue(String.class);
-                                            String uid = postSnapshot.child("uid").getValue(String.class);
-                                            String username = postSnapshot.child("userName").getValue(String.class);
-                                            String div = postSnapshot.child("userDiv").getValue(String.class);
-                                            String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-                                            String caption = postSnapshot.child("caption").getValue(String.class);
-                                            String postUrl = postSnapshot.child("postUrl").getValue(String.class);
-                                            String anon = postSnapshot.child("stateVisibility").getValue(String.class);
-                                            Map<String, Boolean> likes = new HashMap<>();
-
-
-                                            Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anon, likes);
-                                            cachedPosts.add(postItem);
-                                            items.add(postItem);
-                                        }
-                                        Collections.reverse(items);
-                                        ExecutorService exec = Executors.newSingleThreadExecutor();
-                                        exec.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                recyclerView.setAdapter(adapter);
-                                            }
-                                        });
-                                        exec.shutdown();
-                                        Handler handler = new Handler();
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                handler.post(new Runnable() {
-                                                    @Override
-                                                    public void run() {
-                                                        ProjectToolkit.fadeIn(recyclerView);
-                                                        ProjectToolkit.fadeOut(progressBar);
-                                                    }
-                                                });
-                                            }
-                                        },2000);
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                    @Override
-                                    public void onCancelled(@NonNull DatabaseError error) {
-                                        Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            }
-                        });
-                        ex.shutdown();
-
-
-                        storyItems = new ArrayList<>();
-                        storyAdapter = (StoryAdapter) new StoryAdapter(storyItems);
-                        storyRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                                storyItems.clear();
-
-                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                                    String storyId = postSnapshot.child("storyId").getValue(String.class);
-                                    String username = postSnapshot.child("username").getValue(String.class);
-
-
-                                    StoryItem storyItem = new StoryItem(username);
-//                                                    cachedPosts.add(storyItem);
-                                    storyItems.add(storyItem);
-                                }
-                                Collections.reverse(storyItems);
-                                Handler handler = new Handler();
-                                handler.postDelayed(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        handler.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                recyclerViewStory.setAdapter(storyAdapter);
-                                                ProjectToolkit.fadeOut(progressBar);
-                                                ProjectToolkit.fadeIn(recyclerViewStory);
-                                            }
-                                        });
-                                    }
-                                }, 2000);
-                                storyAdapter.notifyDataSetChanged();
-                            }
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                        fab.setVisibility(View.GONE);
-                        fab.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                Intent intent = new Intent(getActivity(), CreatePost.class);
-                                startActivity(intent);
-                            }
-                        });
-                    }
-                }
-                else{
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            manager.setVisibility(View.VISIBLE);
-                            recyclerView.setVisibility(View.GONE);
-                            progressBar.setVisibility(View.GONE);
-                            fab.setVisibility(View.GONE);
-                        }
-                    });
-                }
-            }
-        });
-
-    }
-
-    private class LoadDataTask extends AsyncTask<Void, Void, String> {
-        @Override
-        protected String doInBackground(Void... voids) {
-//            optimized();
-
-
-            return "";
-        }
-
-    }
-
     private void optimized(){
         //Thread Optimised code
         ExecutorService exe = Executors.newFixedThreadPool(120);
@@ -753,7 +330,7 @@ public class PhotosFragment extends Fragment {
         }).start();
     }
 
-    private void loadSingleMode(View view){
+    private void loadSingleMode(View view)  {
         singleMode = view.findViewById(R.id.singleMode);
         singleLayout = view.findViewById(R.id.singleLayout);
         singleModeSwitch = view.findViewById(R.id.singleSwitch);
@@ -766,21 +343,7 @@ public class PhotosFragment extends Fragment {
                 @Override
                 public void run() {
                     singleLayout.setVisibility(View.GONE);
-//                    singleMode.setVisibility(View.VISIBLE);
                     displayRandomSingleLine();
-//                    singleModeSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                        @Override
-//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                            if (isChecked){
-//                                recyclerView.setVisibility(View.GONE);
-//                                displayRandomSingleLine();
-//                                singleLayout.setVisibility(View.VISIBLE);
-//                            }else{
-//                                recyclerView.setVisibility(View.VISIBLE);
-//                                singleLayout.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    });
                 }
             });
         }
