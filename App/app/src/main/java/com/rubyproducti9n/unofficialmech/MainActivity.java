@@ -215,7 +215,6 @@ GestureDetector gesture;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
-        startCountDown("🎟️LIVE CONCERT IN", "2025-03-08 18:00", "https://instagram.fnag6-2.fna.fbcdn.net/v/t51.29350-15/479492605_1365822141496718_2075561964178648938_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fnag6-2.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2AGnLvOMH4hqyApQwuQtAr0Zs0vAc0xRQ8Q2PB_kzNPLll-XXtJX2WEU7FFV7xM0_HI8GlrcnC6VzotVTJG4Bsn0&_nc_ohc=76HFKHiXNPEQ7kNvgGPklJQ&_nc_gid=9b221b3f1bc74398acfb62264226e4e8&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU2OTMwMTg4NzEwOTY4NDU2MA%3D%3D.3-ccb7-5&oh=00_AYDJULNl01LEF7Iis8fRnaR-mBUUBV0H5DARxpM4Lg62Eg&oe=67CB6ADC&_nc_sid=7a9f4b");
 //        goPremium();
         likeAnim= findViewById(R.id.lottieLikeAnim);
 
@@ -228,6 +227,7 @@ GestureDetector gesture;
 
         bottomNavigationView = findViewById(R.id.bottom_navigation);
         badge = bottomNavigationView.getOrCreateBadge(R.id.action_home);
+        badge.setVisible(false);
 
 
         ImageView gemini = findViewById(R.id.gemini);

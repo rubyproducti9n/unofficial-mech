@@ -740,9 +740,26 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
 
 
     private void initiateModel(String prompt, TextView txt){
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(this);
+        String dept = p.getString("auth_dept", "General");
+
+        String systemPrompt = "You are Torque AI, an advanced AI assistant powered by Google Gemini. "
+                + "Your role is to assist users with technical queries related to Mechanical, Computer, IT, Civil, Structural Engineering, "
+                + "and other engineering domains. You also guide users in career development by asking about their field of interest, skills, and goals.\n\n"
+                + "⚡ Personalization: The user's department is '" + dept + "'. Prioritize responses based on this field for a more relevant answer.\n"
+                + "🔹 If the user asks about career guidance, first ask about their field of interest and skills before providing suggestions.\n"
+                + "🔹 Always provide accurate and to-the-point answers, with optimized Java code for Android development when required.\n"
+                + "🔹 Ensure cybersecurity-related queries are answered ethically and securely.\n"
+                + "🔹 Keep responses professional yet engaging, avoiding unnecessary introductions unless explicitly requested.\n";
+
+        String userPrompt = prompt;
+
+        String finalPrompt = systemPrompt + "\nUser Prompt: " + userPrompt;
+
         if (rawSelectedImageUri !=null){
             initializeGeminiVision(prompt, rawSelectedImageUri, txt);
-        }else{Gemini.initiate(model, prompt, new Gemini.GeminiCallback() {
+        }else{
+            Gemini.initiate(model, finalPrompt, new Gemini.GeminiCallback() {
             @Override
             public void onSuccess(String result) {
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
