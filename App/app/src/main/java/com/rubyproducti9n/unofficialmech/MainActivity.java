@@ -185,6 +185,8 @@ GestureDetector gesture;
 
     boolean isNetworkRegistered;
     private int lastSelectedItemId;
+    BadgeDrawable badge;
+    int badgeCount = 0;
 
     private ActivityResultLauncher<Intent> startActivityForResult;
 //    ActivityMainBinding binding;
@@ -213,7 +215,6 @@ GestureDetector gesture;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
-        showEventDetailsDialog("eid");
         startCountDown("🎟️LIVE CONCERT IN", "2025-03-08 18:00", "https://instagram.fnag6-2.fna.fbcdn.net/v/t51.29350-15/479492605_1365822141496718_2075561964178648938_n.heic?stp=dst-jpg_e35_tt6&efg=eyJ2ZW5jb2RlX3RhZyI6ImltYWdlX3VybGdlbi4xNDQweDE4MDAuc2RyLmYyOTM1MC5kZWZhdWx0X2ltYWdlIn0&_nc_ht=instagram.fnag6-2.fna.fbcdn.net&_nc_cat=102&_nc_oc=Q6cZ2AGnLvOMH4hqyApQwuQtAr0Zs0vAc0xRQ8Q2PB_kzNPLll-XXtJX2WEU7FFV7xM0_HI8GlrcnC6VzotVTJG4Bsn0&_nc_ohc=76HFKHiXNPEQ7kNvgGPklJQ&_nc_gid=9b221b3f1bc74398acfb62264226e4e8&edm=AP4sbd4BAAAA&ccb=7-5&ig_cache_key=MzU2OTMwMTg4NzEwOTY4NDU2MA%3D%3D.3-ccb7-5&oh=00_AYDJULNl01LEF7Iis8fRnaR-mBUUBV0H5DARxpM4Lg62Eg&oe=67CB6ADC&_nc_sid=7a9f4b");
 //        goPremium();
         likeAnim= findViewById(R.id.lottieLikeAnim);
@@ -225,6 +226,8 @@ GestureDetector gesture;
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        badge = bottomNavigationView.getOrCreateBadge(R.id.action_home);
 
 
         ImageView gemini = findViewById(R.id.gemini);
@@ -518,12 +521,9 @@ GestureDetector gesture;
 
     }
 
-    private void initiatePager(){
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
-        BadgeDrawable badge = bottomNavigationView.getOrCreateBadge(R.id.action_home);
-        badge.setVisible(true);
-        badge.setNumber(1);
+
+    private void initiatePager(){
         viewPager = findViewById(R.id.view_pager);
         setupViewPager(viewPager);
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -1337,7 +1337,8 @@ GestureDetector gesture;
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (!snapshot.exists()) {
-                    Toast.makeText(MainActivity.this, "Event details not found!", Toast.LENGTH_SHORT).show();
+                    Log.d("Event Tag", "Event details not found!");
+                    setBadge(false);
                     return;
                 }
 
@@ -1357,11 +1358,13 @@ GestureDetector gesture;
 
                     // If event date has passed, do not show the dialog
                     if (eventDate != null && eventDate.before(currentDate)) {
-                        Toast.makeText(MainActivity.this, "This event has already ended!", Toast.LENGTH_SHORT).show();
+                        Log.d("Event Tag", "Event expired!");
+                        setBadge(false);
                         return;
                     }
                 } catch (ParseException e) {
-                    Toast.makeText(MainActivity.this, "Invalid event date!", Toast.LENGTH_SHORT).show();
+                    Log.d("Event Tag", "Invalid event date!");
+                        setBadge(false);
                     return;
                 }
 
@@ -1387,6 +1390,9 @@ GestureDetector gesture;
                 // Load image using Picasso
                 Picasso.get().load(imageUrl).into(eventImage);
 
+                startCountDown(title, eventDateTime, imageUrl);
+                setBadge(true);
+
                 // Build the dialog
                 AlertDialog alertDialog = new MaterialAlertDialogBuilder(MainActivity.this)
                         .setView(view)
@@ -1399,11 +1405,27 @@ GestureDetector gesture;
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Failed to load event details", Toast.LENGTH_SHORT).show();
+                setBadge(false);
+                Log.d("Event Tag", "Failed to load event details");
+                Toast.makeText(MainActivity.this, "Something went wrong, please try again later", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void setBadge(boolean increment) {
+        if (increment) {
+            badgeCount++; // Increase count
+        } else {
+            if (badgeCount > 0) badgeCount--; // Decrease count but never below 0
+        }
+
+        if (badgeCount == 0) {
+            badge.setVisible(false); // Hide badge if count is 0
+        } else {
+            badge.setVisible(true);
+            badge.setNumber(badgeCount); // Update badge count
+        }
+    }
 
 
     class ViewPagerAdapter extends FragmentPagerAdapter {

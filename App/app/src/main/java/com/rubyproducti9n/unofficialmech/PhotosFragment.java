@@ -171,219 +171,219 @@ public class PhotosFragment extends Fragment {
 
         return view;
     }
-//    private void optimized(){
-//        //Thread Optimised code
-//        ExecutorService exe = Executors.newFixedThreadPool(120);
-//
-//        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-//        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-//        String userRole = preferences.getString("auth_userole", null);
-//
-//        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
-//        recyclerView.setLayoutManager(layoutManager);
-//
-//        new Handler(Looper.getMainLooper()).post(new Runnable() {
-//            @Override
-//            public void run() {
-//                recyclerView.setVisibility(View.GONE);
-//                progressBar.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {
-//                    @Override
-//                    public void onResult(Boolean result) {
-//                        if (result){
-//                            if (userRole!=null){
-//                                FirebaseDatabase database = FirebaseDatabase.getInstance();
-//                                DatabaseReference postRef = database.getReference("posts");
-//                                DatabaseReference storyRef = database.getReference("stories");
-//
-//                                List<Post> items = new ArrayList<>();
-//                                adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
-//
-//                                        postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-//                                            @Override
-//                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                new Thread(new Runnable() {
-//                                                    @Override
-//                                                    public void run() {items.clear();
-//                                                        long childNumber = snapshot.getChildrenCount();
-//                                                        List<Post> fetchedItems = new ArrayList<>();
-//
-//                                                        String postId;
-//                                                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                                                            postId = postSnapshot.child("postId").getValue(String.class);
-//                                                            String uid = postSnapshot.child("uid").getValue(String.class);
-//                                                            String username = postSnapshot.child("userName").getValue(String.class);
-//                                                            String div = postSnapshot.child("userDiv").getValue(String.class);
-//                                                            String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-//                                                            String caption = postSnapshot.child("caption").getValue(String.class);
-//                                                            String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
-//                                                            String postUrl = postSnapshot.child("postUrl").getValue(String.class);
-//                                                            Map<String, Boolean> likes = new HashMap<>();
-//
-//                                                            Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
-//                                                            cachedPosts.add(postItem);
-//                                                            fetchedItems.add(postItem);
-//                                                        }
-//                                                        items.clear();
-//                                                        items.addAll(fetchedItems);
-//                                                        Collections.reverse(items);
-//                                                        new Thread(new Runnable() {
-//                                                            @Override
-//                                                            public void run() {
-//                                                                adapter.notifyDataSetChanged();
-//                                                            }
-//                                                        });
-//                                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//                                                            @Override
-//                                                            public void run() {
-//                                                                recyclerView.setAdapter(adapter);
-//                                                                ProjectToolkit.fadeOut(progressBar);
-//                                                                fadeIn(recyclerView);
-//                                                            }
-//                                                        }, 2000);
-//                                                    }
-//                                                }).start();
-//
-//                                            }
-//                                            @Override
-//                                            public void onCancelled(@NonNull DatabaseError error) {
-//                                                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-//                                            }
-//                                        });
-//
-////                        exe.execute(new Runnable() {
-////                            @Override
-////                            public void run() {
-////                            }
-////                        });
-////                        exe.shutdown();
-//
-//                            }else{
-//                                //When user is not logged in
-//                                DatabaseReference postRef = database.getReference("posts");
-//                                List<Post> items = new ArrayList<>();
-//                                adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
-//
-//                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
-//                                    @Override
-//                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                        new Thread(new Runnable() {
-//                                            @Override
-//                                            public void run() {items.clear();
-//                                                long childNumber = snapshot.getChildrenCount();
-//                                                List<Post> fetchedItems = new ArrayList<>();
-//
-//                                                String postId;
-//                                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-//                                                    postId = postSnapshot.child("postId").getValue(String.class);
-//                                                    String uid = postSnapshot.child("uid").getValue(String.class);
-//                                                    String username = postSnapshot.child("userName").getValue(String.class);
-//                                                    String div = postSnapshot.child("userDiv").getValue(String.class);
-//                                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
-//                                                    String caption = postSnapshot.child("caption").getValue(String.class);
-//                                                    String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
-//                                                    String postUrl = postSnapshot.child("postUrl").getValue(String.class);
-//                                                    Map<String, Boolean> likes = new HashMap<>();
-//
-//                                                    Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
-//                                                    cachedPosts.add(postItem);
-//                                                    fetchedItems.add(postItem);
-//                                                }
-//                                                items.clear();
-//                                                items.addAll(fetchedItems);
-//                                                Collections.reverse(items);
-//                                                new Thread(new Runnable() {
-//                                                    @Override
-//                                                    public void run() {
-//                                                        adapter.notifyDataSetChanged();
-//                                                    }
-//                                                });
-//                                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
-//                                                    @Override
-//                                                    public void run() {
-//                                                        recyclerView.setAdapter(adapter);
-//                                                        ProjectToolkit.fadeOut(progressBar);
-//                                                        fadeIn(recyclerView);
-//                                                    }
-//                                                }, 2000);
-//                                            }
-//                                        }).start();
-//
-//                                    }
-//                                    @Override
-//                                    public void onCancelled(@NonNull DatabaseError error) {
-//                                        Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-//                                    }
-//                                });
-//                                recyclerViewStory.setVisibility(View.GONE);
-//                            }
-//                        }
-//                    }
-//                });
-//            }
-//        }).start();
-//    }
+    private void optimized(){
+        //Thread Optimised code
+        ExecutorService exe = Executors.newFixedThreadPool(120);
 
-    //Optimized by AI
-    private void optimized() {
-    ExecutorService executor = Executors.newFixedThreadPool(10); // Optimized thread pool size
-    FloatingActionButton fab = view.findViewById(R.id.fab);
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
-    String userRole = preferences.getString("auth_userole", null);
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        String userRole = preferences.getString("auth_userole", null);
 
-    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
-    recyclerView.setVisibility(View.GONE);
-    progressBar.setVisibility(View.VISIBLE);
+        GridLayoutManager layoutManager = (GridLayoutManager) new GridLayoutManager(getContext(), 1);
+        recyclerView.setLayoutManager(layoutManager);
 
-    new Thread(() -> serviceCheck(getContext(), result -> {
-        if (!result) return;
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference postRef = database.getReference("posts");
-        List<Post> items = new ArrayList<>();
-        adapter = new PhotosAdapter(getContext(), items);
-
-        ValueEventListener postListener = new ValueEventListener() {
+        new Handler(Looper.getMainLooper()).post(new Runnable() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                executor.execute(() -> {
-                    List<Post> fetchedItems = new ArrayList<>();
-                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-                        Post postItem = postSnapshot.getValue(Post.class);
-                        if (postItem != null) {
-                            fetchedItems.add(postItem);
+            public void run() {
+                recyclerView.setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {
+                    @Override
+                    public void onResult(Boolean result) {
+                        if (result){
+                            if (userRole!=null){
+                                FirebaseDatabase database = FirebaseDatabase.getInstance();
+                                DatabaseReference postRef = database.getReference("posts");
+                                DatabaseReference storyRef = database.getReference("stories");
+
+                                List<Post> items = new ArrayList<>();
+                                adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
+
+                                        postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {items.clear();
+                                                        long childNumber = snapshot.getChildrenCount();
+                                                        List<Post> fetchedItems = new ArrayList<>();
+
+                                                        String postId;
+                                                        for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                                            postId = postSnapshot.child("postId").getValue(String.class);
+                                                            String uid = postSnapshot.child("uid").getValue(String.class);
+                                                            String username = postSnapshot.child("userName").getValue(String.class);
+                                                            String div = postSnapshot.child("userDiv").getValue(String.class);
+                                                            String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
+                                                            String caption = postSnapshot.child("caption").getValue(String.class);
+                                                            String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
+                                                            String postUrl = postSnapshot.child("postUrl").getValue(String.class);
+                                                            Map<String, Boolean> likes = new HashMap<>();
+
+                                                            Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
+                                                            cachedPosts.add(postItem);
+                                                            fetchedItems.add(postItem);
+                                                        }
+                                                        items.clear();
+                                                        items.addAll(fetchedItems);
+                                                        Collections.reverse(items);
+                                                        new Thread(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                adapter.notifyDataSetChanged();
+                                                            }
+                                                        });
+                                                        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                recyclerView.setAdapter(adapter);
+                                                                ProjectToolkit.fadeOut(progressBar);
+                                                                fadeIn(recyclerView);
+                                                            }
+                                                        }, 2000);
+                                                    }
+                                                }).start();
+
+                                            }
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+//                        exe.execute(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                            }
+//                        });
+//                        exe.shutdown();
+
+                            }else{
+                                //When user is not logged in
+                                DatabaseReference postRef = database.getReference("posts");
+                                List<Post> items = new ArrayList<>();
+                                adapter = (PhotosAdapter) new PhotosAdapter(getContext(), items);
+
+                                postRef.orderByChild("uploadTime").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        new Thread(new Runnable() {
+                                            @Override
+                                            public void run() {items.clear();
+                                                long childNumber = snapshot.getChildrenCount();
+                                                List<Post> fetchedItems = new ArrayList<>();
+
+                                                String postId;
+                                                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                                                    postId = postSnapshot.child("postId").getValue(String.class);
+                                                    String uid = postSnapshot.child("uid").getValue(String.class);
+                                                    String username = postSnapshot.child("userName").getValue(String.class);
+                                                    String div = postSnapshot.child("userDiv").getValue(String.class);
+                                                    String uploadTime = postSnapshot.child("uploadTime").getValue(String.class);
+                                                    String caption = postSnapshot.child("caption").getValue(String.class);
+                                                    String anonymous = postSnapshot.child("stateVisibility").getValue(String.class);
+                                                    String postUrl = postSnapshot.child("postUrl").getValue(String.class);
+                                                    Map<String, Boolean> likes = new HashMap<>();
+
+                                                    Post postItem = new Post(postId, uid, username, postUrl, caption, uploadTime, anonymous, likes);
+                                                    cachedPosts.add(postItem);
+                                                    fetchedItems.add(postItem);
+                                                }
+                                                items.clear();
+                                                items.addAll(fetchedItems);
+                                                Collections.reverse(items);
+                                                new Thread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                });
+                                                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        recyclerView.setAdapter(adapter);
+                                                        ProjectToolkit.fadeOut(progressBar);
+                                                        fadeIn(recyclerView);
+                                                    }
+                                                }, 2000);
+                                            }
+                                        }).start();
+
+                                    }
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+                                        Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                                recyclerViewStory.setVisibility(View.GONE);
+                            }
                         }
                     }
-
-                    Collections.reverse(fetchedItems);
-                    items.clear();
-                    items.addAll(fetchedItems);
-                    new Handler(Looper.getMainLooper()).post(() -> {
-                        adapter.notifyDataSetChanged();
-                        recyclerView.setAdapter(adapter);
-                        ProjectToolkit.fadeOut(progressBar);
-                        fadeIn(recyclerView);
-                    });
                 });
             }
+        }).start();
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        postRef.orderByChild("uploadTime").addValueEventListener(postListener);
-        if (userRole == null) {
-            recyclerViewStory.setVisibility(View.GONE);
-        }
-    })).start();
-}
+    //Optimized by AI
+//    private void optimized() {
+//    ExecutorService executor = Executors.newFixedThreadPool(10); // Optimized thread pool size
+//    FloatingActionButton fab = view.findViewById(R.id.fab);
+//    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+//    String userRole = preferences.getString("auth_userole", null);
+//
+//    recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 1));
+//    recyclerView.setVisibility(View.GONE);
+//    progressBar.setVisibility(View.VISIBLE);
+//
+//    new Thread(() -> serviceCheck(getContext(), result -> {
+//        if (!result) return;
+//        FirebaseDatabase database = FirebaseDatabase.getInstance();
+//        DatabaseReference postRef = database.getReference("posts");
+//        List<Post> items = new ArrayList<>();
+//        adapter = new PhotosAdapter(getContext(), items);
+//
+//        ValueEventListener postListener = new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                executor.execute(() -> {
+//                    List<Post> fetchedItems = new ArrayList<>();
+//                    for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+//                        Post postItem = postSnapshot.getValue(Post.class);
+//                        if (postItem != null) {
+//                            fetchedItems.add(postItem);
+//                        }
+//                    }
+//
+//                    Collections.reverse(fetchedItems);
+//                    items.clear();
+//                    items.addAll(fetchedItems);
+//                    new Handler(Looper.getMainLooper()).post(() -> {
+//                        adapter.notifyDataSetChanged();
+//                        recyclerView.setAdapter(adapter);
+//                        ProjectToolkit.fadeOut(progressBar);
+//                        fadeIn(recyclerView);
+//                    });
+//                });
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError error) {
+//                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
+//            }
+//        };
+//
+//        postRef.orderByChild("uploadTime").addValueEventListener(postListener);
+//        if (userRole == null) {
+//            recyclerViewStory.setVisibility(View.GONE);
+//        }
+//    })).start();
+//}
     private void loadSingleMode(View view)  {
         singleMode = view.findViewById(R.id.singleMode);
         singleLayout = view.findViewById(R.id.singleLayout);

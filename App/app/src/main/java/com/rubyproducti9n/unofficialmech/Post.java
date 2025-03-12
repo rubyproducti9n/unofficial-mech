@@ -24,6 +24,7 @@ public class Post {
 //
 //
 //    }
+    public Post() {}
 
     public Post (String postId, String uid, String user_name, String imgUrl, String caption, String uploadTime, String visibility, Map<String, Boolean> likes){
         this.postId = postId;
