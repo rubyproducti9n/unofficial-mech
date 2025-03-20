@@ -6,6 +6,8 @@
     android:orientation="vertical"
     android:gravity="center"
     android:background="@drawable/widget_bg">
+
+
     <ImageView
         android:id="@+id/widgetImg"
         android:layout_width="wrap_content"

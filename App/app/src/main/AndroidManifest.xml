@@ -360,6 +360,7 @@
                 android:resource="@xml/widget_info"/>
         </receiver>
 
+
     </application>
 
 </manifest>

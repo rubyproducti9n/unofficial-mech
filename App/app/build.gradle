@@ -191,4 +191,8 @@ dependencies {
     implementation 'org.tensorflow:tensorflow-lite:2.17.0'
     //implementation 'org.tensorflow:tensorflow-lite-task-text:2.9.0' //Causing Error while building gradle
 
+    //Used for SmartWidget image loading along with Picasso
+    implementation 'androidx.work:work-runtime:2.10.0'
+
+
 }
