@@ -1,19 +1,10 @@
 package com.rubyproducti9n.unofficialmech;
 
-import android.app.ActivityManager;
-import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Icon;
-import android.os.Bundle;
 import android.os.Looper;
 import android.os.Handler;
 import android.service.quicksettings.Tile;
 import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class TileService extends android.service.quicksettings.TileService {
     private final Handler handler = new Handler(Looper.getMainLooper());

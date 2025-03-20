@@ -1,10 +1,7 @@
 package com.rubyproducti9n.unofficialmech;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.preference.PreferenceManager;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;

@@ -1,19 +1,13 @@
 package com.rubyproducti9n.unofficialmech;
 
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeOut;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isFaculty;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isFemale;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isHOD;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isMale;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.serviceCheck;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,24 +19,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -51,12 +38,10 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

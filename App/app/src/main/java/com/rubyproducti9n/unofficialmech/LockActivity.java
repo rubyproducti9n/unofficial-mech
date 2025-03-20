@@ -2,22 +2,12 @@ package com.rubyproducti9n.unofficialmech;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.hardware.biometrics.BiometricManager;
-import android.hardware.biometrics.BiometricPrompt;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;

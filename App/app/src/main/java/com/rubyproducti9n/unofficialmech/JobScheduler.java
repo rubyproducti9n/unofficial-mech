@@ -2,24 +2,13 @@ package com.rubyproducti9n.unofficialmech;
 
 
 import android.app.Service;
-import android.app.job.JobInfo;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
-import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 
-import java.security.Provider;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class JobScheduler extends Service {

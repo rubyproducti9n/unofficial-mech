@@ -1,13 +1,10 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getSystemAdValue;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.preference.PreferenceManager;
 
@@ -23,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;

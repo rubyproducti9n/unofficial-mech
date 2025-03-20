@@ -1,17 +1,13 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static android.app.Activity.RESULT_OK;
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import android.animation.AnimatorSet;
@@ -21,8 +17,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BlurMaskFilter;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,23 +26,15 @@ import android.text.TextWatcher;
 import android.util.Base64;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-//import com.airbnb.lottie.animation.content.Content;
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.ai.client.generativeai.GenerativeModel;
-//import com.google.ai.client.generativeai.internal.api.GenerateContentRequest;
-//import com.google.ai.client.generativeai.internal.api.GenerateContentResponse;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
 import com.google.ai.client.generativeai.type.GenerateContentResponse;
@@ -61,12 +47,9 @@ import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.chip.Chip;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.textfield.TextInputEditText;
@@ -75,15 +58,9 @@ import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Random;
@@ -92,15 +69,6 @@ import java.util.concurrent.Executors;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.Request;
-import okhttp3.Response;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Body;
-import retrofit2.http.POST;
 
 public class ArtificialIntelligenceActivity extends BaseActivity {
 

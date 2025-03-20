@@ -22,15 +22,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rubyproducti9n.unofficialmech.databinding.BottomsheetCommentsBinding;
 import com.rubyproducti9n.unofficialmech.databinding.ItemCommentsBinding;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * <p>A fragment that shows a list of items as a modal bottom sheet.</p>

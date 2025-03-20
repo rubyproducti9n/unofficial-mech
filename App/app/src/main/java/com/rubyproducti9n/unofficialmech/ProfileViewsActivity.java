@@ -5,7 +5,6 @@ import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeOut;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,8 +14,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.fonts.Font;
-import android.graphics.fonts.FontStyle;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -28,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -42,7 +38,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
 import com.squareup.picasso.Picasso;
 
 import java.time.Year;

@@ -17,10 +17,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
-import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

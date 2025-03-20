@@ -1,82 +1,44 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static androidx.activity.result.ActivityResultCallerKt.registerForActivityResult;
-import static androidx.core.app.ActivityCompat.requestPermissions;
-
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.register;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.unregister;
-
-import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.DownloadManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.appwidget.AppWidgetManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Icon;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Build;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.SystemClock;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
 import androidx.preference.PreferenceManager;
-import androidx.work.NetworkType;
-
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.storage.StorageReference;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Locale;
-import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class ForegroundService extends Service {

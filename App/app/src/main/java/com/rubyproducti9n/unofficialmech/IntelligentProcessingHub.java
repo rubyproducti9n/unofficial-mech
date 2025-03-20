@@ -1,42 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import android.content.Context;
-import android.content.DialogInterface;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.ai.client.generativeai.GenerativeModel;
-import com.google.ai.client.generativeai.java.GenerativeModelFutures;
-import com.google.ai.client.generativeai.type.GenerateContentResponse;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.common.util.concurrent.FutureCallback;
-import com.google.common.util.concurrent.Futures;
-import com.google.common.util.concurrent.ListenableFuture;
-//import com.google.mlkit.vision.barcode.common.Barcode;
-//import com.google.mlkit.vision.codescanner.GmsBarcodeScanner;
-//import com.google.mlkit.vision.codescanner.GmsBarcodeScannerOptions;
-//import com.google.mlkit.vision.codescanner.GmsBarcodeScanning;
-//import com.google.mlkit.vision.common.InputImage;
-//import com.google.mlkit.vision.text.Text;
-//import com.google.mlkit.vision.text.TextRecognition;
-//import com.google.mlkit.vision.text.TextRecognizer;
-//import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
-
-import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
 public class IntelligentProcessingHub extends BaseActivity {
 
     public interface OnTextRecognizedListener{

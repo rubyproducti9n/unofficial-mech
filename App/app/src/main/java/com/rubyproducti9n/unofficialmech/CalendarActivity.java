@@ -1,8 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.HolidayManager.holidayDates;
-
-import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -12,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -21,9 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class CalendarActivity extends BaseActivity {

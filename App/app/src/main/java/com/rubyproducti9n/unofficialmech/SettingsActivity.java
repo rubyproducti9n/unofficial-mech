@@ -3,7 +3,6 @@ package com.rubyproducti9n.unofficialmech;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 import androidx.preference.PreferenceManager;
 

@@ -1,14 +1,10 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.Algorithms.getYear;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.disableService;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.disableStatusBar;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.serviceCheck;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import android.content.DialogInterface;

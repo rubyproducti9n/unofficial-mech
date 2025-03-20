@@ -1,7 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
 import android.app.Activity;
-import android.telephony.SubscriptionPlan;
 import android.util.Log;
 
 import androidx.annotation.NonNull;

@@ -19,11 +19,6 @@ import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.content.ContextCompat;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
-
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.IOException;
 import java.io.InputStream;

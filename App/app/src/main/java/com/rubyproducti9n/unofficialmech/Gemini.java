@@ -1,7 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import android.content.Context;
-
 import androidx.annotation.NonNull;
 
 import com.google.ai.client.generativeai.GenerativeModel;
@@ -9,7 +7,6 @@ import com.google.ai.client.generativeai.java.GenerativeModelFutures;
 import com.google.ai.client.generativeai.type.Content;
 import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.ai.client.generativeai.type.GenerationConfig;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
