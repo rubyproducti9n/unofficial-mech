@@ -221,7 +221,7 @@ public class SmartWidget extends AppWidgetProvider {
         refreshIntent.setAction(AppWidgetManager.ACTION_APPWIDGET_UPDATE);
         refreshIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_IDS, new int[]{appWidgetId});
         PendingIntent refreshPendingIntent = PendingIntent.getBroadcast(context, 0, refreshIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        views.setOnClickPendingIntent(R.id.widget_refresh_button, refreshPendingIntent);
+        views.setOnClickPendingIntent(R.id.widgetBtn, refreshPendingIntent);
 
         // Update the Widget
         appWidgetManager.updateAppWidget(appWidgetId, views);
