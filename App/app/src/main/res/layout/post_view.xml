@@ -98,7 +98,7 @@
         android:visibility="gone"
         android:foreground="?attr/selectableItemBackground"
         app:shapeAppearance="?attr/shapeAppearanceCornerExtraLarge"
-        app:layout_constraintTop_toBottomOf="@id/divider">
+        app:layout_constraintTop_toBottomOf="@id/divider1">
 
         <ImageView
             android:id="@+id/carousel_image_view"
@@ -421,7 +421,6 @@
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/ad_container"
                     app:layout_constraintTop_toTopOf="parent" />
 
 
@@ -499,18 +498,19 @@
                 style="@style/Widget.Material3.CardView.Filled"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="12dp"
+                android:layout_margin="0dp"
                 android:visibility="gone"
                 app:cardElevation="2dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card">
+                app:layout_constraintTop_toBottomOf="@+id/like_comment_share">
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="12dp"
+                    android:padding="8dp"
                     android:drawableStart="@drawable/round_info_24"
                     android:drawablePadding="6dp"
                     android:text="This notice was taken down"

@@ -253,7 +253,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
         if (item.getUid() != null){
             holder.fetchUserDetails(item.getUid(), new PhotosViewHolder.UserDetailCallback() {
                 @Override
-                public void onCallback(BottomSheetCreateAccount.User userDetail) {
+                public void onCallback(CreateUser userDetail) {
 
                     if (userDetail.getAvatar()!=null){
                         Picasso.get().load(userDetail.getAvatar()).into(holder.profile_avatar);
@@ -698,7 +698,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
 
         }
         public interface UserDetailCallback {
-            void onCallback(BottomSheetCreateAccount.User userDetail);
+            void onCallback(CreateUser userDetail);
             void onFailure(String errorMessage);
         }
 
@@ -826,7 +826,7 @@ public class PhotosAdapter extends RecyclerView.Adapter<PhotosAdapter.PhotosView
                         Boolean suspended = snapshot.child("suspended").getValue(Boolean.class);
                         String paymentDate = snapshot.child("lastPaymentDate").getValue(String.class);
                         String dateCreated = snapshot.child("dateCreated").getValue(String.class);
-                        callback.onCallback(new BottomSheetCreateAccount.User(id,
+                        callback.onCallback(new CreateUser(id,
                                 avatar,
                                 first,
                                 last,

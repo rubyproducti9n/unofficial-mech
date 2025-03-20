@@ -253,7 +253,7 @@
                     app:icon="@drawable/heart_outline"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/sub_postCard" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
 
                 <com.google.android.material.button.MaterialButton

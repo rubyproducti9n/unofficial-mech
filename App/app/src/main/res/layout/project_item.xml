@@ -71,11 +71,11 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="TODO"
                         android:src="@drawable/round_keyboard_arrow_right_24"
-                        android:tint="@color/adaptIconColor"
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/adaptIconColor" />
 
                     <ImageView
                         android:id="@+id/card_menu"
@@ -85,11 +85,11 @@
                         android:adjustViewBounds="true"
                         android:contentDescription="TODO"
                         android:src="@drawable/baseline_more_vert_24"
-                        android:tint="@color/adaptIconColor"
                         android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:tint="@color/adaptIconColor" />
 
                     <TextView
                         android:id="@+id/txtUsername"
@@ -295,8 +295,7 @@
                 android:backgroundTint="#FFB100"
                 app:cardCornerRadius="4dp"
                 app:cardElevation="0dp"
-                app:layout_constraintStart_toEndOf="@+id/txtTime"
-                app:layout_constraintTop_toBottomOf="@+id/txtUsername">
+                app:layout_constraintStart_toStartOf="parent">
 
                 <TextView
                     android:id="@+id/postId"
@@ -371,8 +370,7 @@
                 android:textColor="#333333"
                 android:textSize="8sp"
                 android:visibility="gone"
-                app:layout_constraintStart_toStartOf="@+id/img_avtar_card"
-                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card" />
+                app:layout_constraintStart_toStartOf="parent" />
 
 
             <com.google.android.material.card.MaterialCardView
@@ -381,12 +379,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_margin="12dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:cardElevation="2dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/img_avtar_card">
+                app:layout_constraintBottom_toBottomOf="parent">
 
                 <TextView
                     android:layout_width="match_parent"

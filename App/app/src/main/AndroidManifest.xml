@@ -161,9 +161,9 @@
             android:name=".AIToolsActivity"
             android:exported="false"
             android:theme="@style/Theme.Material3.Dark.NoActionBar" />
-        <activity
-            android:name=".FacultyCheckActivity"
-            android:exported="false" />
+<!--        <activity-->
+<!--            android:name=".FacultyCheckActivity"-->
+<!--            android:exported="false" />-->
         <activity
             android:name=".EventScheduleActivity"
             android:exported="false" />

@@ -320,7 +320,7 @@ public class CreateAccount extends BaseActivity {
         String lastPaymentDate = currentDate.format(dateTimeFormatter);
 
         // Create User object
-        BottomSheetCreateAccount.User item = new BottomSheetCreateAccount.User(
+        CreateUser item = new CreateUser(
                 id,
                 avatar,
                 firstName,
