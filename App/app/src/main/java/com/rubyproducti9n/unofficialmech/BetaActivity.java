@@ -1,11 +1,8 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static android.content.ContentValues.TAG;
 import static com.rubyproducti9n.unofficialmech.Algorithms.isFaculty;
 import static com.rubyproducti9n.unofficialmech.Algorithms.selectYear;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,34 +15,22 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.core.view.WindowCompat;
 
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.AdListener;
-import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.gms.ads.nativead.NativeAd;
-import com.google.android.gms.ads.nativead.NativeAdOptions;
-import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class BetaActivity extends AppCompatActivity{
+public class BetaActivity extends BaseActivity{
     //Defined variables
     private Home2Adapter adapter;
     private InterstitialAd mInterstitialAd;

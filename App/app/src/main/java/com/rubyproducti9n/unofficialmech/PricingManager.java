@@ -1,8 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static android.text.TextUtils.isEmpty;
-
-import static com.google.common.base.Verify.verify;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -26,12 +23,8 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
 import com.google.common.collect.ImmutableList;
 
-import java.io.IOException;
-import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class PricingManager {
     private static PricingManager instance;

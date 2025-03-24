@@ -1,9 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isAdmin;
-
-import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,18 +7,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.Build;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;

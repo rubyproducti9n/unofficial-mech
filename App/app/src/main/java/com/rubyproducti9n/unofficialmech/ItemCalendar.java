@@ -3,29 +3,20 @@ package com.rubyproducti9n.unofficialmech;
 import android.content.Intent;
 
 public class ItemCalendar {
-    private boolean isHoliday;
-    private int date;
+    private String date;
     private String event;
 
-    public ItemCalendar(boolean isHoliday, int date, String event) {
-        this.isHoliday = isHoliday;
+    public ItemCalendar(String date, String event) {
         this.date = date;
         this.event = event;
     }
 
-    public boolean isHoliday() {
-        return isHoliday;
-    }
 
-    public void setHoliday(boolean holiday) {
-        isHoliday = holiday;
-    }
-
-    public int getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setDate(int date) {
+    public void setDate(String date) {
         this.date = date;
     }
 

@@ -1,29 +1,27 @@
 package com.rubyproducti9n.unofficialmech;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DownloadManager;
+import android.app.PictureInPictureParams;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.telephony.mbms.DownloadRequest;
+import android.util.Rational;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -31,18 +29,15 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Objects;
 
-public class ImageMagnifierActivity extends AppCompatActivity {
-    private Matrix matrix = new Matrix();
+public class ImageMagnifierActivity extends BaseActivity {
     private float scaleFactor = 1.0f;
     ImageView img;
     private ScaleGestureDetector scaleGestureDetector;
+    ExtendedFloatingActionButton pipMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,26 +46,23 @@ public class ImageMagnifierActivity extends AppCompatActivity {
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_SECURE, WindowManager.LayoutParams.FLAG_SECURE);
 
-        Window window = this.getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(this.getResources().getColor(R.color.matte_black));
-
         Intent intent = getIntent();
         String url = intent.getStringExtra("link");
         String activity = intent.getStringExtra("activity");
+
+        pipMode = findViewById(R.id.pipBtn);
+        pipMode.setOnClickListener(v -> {
+            enterPipMode();
+        });
 
         FloatingActionButton fab = findViewById(R.id.downloadBtn);
 
         if (activity!=null && activity.equals("notice")){
             fab.setVisibility(View.VISIBLE);
-            fab.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    String location = getFileNameFromUrl(url);
-                    openPdf(ImageMagnifierActivity.this, location, "123.jpg");
-                    //picassoDownloader(url);
-                }
+            fab.setOnClickListener(v -> {
+                String location = getFileNameFromUrl(url);
+                openPdf(ImageMagnifierActivity.this, location, "123.jpg");
+                //picassoDownloader(url);
             });
         }else{
             fab.setVisibility(View.GONE);
@@ -107,8 +99,8 @@ public class ImageMagnifierActivity extends AppCompatActivity {
         String[] segments = pdfUrl.split("/");
 
         int oIndex = -1;
-        for(int i = 0; i < segments.length; i++){
-            if ("o".equals(segments[i])){
+        for (String segment : segments) {
+            if ("o".equals(segment)) {
                 oIndex = 1;
                 break;
             }
@@ -222,17 +214,35 @@ public class ImageMagnifierActivity extends AppCompatActivity {
             public void onSuccess(Uri uri) {
                 String gotUrl = uri.toString();
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(ImageMagnifierActivity.this, "Failed to load media", Toast.LENGTH_SHORT).show();
-            }
+        }).addOnFailureListener(v -> {
+            Toast.makeText(ImageMagnifierActivity.this, "Failed to load media", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void download(String url){
-        DownloadManager downloadManager = (DownloadManager) getSystemService(this.DOWNLOAD_SERVICE);
+        DownloadManager downloadManager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
 //        DownloadRequest downloadRequest = downloadManager.(Uri.parse(url));
+    }
+
+    // Call this method to enter PiP mode
+    private void enterPipMode() {
+        // Set max aspect ratio to 9:16
+        PictureInPictureParams.Builder pipBuilder = new PictureInPictureParams.Builder()
+                .setAspectRatio(new Rational(9, 16)); // 9:16 aspect ratio
+
+        enterPictureInPictureMode(pipBuilder.build());
+    }
+
+    // Handle UI visibility changes in PiP mode
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, @NonNull Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+        if (isInPictureInPictureMode) {
+            pipMode.setVisibility(View.GONE);  // Hide button in PiP mode
+        } else {
+            pipMode.setVisibility(View.VISIBLE); // Show button when exiting PiP mode
+        }
     }
 
 }

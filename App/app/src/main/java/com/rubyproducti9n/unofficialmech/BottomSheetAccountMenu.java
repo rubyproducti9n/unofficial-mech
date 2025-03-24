@@ -2,7 +2,6 @@ package com.rubyproducti9n.unofficialmech;
 
 import static androidx.core.app.ActivityCompat.finishAffinity;
 
-//import static com.rubyproducti9n.smartmech.AlgorithmEngine.pref;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeOut;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
@@ -32,7 +31,6 @@ import androidx.preference.PreferenceManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -41,12 +39,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
-import com.squareup.picasso.Picasso;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 

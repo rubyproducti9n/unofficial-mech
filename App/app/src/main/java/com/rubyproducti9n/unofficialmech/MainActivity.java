@@ -1,30 +1,21 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeIn;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getPreloadedInterstitial;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isStudent;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
+import static com.rubyproducti9n.unofficialmech.ProjectToolkit.fadeOut;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.serviceCheck;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.startF;
-
-
-//import com.dcastalia.localappupdate.DownloadApk;
-
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.OptIn;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.widget.Toolbar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.view.GravityCompat;
-import androidx.core.view.WindowCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -34,12 +25,13 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.widget.ViewPager2;
 
 import android.app.Activity;
 import android.app.DownloadManager;
-import android.app.ProgressDialog;
-import android.content.ActivityNotFoundException;
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -48,13 +40,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -65,36 +52,33 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.GestureDetector;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.URLUtil;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.badge.BadgeDrawable;
+import com.google.android.material.badge.ExperimentalBadgeUtils;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.search.SearchBar;
 import com.google.android.material.search.SearchView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
@@ -104,24 +88,23 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.Executors;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseActivity {
 
     private static final String TAG = "InAppReviewHelper";
     private ReviewManager reviewManager;
@@ -148,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     ActionBarDrawerToggle drawerToggle;
 
+    public static LottieAnimationView likeAnim;
+
     private ViewPager viewPager;
     DownloadManager.Request request;
 GestureDetector gesture;
@@ -159,6 +144,8 @@ GestureDetector gesture;
 
     boolean isNetworkRegistered;
     private int lastSelectedItemId;
+    BadgeDrawable badge;
+    int badgeCount = 0;
 
     private ActivityResultLauncher<Intent> startActivityForResult;
 //    ActivityMainBinding binding;
@@ -181,13 +168,14 @@ GestureDetector gesture;
         return super.onTouchEvent(event);
     }
 
+    @OptIn(markerClass = ExperimentalBadgeUtils.class)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getWindow().setAllowEnterTransitionOverlap(true);
-
 //        goPremium();
+        likeAnim= findViewById(R.id.lottieLikeAnim);
 
         reviewManager = ReviewManagerFactory.create(this);
 
@@ -196,13 +184,57 @@ GestureDetector gesture;
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
 
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        badge = bottomNavigationView.getOrCreateBadge(R.id.action_home);
+        badge.setVisible(false);
+
+
         ImageView gemini = findViewById(R.id.gemini);
         gemini.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+//        Snackbar.make(findViewById(R.id.bottom_navigation), "Gemini is on a break, try again later", Snackbar.LENGTH_SHORT)
+//                            .setAnchorView(R.id.bottom_navigation).show();
+
                 ArtificialIntelligenceActivity gem = new ArtificialIntelligenceActivity();
-                gem.show(getSupportFragmentManager(), "tag");
-//                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
+//                Bundle bundle = new Bundle();
+//                bundle.putString("cmd", "Act like a chatbot for my project {name} With all features like:\n" +
+//                        "\n" +
+//                        "{\n" +
+//                        "\n" +
+//                        "Blueprint AI - Provide an overview of recent trends by first asking the filed of interest\n" +
+//                        "\n" +
+//                        "Unofficial Mech - An Android app for sharing memories\n" +
+//                        "\n" +
+//                        "}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "contact for help:\n" +
+//                        "\n" +
+//                        "{\n" +
+//                        "\n" +
+//                        "Email: mechanical.official73@gmail.com\n" +
+//                        "\n" +
+//                        "}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "Avoid to answers questions like: {Any bad words or disrespectful questions}\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "Give this response if you can't answer the query:\n" +
+//                        "\n" +
+//                        "Sorry, Torque AI is still under development and may not satisfy your question\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "\n" +
+//                        "For this chat your name will be Torque AI powered by Google Gemini");
+//                gem.setArguments(bundle);
+                //gem.show(getSupportFragmentManager(), "tag");
+                startActivity(new Intent(MainActivity.this, ArtificialIntelligenceActivity.class));
             }
         });
 
@@ -267,9 +299,13 @@ GestureDetector gesture;
 //        }).start();
 
         FloatingActionButton fab = findViewById(R.id.fab0);
-        fab.setOnClickListener(view -> ProjectToolkit.initiatePanicMode(MainActivity.this));
+        fab.setOnClickListener(view ->
+                        showEventListDialog()
+                        //Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show()
+                //ProjectToolkit.initiatePanicMode(MainActivity.this)
+        );
 
-        ImageView bgImg = findViewById(R.id.bgView);
+//        ImageView bgImg = findViewById(R.id.bgView);
 
         toolbar = findViewById(R.id.toolbar);
 
@@ -291,6 +327,10 @@ GestureDetector gesture;
                             Intent receivedIntent = getIntent();
                             String action = receivedIntent.getAction();
                             String type = receivedIntent.getType();
+                            Uri data = receivedIntent.getData();
+                            if (data != null && Objects.equals(data.getPath(), "/voice")) {
+                                Toast.makeText(MainActivity.this, "Voice Command Triggered", Toast.LENGTH_SHORT).show();
+                            }
                             if (Intent.ACTION_SEND.equals(action) && type!=null){
                                 if ("text/plain".equals(type) || "image/*".equals(type)){
                                     String sharedText = receivedIntent.getStringExtra(Intent.EXTRA_TEXT);
@@ -363,12 +403,18 @@ GestureDetector gesture;
                                 }
                             }).start();
                         }else{
-                            bgImg.setVisibility(View.GONE);
+//                            bgImg.setVisibility(View.GONE);
                         }
                     }
                 });
             }
         }).start();
+
+
+
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        String uid = p.getString("auth_userId", null);
+        receiveRequest();
 
         FloatingActionButton createButton = findViewById(R.id.fab);
         createButton.setOnClickListener(new View.OnClickListener() {
@@ -419,9 +465,24 @@ GestureDetector gesture;
 
     }
 
-    private void initiatePager(){
 
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+    public static void triggerAnim(){
+        fadeIn(likeAnim);
+        likeAnim.setAnimation(R.raw.like_anim);
+        likeAnim.loop(false);
+        likeAnim.playAnimation();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fadeOut(likeAnim);
+            }
+        },800);
+
+    }
+
+
+
+    private void initiatePager(){
         viewPager = findViewById(R.id.view_pager);
         setupViewPager(viewPager);
         bottomNavigationView.setOnNavigationItemSelectedListener(
@@ -982,7 +1043,7 @@ GestureDetector gesture;
     }
     public void telegram(){
         String url = "https://t.me/+dRJBOb3AVhdlNmFl";
-        Intent intent = new Intent(Intent.ACTION_VIEW);
+        Intent intent =new Intent(Intent.ACTION_VIEW);
         intent.setData((Uri.parse(url)));
         startActivity(intent);
     }
@@ -1033,11 +1094,12 @@ GestureDetector gesture;
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 userList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    String avatar = snapshot.child("avatar").getValue(String.class);
                     String firstName = snapshot.child("firstName").getValue(String.class);
                     String lastName = snapshot.child("lastName").getValue(String.class);
                     String dept = snapshot.child("dept").getValue(String.class);
 
-                    SearchAdapter.SearchItem i = new SearchAdapter.SearchItem(firstName + " " + lastName, dept);
+                    SearchAdapter.SearchItem i = new SearchAdapter.SearchItem(avatar, firstName + " " + lastName, dept);
                     userList.add(i);
                 }
                 Collections.shuffle(userList);
@@ -1079,6 +1141,249 @@ GestureDetector gesture;
     private boolean show(double rate){
         Random random = new Random();
         return random.nextDouble() < rate;
+    }
+
+    public void receiveRequest(){
+//        Snackbar.make(findViewById(R.id.bottom_navigation), "Checking fro new request...", Snackbar.LENGTH_SHORT)
+//                            .setAnchorView(R.id.bottom_navigation).show();
+        SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        String email = p.getString("auth_email", null);
+        String uid = p.getString("auth_userId", null);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("requests");
+        assert email != null;
+        ref.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    for (DataSnapshot snap : snapshot.getChildren()){
+
+                        String uid = snap.child("uid").getValue(String.class);
+                        String timestamp = snap.child("timestamp").getValue(String.class);
+                        String email = snap.child("email").getValue(String.class);
+                        Boolean isValid = snap.child("valid").getValue(Boolean.class);
+
+                        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                        // Parse the uploaded time and get the current time
+                        LocalDateTime uploadedDateTime = LocalDateTime.parse(timestamp, dateTimeFormatter);
+                        LocalDateTime currentDateTime = LocalDateTime.now();
+
+                        // Calculate the duration between the uploaded time and the current time
+                        Duration duration = Duration.between(uploadedDateTime, currentDateTime);
+
+                        if (uid!=null){
+                            if (Boolean.TRUE.equals(isValid)){
+                                if (duration.toMinutes() <= 5){
+                                    Snackbar.make(findViewById(R.id.bottom_navigation), "Request accepted", Snackbar.LENGTH_LONG)
+                                            .setAction("Accept", new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View v) {
+
+                                                    snap.getRef().child("valid").setValue(false);
+                                                    new MaterialAlertDialogBuilder(MainActivity.this)
+                                                            .setTitle("Accepted")
+                                                            .setMessage("Congrats! The request was accepted successfully")
+                                                            .show();
+                                                }
+                                            })
+                                            .setAnchorView(R.id.bottom_navigation).show();
+                                }else{
+                                    snap.getRef().child("valid").setValue(false);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+    }
+
+    private void startCountDown(String eventTitle, String eventDateTime, String imageUrl) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault());
+            Date eventDate = sdf.parse(eventDateTime);
+            if (eventDate == null) return;
+
+            long eventTimeMillis = eventDate.getTime();
+            long currentTimeMillis = System.currentTimeMillis();
+            long countdownTimeMillis = eventTimeMillis - currentTimeMillis;
+
+            if (countdownTimeMillis <= 0) {
+                Log.d("LiveActivity", "Event time has already passed.");
+                return;
+            }
+
+            NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            String channelId = "event_countdown_channel";
+
+            NotificationChannel channel = new NotificationChannel(
+                    channelId,
+                    "Event Countdown",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            channel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
+            channel.setDescription("Shows countdown for the upcoming event.");
+            notificationManager.createNotificationChannel(channel);
+
+            Intent intent = new Intent(this, MainActivity.class);
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+
+            // Start Foreground Service for Countdown
+            Intent serviceIntent = new Intent(this, ForegroundService.class);
+            serviceIntent.putExtra("eventTitle", eventTitle);
+            serviceIntent.putExtra("eventTimeMillis", eventTimeMillis);
+            serviceIntent.putExtra("imageUrl", imageUrl);
+            ContextCompat.startForegroundService(this, serviceIntent);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showEventListDialog() {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events");
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<String> eventTitles = new ArrayList<>();
+                final List<String> eventKeys = new ArrayList<>();
+
+                for (DataSnapshot eventSnapshot : snapshot.getChildren()) {
+                    String title = eventSnapshot.child("title").getValue(String.class);
+                    if (title != null) {
+                        eventTitles.add(title);
+                        eventKeys.add(eventSnapshot.getKey()); // Store event keys for details
+                    }
+                }
+
+                if (eventTitles.isEmpty()) {
+                    Toast.makeText(MainActivity.this, "No events found!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Convert list to array for AlertDialog
+                String[] eventArray = eventTitles.toArray(new String[0]);
+
+                new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setTitle("Events")
+                        .setItems(eventArray, (dialog, which) -> {
+                            String selectedEventKey = eventKeys.get(which);
+                            showEventDetailsDialog(selectedEventKey); // Open details dialog
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Failed to load events", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void showEventDetailsDialog(String eventKey) {
+        DatabaseReference eventRef = FirebaseDatabase.getInstance().getReference("events").child(eventKey);
+
+        eventRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (!snapshot.exists()) {
+                    Log.d("Event Tag", "Event details not found!");
+                    setBadge(false);
+                    return;
+                }
+
+                String title = snapshot.child("title").getValue(String.class);
+                String description = snapshot.child("description").getValue(String.class);
+                String type = snapshot.child("type").getValue(String.class);
+                String dept = snapshot.child("department").getValue(String.class);
+                String imageUrl = snapshot.child("eventPosterUri").getValue(String.class);
+                String registration = snapshot.child("registrationLink").getValue(String.class);
+                String eventDateTime = snapshot.child("date").getValue(String.class); // Fetching event date
+
+                // Parse event date
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm", Locale.getDefault());
+                try {
+                    Date eventDate = dateFormat.parse(eventDateTime);
+                    Date currentDate = new Date();
+
+                    // If event date has passed, do not show the dialog
+                    if (eventDate != null && eventDate.before(currentDate)) {
+                        Log.d("Event Tag", "Event expired!");
+                        setBadge(false);
+                        return;
+                    }
+                } catch (ParseException e) {
+                    Log.d("Event Tag", "Invalid event date!");
+                        setBadge(false);
+                    return;
+                }
+
+                // Inflate the custom layout
+                LayoutInflater inflater = LayoutInflater.from(MainActivity.this);
+                View view = inflater.inflate(R.layout.dialog_event_details, null);
+
+                // Reference UI elements
+                ImageView eventImage = view.findViewById(R.id.eventImage);
+                TextView eventTitle = view.findViewById(R.id.eventTitle);
+                TextView eventDescription = view.findViewById(R.id.eventDescription);
+                MaterialButton eventRegistration = view.findViewById(R.id.register);
+                MaterialButton eventButton = view.findViewById(R.id.eventButton);
+
+                if ("Concert".equals(type)) {
+                    eventRegistration.setText("Buy Ticket");
+                }
+
+                // Set data
+                eventTitle.setText(title);
+                eventDescription.setText(description);
+
+                // Load image using Picasso
+                Picasso.get().load(imageUrl).into(eventImage);
+
+                startCountDown(title, eventDateTime, imageUrl);
+                setBadge(true);
+
+                // Build the dialog
+                AlertDialog alertDialog = new MaterialAlertDialogBuilder(MainActivity.this)
+                        .setView(view)
+                        .setCancelable(true)
+                        .show();
+
+                eventRegistration.setOnClickListener(v -> startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(registration))));
+                eventButton.setOnClickListener(v -> alertDialog.dismiss());
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                setBadge(false);
+                Log.d("Event Tag", "Failed to load event details");
+                Toast.makeText(MainActivity.this, "Something went wrong, please try again later", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void setBadge(boolean increment) {
+        if (increment) {
+            badgeCount++; // Increase count
+        } else {
+            if (badgeCount > 0) badgeCount--; // Decrease count but never below 0
+        }
+
+        if (badgeCount == 0) {
+            badge.setVisible(false); // Hide badge if count is 0
+        } else {
+            badge.setVisible(true);
+            badge.setNumber(badgeCount); // Update badge count
+        }
     }
 
 

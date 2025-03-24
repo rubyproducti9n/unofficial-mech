@@ -1,6 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getSystemAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.h;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.initiateAds;
@@ -14,14 +13,18 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;
@@ -29,10 +32,17 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.CircularProgressIndicator;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -42,9 +52,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Objects;
 
-public class BottomSheetLogin extends BottomSheetDialogFragment {
+public class LoginActivity extends BaseActivity {
     BroadcastReceiver broadcastReceiver;
     TextInputEditText materialText;
     TextInputEditText materialEmail;
@@ -52,36 +61,77 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
     CircularProgressIndicator progress;
     TextView expiryDateTxtView;
     private SharedPreferences pref;
-
-    @Nullable
+    private static final int RC_SIGN_IN = 100;
+    GoogleSignInClient mGoogleSignInClient;
+    ViewFlipper viewFlipper;
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_login);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
 
 
+        pref = PreferenceManager.getDefaultSharedPreferences(this);
 
-        View view = inflater.inflate(R.layout.bottom_sheet_login, container, false);
+        viewFlipper = findViewById(R.id.flipper);
 
+        initiateAds(this, this);
 
-        pref = PreferenceManager.getDefaultSharedPreferences(requireContext());
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
 
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        initiateAds(requireActivity(), requireContext());
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
+        if (account != null) {
+//            updateUI(account); // If user is already signed in, update the UI
+        }
 
-        LottieAnimationView animLogin = view.findViewById(R.id.animLogin);
+        MaterialButton forgetBtn = findViewById(R.id.forgotPass);
+        forgetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showPrevious();
+            }
+        });
+
+        SignInButton bt = findViewById(R.id.signIn);
+        bt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                signInWithGoogle();
+            }
+        });
+
+        MaterialButton login = findViewById(R.id.login);
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.showNext();
+            }
+        });
+
+        LottieAnimationView animLogin = findViewById(R.id.animLogin);
         animLogin.setAnimation(R.raw.login);
         animLogin.playAnimation();
 
-        progress = view.findViewById(R.id.progress);
+        progress = findViewById(R.id.progress);
         progress.setVisibility(View.GONE);
-        materialText = view.findViewById(R.id.uniquePass);
-        materialEmail = view.findViewById(R.id.uniqueEmail);
-        mdBtn = view.findViewById(R.id.checkbtn);
+        materialText = findViewById(R.id.uniquePass);
+        materialEmail = findViewById(R.id.uniqueEmail);
+        mdBtn = findViewById(R.id.checkbtn);
         mdBtn.setEnabled(false);
-        MaterialButton help = view.findViewById(R.id.helpbtn);
+        MaterialButton help = findViewById(R.id.helpbtn);
         help.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(LoginActivity.this);
                 builder.setTitle("Help");
                 builder.setMessage("Email: Enter your registered email for beta test \n" +
                         "Unofficial Pass: mech.beta \n \n" +
@@ -129,11 +179,85 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
                 mdBtn.setEnabled(false);
                 progress.setVisibility(View.VISIBLE);
 //                loadAd(requireActivity());
-                loadInterstitialAd(requireActivity());
+                loadInterstitialAd(LoginActivity.this);
             }
         });
 
-        return view;
+
+    }
+
+    private void signInWithGoogle() {
+        Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                googleLogin(account.getEmail());
+            } catch (ApiException e) {
+                // Google Sign-In failed
+                Log.w("Google Sign-In", "Google sign in failed", e);
+                Snackbar.make(materialText, "Sign-In Failed", Snackbar.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private void googleLogin(String email){
+        FirebaseDatabase userDatabase = FirebaseDatabase.getInstance();
+        DatabaseReference userRef = userDatabase.getReference("users");
+        userRef.orderByChild("personalEmail").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()){
+                    for(DataSnapshot userSnapshot : snapshot.getChildren()){
+                        String userId = userSnapshot.child("userId").getValue(String.class);
+                        String firstName = userSnapshot.child("firstName").getValue(String.class);
+                        String lastName = userSnapshot.child("lastName").getValue(String.class);
+                        String initials = userSnapshot.child("initials").getValue(String.class);
+                        String contact = userSnapshot.child("contact").getValue(String.class);
+                        String div = userSnapshot.child("div").getValue(String.class);
+                        String email = userSnapshot.child("personalEmail").getValue(String.class);
+                        String mob = userSnapshot.child("contact").getValue(String.class);
+                        String prn = userSnapshot.child("prn").getValue(String.class);
+                        String gender = userSnapshot.child("gender").getValue(String.class);
+                        String rollNo = userSnapshot.child("rollNo").getValue(String.class);
+                        String userRole = userSnapshot.child("role").getValue(String.class);
+
+                        SharedPreferences.Editor authEditor = pref.edit();
+                        authEditor.putString("auth_userId", userId);
+                        authEditor.putString("auth_name", firstName + " " + lastName);
+                        if (initials!=null){
+                            authEditor.putString("auth_initials", initials);
+                        }else{
+                            authEditor.putString("auth_initials", null);
+                        }
+                        authEditor.putString("auth_contact", contact);
+                        authEditor.putString("auth_division", div);
+                        authEditor.putString("auth_email", email);
+                        authEditor.putString("auth_mob", mob);
+                        authEditor.putString("auth_prn", prn);
+                        authEditor.putString("auth_gender", gender);
+                        authEditor.putString("auth_rollNo", rollNo);
+                        authEditor.putString("auth_userole", userRole);
+                        authEditor.apply();
+                        startActivity(new Intent(LoginActivity.this, TourActivity.class));
+                        finish();
+                    }
+                }else{
+                    Snackbar.make(materialText, "User not registered", Snackbar.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Snackbar.make(materialText, "Unable to connect to server, try again later", Snackbar.LENGTH_SHORT).show();
+            }
+        });
+
     }
 
     public void checkPassword(){
@@ -177,13 +301,12 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
 //                    String emailAuth = snapshot.child("email").getValue(String.class);
                     //String passAuth = snapshot.child("password").getValue(String.class);
                     String altPassword = null;
-                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(requireContext());
+                    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
                     SharedPreferences.Editor authEditor = pref.edit();
                     String authPassword = preferences.getString("auth_password", null);
                     String authAltPassword = preferences.getString("auth_altPassword", null);
 
                     for(DataSnapshot userSnapshot : snapshot.getChildren()){
-
                         //Retrieve the user data
                         String userId = userSnapshot.child("userId").getValue(String.class);
                         String firstName = userSnapshot.child("firstName").getValue(String.class);
@@ -226,22 +349,22 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
                         authEditor.apply();
 
                         if (isEncoded(Password)){
-                            if (h(requireActivity(),Password).equals(password) || Password.equals(altPassword)){
+                            if (h(LoginActivity.this,Password).equals(password) || Password.equals(altPassword)){
                                 grant();
                             }
                         }else{
-                            MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(requireContext());
+                            MaterialAlertDialogBuilder b = new MaterialAlertDialogBuilder(LoginActivity.this);
                             b.setTitle("Security Alert")
                                     .setMessage("Our system just detected that your password is at risk, and may get breach easily. It is recommended to secure your password. \n\n Secure your account?")
                                     .setPositiveButton("Secure now", new DialogInterface.OnClickListener() {
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             securePass(Email, Password);
-                                            if (h(requireContext(), Password).equals(password) || Password.equals(authAltPassword)){
-                                            grant();
+                                            if (h(LoginActivity.this, Password).equals(password) || Password.equals(authAltPassword)){
+                                                grant();
                                             }else {
-                                            Toast.makeText(getContext(), "Access denied, check your credentials and try again", Toast.LENGTH_SHORT).show();
-                                            progress.setVisibility(View.GONE);
+                                                Toast.makeText(LoginActivity.this, "Access denied, check your credentials and try again", Toast.LENGTH_SHORT).show();
+                                                progress.setVisibility(View.GONE);
                                             }
                                         }
                                     })
@@ -251,7 +374,7 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
                                             if (Password.equals(authPassword) || Password.equals(authAltPassword)){
                                                 grant();
                                             }else {
-                                                Toast.makeText(getContext(), "Access denied, check your credentials and try again", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(LoginActivity.this, "Access denied, check your credentials and try again", Toast.LENGTH_SHORT).show();
                                                 progress.setVisibility(View.GONE);
                                             }
                                         }
@@ -262,30 +385,30 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
 
 
 //                    //Last login shared preference
-//                    SharedPreferences sharedPreferences = (SharedPreferences) PreferenceManager.getDefaultSharedPreferences(getContext());
+//                    SharedPreferences sharedPreferences = (SharedPreferences) PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
 //                    Date currentDate = new Date();
 //                    //Update last login time in SharedPreferences
 //                    sharedPreferences.edit().putLong("lastLoginTime", currentDate.getTime()).apply();
 //
-//                    Intent intent = new Intent(getContext(), MainActivity.class);
+//                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //                    startActivity(intent);
 //                    getActivity().finish();
                 }else{
-                    Toast.makeText(getContext(), "User not found", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "User not found", Toast.LENGTH_SHORT).show();
                     progress.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error 503", Toast.LENGTH_SHORT).show();
                 progress.setVisibility(View.GONE);
             }
         });
 
 //        if(Password.equals(password) && betaEmail.contains(Email)){
 //
-//            Intent intent = new Intent(getContext(), MainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //            startActivity(intent);
 //            getActivity().finish();
 //
@@ -302,21 +425,21 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
 //            editor.putString("admin_email", Email);
 //            editor.apply();
 //
-//            Intent intent = new Intent(getContext(), MainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //            startActivity(intent);
 //            getActivity().finish();
-//            Toast.makeText(getContext(), "Welcome Admin", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(LoginActivity.this, "Welcome Admin", Toast.LENGTH_SHORT).show();
 //        }
 //        else if (authEmail.contains(Email)){
 ////            SharedPreferences.Editor authEditor = pref.edit();
 ////            authEditor.putString("auth_email", Email);
 ////            authEditor.apply();
 //
-//            Intent intent = new Intent(getContext(), MainActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
 //            startActivity(intent);
 //            getActivity().finish();
 //        } else if (Password.equals("dev@9693") && adminEmail.contains(Email)) {
-//            Intent intent = new Intent(getContext(), DeveloperActivity.class);
+//            Intent intent = new Intent(LoginActivity.this, DeveloperActivity.class);
 //            startActivity(intent);
 //        }
     }
@@ -328,36 +451,36 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
                 if (snapshot.exists()){
                     SharedPreferences.Editor authEditor = pref.edit();
                     for(DataSnapshot userSnapshot : snapshot.getChildren()){
-                        userSnapshot.getRef().child("password").setValue(h(requireActivity(), p));
-                        String pa = h(requireActivity(), p);
+                        userSnapshot.getRef().child("password").setValue(h(LoginActivity.this, p));
+                        String pa = h(LoginActivity.this, p);
 
                         authEditor.putString("auth_password", pa);
                         authEditor.apply();
                     }
                 }else{
-                    Toast.makeText(getContext(), "Failed to connect", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(LoginActivity.this, "Failed to connect", Toast.LENGTH_SHORT).show();
                     progress.setVisibility(View.GONE);
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(getContext(), "Error 503", Toast.LENGTH_SHORT).show();
+                Toast.makeText(LoginActivity.this, "Error 503", Toast.LENGTH_SHORT).show();
                 progress.setVisibility(View.GONE);
             }
         });
     }
 
     private void grant(){
-        SharedPreferences sharedPreferences = (SharedPreferences) PreferenceManager.getDefaultSharedPreferences(requireContext());
+        SharedPreferences sharedPreferences = (SharedPreferences) PreferenceManager.getDefaultSharedPreferences(LoginActivity.this);
         Date currentDate = new Date();
 
         sharedPreferences.edit().putLong("lastLoginTime", currentDate.getTime()).apply();
         sharedPreferences.edit().putBoolean("dashboard", true).apply();
 
-        Intent intent = new Intent(getContext(), MainActivity.class);
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
-        requireActivity().finish();
+        LoginActivity.this.finish();
     }
 
     public static void loadInterstitialAd(Activity context){
@@ -378,4 +501,5 @@ public class BottomSheetLogin extends BottomSheetDialogFragment {
             });
         }
     }
+
 }

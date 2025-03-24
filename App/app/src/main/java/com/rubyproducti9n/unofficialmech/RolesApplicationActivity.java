@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.preference.PreferenceManager;
 
 import com.google.android.material.card.MaterialCardView;
@@ -19,7 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class RolesApplicationActivity extends AppCompatActivity {
+public class RolesApplicationActivity extends BaseActivity {
 
 
     Integer status;

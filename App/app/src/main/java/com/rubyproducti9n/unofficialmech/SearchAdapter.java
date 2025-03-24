@@ -2,16 +2,17 @@ package com.rubyproducti9n.unofficialmech;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     public void onBindViewHolder(@NonNull SearchAdapter.SearchViewHolder holder, int position) {
         SearchAdapter.SearchItem item = filteredList.get(position);
         if (item.getName() != null && !item.getName().isEmpty()) {
+            if (item.getAvatar()!=null){
+                Picasso.get().load(item.getAvatar()).into(holder.avatar);
+            }else{
+                holder.avatar.setImageResource(R.drawable.round_account_circle_24);
+            }
             holder.name.setVisibility(View.VISIBLE);
             holder.name.setText(item.getName());
             if (item.getDept()!=null){
@@ -80,9 +86,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     public class SearchViewHolder extends RecyclerView.ViewHolder {
         private TextView name, dept;
         private MaterialCardView mc;
+        private ImageView avatar;
         public SearchViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            avatar = itemView.findViewById(R.id.avatar);
             name = itemView.findViewById(R.id.name);
             dept = itemView.findViewById(R.id.dept);
             mc = itemView.findViewById(R.id.mc);
@@ -92,12 +100,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     public static class SearchItem{
 
+        public String avatar;
         public String name;
         public String dept;
 
-        public SearchItem(String name, String dept) {
+        public SearchItem(String avatar, String name, String dept) {
+            this.avatar = avatar;
             this.name = name;
             this.dept = dept;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
         }
 
         public String getName() {

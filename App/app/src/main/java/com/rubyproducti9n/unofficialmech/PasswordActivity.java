@@ -1,13 +1,10 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getSystemAdValue;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.WindowCompat;
 import androidx.preference.PreferenceManager;
 
@@ -23,7 +20,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -74,7 +70,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 
 
-public class PasswordActivity extends AppCompatActivity {
+public class PasswordActivity extends BaseActivity {
 
     ImageView bgImg2;
     MaterialCardView blurMc;
@@ -342,8 +338,9 @@ public class PasswordActivity extends AppCompatActivity {
 //                            dialog.dismiss();
 //                        }
 //                    }).show();
-                BottomSheetLogin bottomSheetFragment = new BottomSheetLogin();
-                bottomSheetFragment.show(getSupportFragmentManager(), "BottomSheet");
+//                BottomSheetLogin bottomSheetFragment = new BottomSheetLogin();
+//                bottomSheetFragment.show(getSupportFragmentManager(), "BottomSheet");
+                startActivity(new Intent(PasswordActivity.this, LoginActivity.class));
             }
         });
 

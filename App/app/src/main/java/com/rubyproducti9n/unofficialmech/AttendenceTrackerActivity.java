@@ -1,7 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -11,21 +9,17 @@ import android.os.Environment;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.BounceInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-public class AttendenceTrackerActivity extends AppCompatActivity {
+public class AttendenceTrackerActivity extends BaseActivity {
 
     int currentNumber;
     int endNumber;

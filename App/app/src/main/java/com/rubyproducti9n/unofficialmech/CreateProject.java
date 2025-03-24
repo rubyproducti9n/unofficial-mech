@@ -3,7 +3,6 @@ package com.rubyproducti9n.unofficialmech;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -53,7 +52,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class CreateProject extends AppCompatActivity {
+public class CreateProject extends BaseActivity {
 
     private ActivityResultLauncher<Intent> startActivityForResult;
     LinearProgressIndicator progressBar;

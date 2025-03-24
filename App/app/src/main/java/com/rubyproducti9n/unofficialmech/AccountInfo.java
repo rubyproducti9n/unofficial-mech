@@ -1,25 +1,18 @@
 package com.rubyproducti9n.unofficialmech;
 
-//import static com.rubyproducti9n.smartmech.AlgorithmEngine.pref;
-import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.disableStatusBar;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getSystemAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.initiateAds;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadAd;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.serviceCheck;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityOptionsCompat;
 import androidx.preference.PreferenceManager;
 
-import android.accounts.Account;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,24 +30,16 @@ import android.widget.Toast;
 
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.initialization.InitializationStatus;
-import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.materialswitch.MaterialSwitch;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.progressindicator.LinearProgressIndicator;
-import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -72,7 +57,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class AccountInfo extends AppCompatActivity {
+public class AccountInfo extends BaseActivity {
 
 
     DatabaseReference userRef;

@@ -1,10 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
-//import static com.rubyproducti9n.smartmech.AlgorithmEngine.isBtech;
-//import static com.rubyproducti9n.smartmech.AlgorithmEngine.pref;
-//import static com.rubyproducti9n.unofficialmech.Algorithms.isFaculty;
-import static com.rubyproducti9n.unofficialmech.ImageMagnifierActivity.getFileNameFromUrl;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getTimeTable;
+
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isBtech;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isFaculty;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
@@ -15,37 +11,20 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.Image;
-import android.net.ParseException;
 import android.net.Uri;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.progressindicator.CircularProgressIndicator;
-import com.google.android.material.timepicker.MaterialTimePicker;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.rubyproducti9n.smartmech.AlgorithmEngine;
-
-import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -458,6 +437,9 @@ public class FragmentLibrary extends Fragment {
                         Intent i = new Intent(requireContext(), WebViewActivity.class);
                         switch(which){
                             case 0:
+//                                Intent intent = new Intent(requireContext(), WebViewActivity.class);
+//                                intent.putExtra("link", "https://mysanjivani.edupluscampus.com/"); // Pass your URL here
+//                                startActivity(intent);
                                 requireActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://mysanjivani.edupluscampus.com/")));
                                 break;
                             case 1:
@@ -492,7 +474,16 @@ public class FragmentLibrary extends Fragment {
         startActivity(intent);
     }
     private void initiateCalendar(){
-        startActivity(new Intent(requireContext(), CalendarActivity.class));
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Manager")
+                        .setMessage("Oops! this feature is in maintenance mode. Please try again later")
+                                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                }).show();
+//        startActivity(new Intent(requireContext(), CalendarActivity.class));
     }
     private void initiateTimeTable(View view, String userRole, String div){
         serviceCheck(getContext(), new ProjectToolkit.ServiceCheckCallBack() {

@@ -1,7 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.checkSpecialUser;
-
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -16,10 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.common.collect.ObjectArrays;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,7 +24,7 @@ import com.google.common.collect.ObjectArrays;
  */
 public class BottomSheetUploadOptions extends BottomSheetProfileEdit {
 
-    MaterialCardView post, notice, memory, project ,internship, letter;
+    MaterialCardView post, notice, memory, project ,internship, letter, eventScheduler;
     ConstraintLayout mainLayout, noUserLayout;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -98,6 +94,8 @@ public class BottomSheetUploadOptions extends BottomSheetProfileEdit {
         project = view.findViewById(R.id.new_project);
         internship = view.findViewById(R.id.new_internship);
         letter = view.findViewById(R.id.letterAssistant);
+        eventScheduler = view.findViewById(R.id.eventManager);
+
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         String role = preferences.getString("auth_userole", null);
@@ -127,6 +125,9 @@ public class BottomSheetUploadOptions extends BottomSheetProfileEdit {
 
             internship.setEnabled(false);
             internship.setAlpha(0.5f);
+
+            eventScheduler.setEnabled(false);
+            eventScheduler.setAlpha(0.5f);
         }
 
 //        boolean specialAccess = checkSpecialUser(getContext());
@@ -191,6 +192,14 @@ public class BottomSheetUploadOptions extends BottomSheetProfileEdit {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getContext(), CreateLetter.class);
+                startActivity(intent);
+            }
+        });
+
+        eventScheduler.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getContext(), EventScheduleActivity.class);
                 startActivity(intent);
             }
         });

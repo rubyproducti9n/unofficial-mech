@@ -7,16 +7,13 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 
-public class VirtualIDCardActivity extends AppCompatActivity {
+public class VirtualIDCardActivity extends BaseActivity {
 
     private ImageView qrCodeImageView, barcodeImageView;
 

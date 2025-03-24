@@ -1,9 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-//import static com.rubyproducti9n.DataRetrieval.generateUrl;
-import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
-
-import android.app.Activity;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -12,7 +8,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
@@ -22,13 +17,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-//import com.rubyproducti9n.DataRetrieval;
-import com.rubyproducti9n.Example;
 
 import java.util.Calendar;
 import java.util.Objects;
 
-public class Algorithms extends AppCompatActivity {
+public class Algorithms extends BaseActivity {
 
     public interface PaymentServiceCheckCallBack{
         void onResult(Boolean result);

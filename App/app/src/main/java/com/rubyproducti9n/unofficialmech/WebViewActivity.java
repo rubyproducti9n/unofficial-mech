@@ -3,23 +3,17 @@ package com.rubyproducti9n.unofficialmech;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getServerUrl;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.PreferenceManager;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.webkit.WebViewClientCompat;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -36,14 +30,7 @@ import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewActivity extends BaseActivity {
     static LinearProgressIndicator progress;
     static MaterialToolbar toolbar;
     static MaterialCardView webErr;
@@ -51,18 +38,26 @@ public class WebViewActivity extends AppCompatActivity {
     ExtendedFloatingActionButton fab1;
     static String s = getServerUrl();
     public static String link;
-//    static String s = "https://google.com";
+    private SharedPreferences sharedPreferences;
+    private static final String PREFS_NAME = "UserPrefs";
+    private static final String USERNAME_KEY = "username";
+    private static final String PASSWORD_KEY = "password";
+    private boolean userConsentGiven = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_web_view);
 
+        // Initialize SharedPreferences
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+
+        // Get the consent from user at the beginning (this could be shown via a dialog)
+        getUserConsent();
+
         Intent intent = getIntent();
-//        link = "https://google.com";
         link = intent.getStringExtra("link");
         String activity = intent.getStringExtra("activity");
-
 
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -85,9 +80,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         toolbar = findViewById(R.id.toolbar);
         progress = findViewById(R.id.linearProgress);
-
         webView = findViewById(R.id.webView);
-
         webErr = findViewById(R.id.webErr);
         webErr.setVisibility(View.GONE);
 
@@ -105,34 +98,70 @@ public class WebViewActivity extends AppCompatActivity {
             }
         });
 
-        if (activity!=null && activity.endsWith("pdf")){
+        if (activity != null && activity.endsWith("pdf")) {
             openInDocs(link);
         }
 
-        if (link!=null){
+        if (link != null) {
             toolbar.setTitle(R.string.app_name);
             toolbar.setSubtitle("loading...");
-            if (link.equals(s)){
+            if (link.equals(s)) {
                 fab1.setVisibility(View.GONE);
-                new CheckServerOnlineTask().execute(s);
-            }else{
+                //new CheckServerOnlineTask().execute(s);
+            } else {
                 fab1.setVisibility(View.VISIBLE);
                 webView.loadUrl(link);
                 webErr.setVisibility(View.GONE);
             }
-//            webView.loadUrl(link);
-        }else{
-            getFile("https://firebasestorage.googleapis.com/v0/unofficial-mech.appspot.com/o/ADHAR.pdf?alt=media&token=e42cf2fa-c306-46af-aed3-d09e435c9cb2");
-//            webView.loadUrl("https://firebasestorage.googleapis.com/v0/unofficial-mech.appspot.com/o/ADHAR.pdf?alt=media&token=e42cf2fa-c306-46af-aed3-d09e435c9cb2");
-//            Toast.makeText(this, "An error occurred", Toast.LENGTH_SHORT).show();
-//            Intent intent1 = new Intent(WebViewActivity.this, MainActivity.class);
-//            startActivity(intent1);
-//            finishAffinity();
+        } else {
+            //getFile("https://firebasestorage.googleapis.com/v0/unofficial-mech.appspot.com/o/ADHAR.pdf?alt=media&token=e42cf2fa-c306-46af-aed3-d09e435c9cb2");
         }
 
+        // Load and autofill user credentials if available
+        loadUserCredentials();
     }
 
-    private void reload(String url){
+    // Method to get user consent to save credentials
+    private void getUserConsent() {
+        // This could be a dialog asking for consent to save credentials
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Save Credentials?")
+                .setMessage("Do you want to save your login details for future visits?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        userConsentGiven = true;  // User consent given to save credentials
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setCancelable(false)
+                .show();
+    }
+
+    // Method to save user credentials
+    private void saveUserCredentials(String username, String password) {
+        if (userConsentGiven) {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(USERNAME_KEY, username);
+            editor.putString(PASSWORD_KEY, password);
+            editor.apply();
+        }
+    }
+
+    // Method to load user credentials and autofill them
+    private void loadUserCredentials() {
+        String savedUsername = sharedPreferences.getString(USERNAME_KEY, null);
+        String savedPassword = sharedPreferences.getString(PASSWORD_KEY, null);
+
+        if (savedUsername != null && savedPassword != null) {
+            // Code to autofill the username and password into the WebView login form
+            // You will need to inject JavaScript into the WebView to fill the form fields
+            webView.evaluateJavascript("document.getElementById('username').value = '" + savedUsername + "';", null);
+            webView.evaluateJavascript("document.getElementById('password').value = '" + savedPassword + "';", null);
+        }
+    }
+
+    private void reload(String url) {
         webView.loadUrl(url);
     }
 
@@ -141,122 +170,30 @@ public class WebViewActivity extends AppCompatActivity {
         String userAgent;
         if (isDesktopViewEnabled) {
             userAgent = WebSettings.getDefaultUserAgent(this);
-            int index = userAgent.indexOf("/");
         } else {
             userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36";
         }
         webView.getSettings().setUserAgentString(userAgent);
     }
-    private class MyWebViewClient extends WebViewClient{
+
+    private class MyWebViewClient extends WebViewClient {
         @Override
         public void onPageFinished(WebView view, String url) {
             super.onPageFinished(view, url);
             ProjectToolkit.fadeOut(progress);
 
             String pageTitle = view.getTitle();
-            if (pageTitle.startsWith("http://")){
+            if (pageTitle.startsWith("http://")) {
                 toolbar.setSubtitle("WARNING! Unsafe site");
                 toolbar.setNavigationIcon(R.drawable.round_warning_24);
                 fab1.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 toolbar.setSubtitle(pageTitle);
             }
-
-        }
-
-
-//        @Override
-//        public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
-//            super.onReceivedError(view, request, error);
-//            toolbar.setSubtitle("Error occurred while loading!");
-//            fab1.setVisibility(View.VISIBLE);
-//        }
-    }
-
-    private void initiateErr(){
-        MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this)
-                .setCancelable(false)
-                .setTitle("Oops!")
-                .setMessage("Server seems offline, check again later\nServer time: 9 PM onwards")
-                .setNegativeButton("Back", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        finish();
-                    }
-                })
-                .setPositiveButton("Request", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        initiateRequest();
-                    }
-                });
-        builder.show();
-    }
-
-
-
-    public class CheckServerOnlineTask extends AsyncTask<String, Void, Boolean> {
-
-        @Override
-        protected Boolean doInBackground(String... urls) {
-            String serverUrl = urls[0];
-            try {
-                URL url = new URL(serverUrl);
-                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-                connection.setConnectTimeout(5000);
-                return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
-            } catch (IOException e) {
-                Log.e("MyApp", "Error checking server: " + e.getMessage());
-                return false;
-            }
-        }
-
-        @Override
-        protected void onPostExecute(Boolean isOnline) {
-            super.onPostExecute(isOnline);
-            if (isOnline) {
-                webView.loadUrl(s);
-            } else {
-                // Server is offline, show an error message to the user
-                initiateErr();
-                webErr.setVisibility(View.GONE);
-                webView.setVisibility(View.GONE);
-                progress.setVisibility(View.GONE);
-                toolbar.setSubtitle("Offline");
-                initiateRequest();
-//                Toast.makeText(getApplicationContext(), "Server is offline!", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
-
-//    private boolean isXamppServerOnline(String serverUrl) {
-//        try {
-//            // Create a URL object with a short timeout to avoid long waits
-//            URL url = new URL(serverUrl);
-//            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-//            connection.setConnectTimeout(5000); // Set a timeout of 5 seconds
-//
-//            // Check if the connection can be established
-//            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
-//        } catch (IOException e) {
-//            Log.e("Unofficial Mech", "Error checking server: " + e.getMessage());
-//            return false; // Assume offline if an exception occurs
-//        }
-//    }
-
-
-//    private class MyWebViewClient extends WebViewClient {
-//
-//        @Override
-//        public boolean shouldOverrideUrlLoading(WebView view, String url) {
-//            // Handle URL loading if needed (e.g., open links in external browser)
-//            return super.shouldOverrideUrlLoading(view, url);
-//        }
-//    }
-
-    private void getFile(String url){
-
+    private void getFile(String url) {
         StorageReference storageReference = FirebaseStorage.getInstance().getReference(url);
         storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -272,11 +209,10 @@ public class WebViewActivity extends AppCompatActivity {
         });
     }
 
-    private void openInDocs(String pdfUrl){
+    private void openInDocs(String pdfUrl) {
         String encodedUrl = Uri.encode(pdfUrl, "UTF-8");
         String googleDocsViewerUrl = "https://docs.google.com/gview?embedded=true&url=" + encodedUrl;
         webView.loadUrl(googleDocsViewerUrl);
-
     }
 
     private void initiateRequest(){

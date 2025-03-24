@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 
 import com.google.android.material.button.MaterialButton;
@@ -24,7 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NavigationAIActivity extends AppCompatActivity {
+public class NavigationAIActivity extends BaseActivity {
 
     private static final int PERMISSIONS_REQUEST_RECORD_AUDIO = 1;
 

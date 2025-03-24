@@ -2,7 +2,6 @@ package com.rubyproducti9n.unofficialmech;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -11,13 +10,10 @@ import androidx.viewpager.widget.ViewPager;
 
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.Toast;
 
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.tabs.TabLayout;
 
-public class UploadsActivity extends AppCompatActivity {
+public class UploadsActivity extends BaseActivity {
 
     long backPressedTime;
     boolean backPressDisabled;

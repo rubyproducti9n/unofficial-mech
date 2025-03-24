@@ -1,33 +1,19 @@
 package com.rubyproducti9n.unofficialmech;
 
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.animateVertically;
-
-import android.animation.ObjectAnimator;
-import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-public class PluginsActivity extends AppCompatActivity {
+public class PluginsActivity extends BaseActivity {
 
     MaterialCardView backBtn, aiPlugin;
 

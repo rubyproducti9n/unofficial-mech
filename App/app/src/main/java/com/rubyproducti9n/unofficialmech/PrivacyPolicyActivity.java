@@ -1,12 +1,11 @@
 package com.rubyproducti9n.unofficialmech;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
-public class PrivacyPolicyActivity extends Activity {
+public class PrivacyPolicyActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

@@ -7,7 +7,6 @@ import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
@@ -31,6 +30,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.android.billingclient.api.BillingClient;
+import com.android.billingclient.api.BillingClientStateListener;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.Purchase;
+import com.android.billingclient.api.PurchasesResponseListener;
+import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -47,9 +52,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 
-public class DeveloperActivity extends AppCompatActivity {
+public class DeveloperActivity extends BaseActivity {
     Context mcontext;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
@@ -70,17 +76,44 @@ public class DeveloperActivity extends AppCompatActivity {
     private static final String DARK_MODE_KEY = "DarkMode";
     SharedPreferences sharedPreferences;
 
+
+    private BillingClient billingClient;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_developer);
 
+// Initialize the BillingClient
+        billingClient = BillingClient.newBuilder(this)
+                .setListener(purchasesUpdatedListener)
+                .enablePendingPurchases()
+                .build();
+
+        // Connect to Google Play Billing
+        billingClient.startConnection(new BillingClientStateListener() {
+            @Override
+            public void onBillingSetupFinished(@NonNull BillingResult billingResult) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    // Billing service connected, query purchases
+                    queryCurrentSubscription();
+                }
+            }
+
+            @Override
+            public void onBillingServiceDisconnected() {
+                // Handle disconnect
+                Toast.makeText(DeveloperActivity.this, "Billing service disconnected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
         AdManager manager = new AdManager(this);
         manager.loadInterstitialAd(this);
 
-        PricingManager manager1 = PricingManager.getInstance(this);
-        if (manager1.isBasic()){
-            Toast.makeText(this, "Basic Plan", Toast.LENGTH_SHORT).show();
+        BillingHelper helper = new BillingHelper(this);
+
+        if (helper.isPlanActive("basic_plan")){
+            Toast.makeText(this, "Basic plan!", Toast.LENGTH_SHORT).show();
         }
 
         dev = findViewById(R.id.dev);
@@ -209,76 +242,45 @@ public class DeveloperActivity extends AppCompatActivity {
 
 
 
-//        uploadSwitch = findViewById(R.id.uploadSwitch);
-//        uploadSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                dataUploadRef.setValue(isChecked);
-//            }
-//        });
-//
-//        futureUpdateSwitch = findViewById(R.id.futureSwitch);
-//        futureUpdateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                dataFutureRef.setValue(isChecked);
-//            }
-//        });
-//
-//        darkSwitch = findViewById(R.id.darkSwitch);
-//        darkSwitch.setEnabled(false);
-//        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(DeveloperActivity.this);
-//        darkSwitch.setChecked(sharedPreferences.getBoolean(DARK_MODE_KEY, false));
-//        darkSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                SharedPreferences.Editor darkPref = sharedPreferences.edit();
-//                darkPref.putBoolean(DARK_MODE_KEY, isChecked);
-//                darkPref.apply();
-//
-//                applyTheme(isChecked);
-//            }
-//        });
-//        applyTheme(darkSwitch.isChecked());
-
-
-
-
-        //MaterialCardView notify = findViewById(R.id.notification_beta);
-
-
-//        notify.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(DeveloperActivity.this);
-//                if (ActivityCompat.checkSelfPermission(DeveloperActivity.this, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//                    // TODO: Consider calling
-//                    //    ActivityCompat#requestPermissions
-//                    // here to request the missing permissions, and then overriding
-//                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-//                    //                                          int[] grantResults)
-//                    // to handle the case where the user grants the permission. See the documentation
-//                    // for ActivityCompat#requestPermissions for more details.
-//                    Toast.makeText(mcontext, "Allow all permission to let app work with all functionality", Toast.LENGTH_SHORT).show();
-//                    openAppSettings();
-//                }else{
-//                    NotificationCompat.Builder builder = new NotificationCompat.Builder(DeveloperActivity.this, "default")
-//                            .setSmallIcon(R.drawable.notification_img)
-//                            .setContentTitle("Test Notification")
-//                            .setContentText("This is a test notification message")
-//                            .setSound(Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.notification_sound))
-//                            .setPriority(NotificationCompat.PRIORITY_MAX);
-//                    notificationManagerCompat.notify(0, builder.build());
-//                }
-//                return;
-//            }
-//        });
-
-
-
+    }
+    private void queryCurrentSubscription() {
+        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+            @Override
+            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                    if (!list.isEmpty()) {
+                        // User has an active subscription
+                        for (Purchase purchase : list) {
+                            // Check the purchase SKU and show appropriate Toast
+                            String sku = purchase.getProducts().toString();
+                            if (sku.equals("basic_plan_sku")) {
+                                showToast("You have the Basic Plan");
+                            } else if (sku.equals("standard_plan_sku")) {
+                                showToast("You have the Standard Plan");
+                            } else if (sku.equals("premium_plan_sku")) {
+                                showToast("You have the Premium Plan");
+                            }
+                        }
+                    } else {
+                        // No active subscriptions
+                        showToast("No active subscriptions");
+                    }
+                } else {
+                    showToast("Failed to retrieve subscription info");
+                }
+            }
+        });
+    }
+    private void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
     }
 
+    private final PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
+        @Override
+        public void onPurchasesUpdated(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+            // Handle purchase updates if needed
+        }
+    };
     private void saveUserInfo(){
         DatabaseReference r = FirebaseDatabase.getInstance().getReference("breach");
         String bid = r.push().getKey();
@@ -299,7 +301,7 @@ public class DeveloperActivity extends AppCompatActivity {
     private void initiateDialog(){
         String[] items = {
                 "Unofficial Server",
-        "Apply for Position", "FAQs", "Virtual ID", "Subscription", "Blueprint"};
+        "Apply for Position", "FAQs", "Virtual ID", "Subscription", "Blueprint", "Study Material"};
         MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(this);
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
@@ -330,6 +332,10 @@ public class DeveloperActivity extends AppCompatActivity {
                     case 5:
                         Intent intent5 = new Intent(DeveloperActivity.this, BlueprintActivity.class);
                         startActivity(intent5);
+                        break;
+                    case 6:
+                        Intent intent6 = new Intent(DeveloperActivity.this, StudyMaterialActivity.class);
+                        startActivity(intent6);
                         break;
                 }
             }

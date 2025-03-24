@@ -1,8 +1,5 @@
 package com.rubyproducti9n.unofficialmech;
 
-import static com.google.firebase.database.core.utilities.Utilities.tryParseInt;
-
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.widget.CheckBox;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,15 +20,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-public class AttendanceSheetActivity extends AppCompatActivity {
+public class AttendanceSheetActivity extends BaseActivity {
 
     TextView txt;
     RecyclerView recyclerView;

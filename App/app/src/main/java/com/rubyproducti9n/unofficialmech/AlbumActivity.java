@@ -2,7 +2,6 @@ package com.rubyproducti9n.unofficialmech;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -11,9 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 import android.content.BroadcastReceiver;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -26,7 +23,7 @@ import com.google.android.material.tabs.TabLayout;
 import com.squareup.picasso.Picasso;
 
 
-public class AlbumActivity extends AppCompatActivity {
+public class AlbumActivity extends BaseActivity {
 
     BroadcastReceiver broadcastReceiver;
     private ImageView imgView;
@@ -40,7 +37,7 @@ public class AlbumActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_album);
 
-//IMP: DO NOT DELETE ==========================================
+        //IMP: DO NOT DELETE ==========================================
         broadcastReceiver = new ConnectionReceiver();
         registerNetworkBroadcast();
 
@@ -56,7 +53,6 @@ public class AlbumActivity extends AppCompatActivity {
         Picasso.get().load(imgUrl).into(imgView);
 
         appBarLayout = findViewById(R.id.appBar);
-
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         TabLayout.Tab photos = tabLayout.newTab().setIcon(R.drawable.round_notifications_24);
@@ -166,6 +162,8 @@ public class AlbumActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
+
 
     @Override
     protected void onDestroy() {

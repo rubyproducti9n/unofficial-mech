@@ -16,13 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -49,7 +47,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CreateAccount extends AppCompatActivity {
+public class CreateAccount extends BaseActivity {
     DatabaseReference databaseReference;
 
     TextInputEditText editFName, editLName, editDiv, editrollNo, editDept, editPrn, editClgMail, editGender, editMail, editMob, editPass;
@@ -62,6 +60,7 @@ public class CreateAccount extends AppCompatActivity {
     private MaterialAutoCompleteTextView divDrop, deptDrop;
     String inDivision, inDept, inGender = null;
     String inRRoll = "0";
+    MaterialButton facultybtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,6 +76,9 @@ public class CreateAccount extends AppCompatActivity {
         e = pref.edit();
 
         databaseReference = FirebaseDatabase.getInstance().getReference("users");
+
+        facultybtn = findViewById(R.id.facultyBtn);
+        facultybtn.setOnClickListener(v -> checkFaculty());
 
         imgAvatar = findViewById(R.id.profilePicture);
         editFName = findViewById(R.id.firstNameEditText);
@@ -316,7 +318,7 @@ public class CreateAccount extends AppCompatActivity {
         String lastPaymentDate = currentDate.format(dateTimeFormatter);
 
         // Create User object
-        BottomSheetCreateAccount.User item = new BottomSheetCreateAccount.User(
+        CreateUser item = new CreateUser(
                 id,
                 avatar,
                 firstName,
@@ -344,7 +346,7 @@ public class CreateAccount extends AppCompatActivity {
         Toast.makeText(this, "Successfully created account!", Toast.LENGTH_SHORT).show();
 
         // Redirect to main activity
-        startActivity(new Intent(CreateAccount.this, MainActivity.class));
+        startActivity(new Intent(CreateAccount.this, TourActivity.class));
         finish();
     }
 
@@ -437,5 +439,28 @@ public class CreateAccount extends AppCompatActivity {
         Pattern pattern = Pattern.compile("^[\\w!#$%&'*+/=?^`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^`{|}~-]+)*@(gmail\\.com)$");
         Matcher matcher = pattern.matcher(emailAddress);
         return matcher.matches();
+    }
+
+    private void checkFaculty(){
+        startActivity(new Intent(CreateAccount.this, LockActivity.class));
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        new MaterialAlertDialogBuilder(this)
+                .setTitle("Exit")
+                .setMessage("Are you sure want to exit?")
+                .setNegativeButton("Exit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onBackPressed();
+                    }
+                }).setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).show();
     }
 }
