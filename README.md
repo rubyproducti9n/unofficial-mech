@@ -21,7 +21,7 @@ The app fosters collaboration and enhances connectivity within the college commu
   Minimalist design with easy navigation ensures the best user experience.
   
 - **Gemini Flash 1.5**  
-  Use the Ultimate Google Gemini models like Flash 2.0, Gemini Flash Thinking, Gemini 2.0 Pro (Experimental) and Imagen 3 for free.
+  Use the Ultimate Google Gemini models like Flash 2.0, Gemini Flash Thinking, Gemini 2.0 Pro (Experimental) and more for free.
 
 ---
 
