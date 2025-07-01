@@ -21,6 +21,7 @@ public class AIToolsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_aitools);
         EdgeToEdge.enable(this);
 
+        //TODO: Updating all new AI tools
         MaterialCardView mc1 = findViewById(R.id.mc1);
         ImageView img1 = findViewById(R.id.img1);
         TextView t1 = findViewById(R.id.t1);
