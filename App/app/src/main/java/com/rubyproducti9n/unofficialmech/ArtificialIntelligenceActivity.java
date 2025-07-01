@@ -188,14 +188,10 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
                     MobileAds.initialize(ArtificialIntelligenceActivity.this, new OnInitializationCompleteListener() {
                         @Override
                         public void onInitializationComplete(@NonNull InitializationStatus initializationStatus) {
-                            if (initializationStatus != null){
-                                Log.d("Admob: ", "Ad received!");
-                                loadBannerAd(adView);
-                                AdRequest adRequest = new AdRequest.Builder().build();
-                                adView.loadAd(adRequest);
-                            }else{
-                                Log.d("Admob: ", "Error receiving ads!");
-                            }
+                            Log.d("Admob: ", "Ad received!");
+                            loadBannerAd(adView);
+                            AdRequest adRequest = new AdRequest.Builder().build();
+                            adView.loadAd(adRequest);
                         }
                     });
                     AdRequest adRequest = new AdRequest.Builder().build();
@@ -514,7 +510,7 @@ public class ArtificialIntelligenceActivity extends BaseActivity {
             }
 
             @Override
-            public void onFailure(Throwable t) {
+            public void onFailure(@NonNull Throwable t) {
                 t.printStackTrace();
                 runOnUiThread(() -> txt.setText("Oops! something went wrong, please try again later."));
                 Log.d("===Reason===", "R:- " + t);
