@@ -1,10 +1,13 @@
 package com.rubyproducti9n.unofficialmech;
 
 
+import static com.google.firebase.remoteconfig.FirebaseRemoteConfig.TAG;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,11 +19,13 @@ import com.android.billingclient.api.AcknowledgePurchaseResponseListener;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -52,7 +57,7 @@ public class PricingManager {
     private void initiate() {
         billingClient = BillingClient.newBuilder(context)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().build())
                 .build();
 
         billingClient.startConnection(new BillingClientStateListener() {
@@ -89,54 +94,78 @@ public class PricingManager {
                                                 .build()))
                         .build();
 
-        billingClient.queryProductDetailsAsync(queryProductDetailsParams, new ProductDetailsResponseListener() {
-            @Override
-            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailsList) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
-                    for (ProductDetails productDetails : productDetailsList) {
-                        switch (productDetails.getProductId()) {
-                            case "basic_plan":
-                                productDetailsForBasic = productDetails;
-                                break;
-                            case "standard_subscription":
-                                productDetailsForStandard = productDetails;
-                                break;
-                            case "premium_subscription":
-                                productDetailsForPremium = productDetails;
-                                break;
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+                (billingResult, purchasesList) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : purchasesList) {
+                            Log.d(TAG, "Purchased: " + purchase.getProducts());
+                            // Handle the purchase
                         }
                     }
-                    checkUserSubscription();
-                }
-            }
-        });
+                });
+//        billingClient.queryProductDetailsAsync(queryProductDetailsParams, new ProductDetailsResponseListener() {
+//            @Override
+//            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailsList) {
+//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
+//                    for (ProductDetails productDetails : productDetailsList) {
+//                        switch (productDetails.getProductId()) {
+//                            case "basic_plan":
+//                                productDetailsForBasic = productDetails;
+//                                break;
+//                            case "standard_subscription":
+//                                productDetailsForStandard = productDetails;
+//                                break;
+//                            case "premium_subscription":
+//                                productDetailsForPremium = productDetails;
+//                                break;
+//                        }
+//                    }
+//                    checkUserSubscription();
+//                }
+//            }
+//        });
     }
 
     private void checkUserSubscription() {
-        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, (billingResult, purchases) -> {
-            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-                isBasic = false;
-                isStandard = false;
-                isPremium = false;
-
-                for (Purchase purchase : purchases) {
-                    ArrayList<String> skus = purchase.getSkus();
-                    if (skus.equals("basic_plan")) {
-                        isBasic = true;
-                        adLimit = 0.25f; // Limited ads
-                    } else if (skus.equals("standard_subscription")) {
-                        isStandard = true;
-                        geminiFlashEnabled = true; // Enable Gemini Flash
-                    } else if (skus.equals("premium_subscription")) {
-                        isPremium = true;
-                        adLimit = 0.0f; // No ads
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+                (billingResult, purchasesList) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : purchasesList) {
+                            Log.d(TAG, "Purchased: " + purchase.getProducts());
+                            // Handle the purchase
+                        }
                     }
-                }
-
-                // Save subscription details in SharedPreferences for use in other activities
-                saveSubscriptionDetails();
-            }
-        });
+                });
+//        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, (billingResult, purchases) -> {
+//            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+//                isBasic = false;
+//                isStandard = false;
+//                isPremium = false;
+//
+//                for (Purchase purchase : purchases) {
+//                    ArrayList<String> skus = purchase.getSkus();
+//                    if (skus.equals("basic_plan")) {
+//                        isBasic = true;
+//                        adLimit = 0.25f; // Limited ads
+//                    } else if (skus.equals("standard_subscription")) {
+//                        isStandard = true;
+//                        geminiFlashEnabled = true; // Enable Gemini Flash
+//                    } else if (skus.equals("premium_subscription")) {
+//                        isPremium = true;
+//                        adLimit = 0.0f; // No ads
+//                    }
+//                }
+//
+//                // Save subscription details in SharedPreferences for use in other activities
+//                saveSubscriptionDetails();
+//            }
+//        });
     }
 
     private void saveSubscriptionDetails() {

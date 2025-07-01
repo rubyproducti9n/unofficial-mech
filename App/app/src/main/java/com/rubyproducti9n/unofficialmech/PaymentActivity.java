@@ -1,5 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
+import static com.google.firebase.remoteconfig.FirebaseRemoteConfig.TAG;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.context;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.disableStatusBar;
 
@@ -28,12 +29,15 @@ import com.android.billingclient.api.BillingFlowParams;
 import com.android.billingclient.api.BillingResult;
 import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.ProductDetails;
 import com.android.billingclient.api.ProductDetailsResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.QueryProductDetailsParams;
+import com.android.billingclient.api.QueryProductDetailsResult;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 import com.google.android.material.button.MaterialButton;
@@ -360,7 +364,7 @@ private static final int TEZ_REQUEST_CODE = 123;
 
         billingClient = BillingClient.newBuilder(this)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().build())
                 .build();
 
         billingClient.startConnection(new BillingClientStateListener() {
@@ -424,48 +428,76 @@ private static final int TEZ_REQUEST_CODE = 123;
 
         billingClient.queryProductDetailsAsync(queryProductDetailsParams, new ProductDetailsResponseListener() {
             @Override
-            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailsList) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
-                    for (ProductDetails productDetails : productDetailsList) {
-                        switch (productDetails.getProductId()) {
-                            case "basic_plan":
-                                productDetailsForBasic = productDetails;
-                                break;
-                            case "standard_subscription":
-                                productDetailsForStandard = productDetails;
-                                break;
-                            case "premium_subscription":
-                                productDetailsForPremium = productDetails;
-                                break;
-                        }
-                    }
-                    checkOwnedSubscriptions();
-                } else {
-                    Toast.makeText(context, "Error loading products: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
-                }
+            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull QueryProductDetailsResult queryProductDetailsResult) {
+                billingClient.queryPurchasesAsync(
+                        QueryPurchasesParams.newBuilder()
+                                .setProductType(BillingClient.ProductType.SUBS)
+                                .build(),
+                        (billingResult1, purchasesList) -> {
+                            if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                                for (Purchase purchase : purchasesList) {
+                                    Log.d(TAG, "Purchased: " + purchase.getProducts());
+                                    // Handle the purchase
+                                }
+                            }
+                        });
             }
+
+//            @Override
+//            public void onProductDetailsResponse(@NonNull BillingResult billingResult, @NonNull List<ProductDetails> productDetailsList) {
+//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && productDetailsList != null) {
+//                    for (ProductDetails productDetails : productDetailsList) {
+//                        switch (productDetails.getProductId()) {
+//                            case "basic_plan":
+//                                productDetailsForBasic = productDetails;
+//                                break;
+//                            case "standard_subscription":
+//                                productDetailsForStandard = productDetails;
+//                                break;
+//                            case "premium_subscription":
+//                                productDetailsForPremium = productDetails;
+//                                break;
+//                        }
+//                    }
+//                    checkOwnedSubscriptions();
+//                } else {
+//                    Toast.makeText(context, "Error loading products: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
         });
     }
     private void checkOwnedSubscriptions() {
-        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
-            @Override
-            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-                    for (Purchase purchase : purchases) {
-                        if (purchase.getProducts().equals("basic_plan")) {
-                            basicBtn.setEnabled(false);
-                        } else if (purchase.getProducts().equals("standard_subscription")) {
-                            standardBtn.setEnabled(false);
-                        } else if (purchase.getProducts().equals("premium_subscription")) {
-                            premiumBtn.setEnabled(false);
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+                (billingResult, purchasesList) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : purchasesList) {
+                            Log.d(TAG, "Purchased: " + purchase.getProducts());
+                            // Handle the purchase
                         }
                     }
-                    findViewById(R.id.mainLayout).setVisibility(View.VISIBLE);
-                } else {
-                    Toast.makeText(context, "Error checking subscriptions: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+                });
+//        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+//            @Override
+//            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> purchases) {
+//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
+//                    for (Purchase purchase : purchases) {
+//                        if (purchase.getProducts().equals("basic_plan")) {
+//                            basicBtn.setEnabled(false);
+//                        } else if (purchase.getProducts().equals("standard_subscription")) {
+//                            standardBtn.setEnabled(false);
+//                        } else if (purchase.getProducts().equals("premium_subscription")) {
+//                            premiumBtn.setEnabled(false);
+//                        }
+//                    }
+//                    findViewById(R.id.mainLayout).setVisibility(View.VISIBLE);
+//                } else {
+//                    Toast.makeText(context, "Error checking subscriptions: " + billingResult.getDebugMessage(), Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
     private void launchBillingFlow(ProductDetails productDetails) {
         if (productDetails != null) {

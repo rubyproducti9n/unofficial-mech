@@ -146,6 +146,8 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"
             android:layout_width="match_parent"
@@ -798,6 +800,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/singleMode" />
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"
             android:layout_width="match_parent"
@@ -805,7 +808,7 @@
             android:layout_margin="0dp"
             android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/recyclerViewStories" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/err"

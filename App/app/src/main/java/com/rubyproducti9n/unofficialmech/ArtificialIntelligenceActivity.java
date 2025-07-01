@@ -5,11 +5,6 @@ import static android.view.View.VISIBLE;
 import static com.rubyproducti9n.unofficialmech.Callbacks.getAdValue;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.loadBannerAd;
 
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
-import androidx.preference.PreferenceManager;
-
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.DialogInterface;
@@ -32,6 +27,11 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 import com.airbnb.lottie.LottieAnimationView;
 import com.google.ai.client.generativeai.GenerativeModel;

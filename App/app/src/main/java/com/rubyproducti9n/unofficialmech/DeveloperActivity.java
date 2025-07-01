@@ -1,5 +1,6 @@
 package com.rubyproducti9n.unofficialmech;
 
+import static com.google.firebase.remoteconfig.FirebaseRemoteConfig.TAG;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.getServerUrl;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.isAdmin;
 import static com.rubyproducti9n.unofficialmech.ProjectToolkit.pref;
@@ -33,9 +34,11 @@ import android.widget.Toast;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.PendingPurchasesParams;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesResponseListener;
 import com.android.billingclient.api.PurchasesUpdatedListener;
+import com.android.billingclient.api.QueryPurchasesParams;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -87,7 +90,7 @@ public class DeveloperActivity extends BaseActivity {
 // Initialize the BillingClient
         billingClient = BillingClient.newBuilder(this)
                 .setListener(purchasesUpdatedListener)
-                .enablePendingPurchases()
+                .enablePendingPurchases(PendingPurchasesParams.newBuilder().build())
                 .build();
 
         // Connect to Google Play Billing
@@ -244,32 +247,44 @@ public class DeveloperActivity extends BaseActivity {
 
     }
     private void queryCurrentSubscription() {
-        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
-            @Override
-            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
-                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-                    if (!list.isEmpty()) {
-                        // User has an active subscription
-                        for (Purchase purchase : list) {
-                            // Check the purchase SKU and show appropriate Toast
-                            String sku = purchase.getProducts().toString();
-                            if (sku.equals("basic_plan_sku")) {
-                                showToast("You have the Basic Plan");
-                            } else if (sku.equals("standard_plan_sku")) {
-                                showToast("You have the Standard Plan");
-                            } else if (sku.equals("premium_plan_sku")) {
-                                showToast("You have the Premium Plan");
-                            }
+        billingClient.queryPurchasesAsync(
+                QueryPurchasesParams.newBuilder()
+                        .setProductType(BillingClient.ProductType.SUBS)
+                        .build(),
+                (billingResult, purchasesList) -> {
+                    if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+                        for (Purchase purchase : purchasesList) {
+                            Log.d(TAG, "Purchased: " + purchase.getProducts());
+                            // Handle the purchase
                         }
-                    } else {
-                        // No active subscriptions
-                        showToast("No active subscriptions");
                     }
-                } else {
-                    showToast("Failed to retrieve subscription info");
-                }
-            }
-        });
+                });
+//        billingClient.queryPurchasesAsync(BillingClient.SkuType.SUBS, new PurchasesResponseListener() {
+//            @Override
+//            public void onQueryPurchasesResponse(@NonNull BillingResult billingResult, @NonNull List<Purchase> list) {
+//                if (billingResult.getResponseCode() == BillingClient.BillingResponseCode.OK) {
+//                    if (!list.isEmpty()) {
+//                        // User has an active subscription
+//                        for (Purchase purchase : list) {
+//                            // Check the purchase SKU and show appropriate Toast
+//                            String sku = purchase.getProducts().toString();
+//                            if (sku.equals("basic_plan_sku")) {
+//                                showToast("You have the Basic Plan");
+//                            } else if (sku.equals("standard_plan_sku")) {
+//                                showToast("You have the Standard Plan");
+//                            } else if (sku.equals("premium_plan_sku")) {
+//                                showToast("You have the Premium Plan");
+//                            }
+//                        }
+//                    } else {
+//                        // No active subscriptions
+//                        showToast("No active subscriptions");
+//                    }
+//                } else {
+//                    showToast("Failed to retrieve subscription info");
+//                }
+//            }
+//        });
     }
     private void showToast(String message) {
         Toast.makeText(this, message, Toast.LENGTH_LONG).show();
