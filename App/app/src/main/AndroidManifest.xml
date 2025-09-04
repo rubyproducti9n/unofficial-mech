@@ -85,9 +85,6 @@
             android:name=".MyAds"
             android:exported="false" />
         <activity
-            android:name=".BottomSheetCreateAccount"
-            android:exported="true" />
-        <activity
             android:name=".RolesApplicationActivity"
             android:exported="false" />
         <activity
@@ -196,9 +193,6 @@
                 <data android:scheme="phonepe" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".UploadsActivity"
-            android:exported="false" />
         <activity
             android:name=".CreatePost"
             android:exported="false"

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.Toast;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.chip.Chip;
@@ -335,8 +336,7 @@ public class FragmentAlbum extends Fragment {
         chipAddMemories.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), UploadsActivity.class);
-                startActivity(intent);
+                Toast.makeText(requireContext(), "Unavailable", Toast.LENGTH_SHORT).show();
             }
         });
 

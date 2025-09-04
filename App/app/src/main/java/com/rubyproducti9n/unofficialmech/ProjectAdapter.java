@@ -408,15 +408,6 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.PhotosVi
             context.startActivity(Intent.createChooser(shareIntent, "Share via"));
         }
 
-        public void bind(Post postItem){
-
-            username.setText(postItem.getUserName());
-            Picasso.get().load(postItem.getPostUrl()).into(post);
-            caption.setText(postItem.getCaption());
-            date_time.setText(postItem.getUploadTime());
-
-        }
-
         private void getAvatar(String userName){
             ImageView profile_avatar = itemView.findViewById(R.id.img_avtar);
 

@@ -13,16 +13,6 @@
             android:scaleType="centerCrop"
             android:visibility="gone"/>
 
-        <com.rubyproducti9n.unofficialmech.ManagerLayout
-            android:id="@+id/manager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/managerOld"
             style="@style/Widget.Material3.CardView.Elevated"
@@ -111,50 +101,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/singleMode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="18dp"
-            android:layout_marginEnd="18dp"
-            android:visibility="gone"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:layout_editor_absoluteX="18dp">
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/singleSwitch"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Single Mode" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/singleLayout"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/singleMode">
-
-                <TextView
-                    android:id="@+id/trollingTxt"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                        android:gravity="center"
-                    android:text="Loading..."/>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
         <com.facebook.shimmer.ShimmerFrameLayout
             android:id="@+id/shimmer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/singleMode"
             app:shimmer_duration="1000"
             app:shimmer_shape="linear">
 
@@ -789,17 +743,6 @@
                 </ScrollView>
 
         </com.facebook.shimmer.ShimmerFrameLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerViewStories"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_margin="0dp"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/singleMode" />
-
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerView"

@@ -1,136 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CreatePost">
+    android:padding="16dp"
+    android:fillViewport="true">
 
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <LinearLayout
+        android:id="@+id/formLayout"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:navigationIcon="@drawable/round_close_24"
-        app:title="Create a post" />
+        android:gravity="center_horizontal">
 
-    <com.google.android.material.progressindicator.LinearProgressIndicator
-        android:id="@+id/progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:progress="00"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/alert"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        app:cardCornerRadius="12dp"
-        style="@style/Widget.Material3.CardView.Elevated"
-        app:layout_constraintTop_toBottomOf="@+id/progressBar">
-
-        <TextView
+        <EditText
+            android:id="@+id/titleEt"
+            android:hint="Job Title (e.g. Android Dev)"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:inputType="text"
             android:padding="12dp"
-            android:text="Server is offline, please try again later."
-            android:drawableStart="@drawable/round_info_24"
-            android:drawablePadding="8dp"/>
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/editbox_background" />
 
-    </com.google.android.material.card.MaterialCardView>
-
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/anonymous"
-        app:layout_constraintTop_toBottomOf="@+id/alert">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <Spinner
+            android:id="@+id/typeSpinner"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp" />
 
+        <EditText
+            android:id="@+id/companyEt"
+            android:hint="Company Name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/editbox_background" />
 
-            <EditText
-                android:id="@+id/caption"
-                style="@style/NoBorderEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:hint="Missing your friends?..."
-                android:inputType="textMultiLine"
-                android:padding="12dp"
-                android:textSize="14sp"
-                app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/locationEt"
+            android:hint="Location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPostalAddress"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/editbox_background" />
 
+        <Switch
+            android:id="@+id/remoteSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Is Remote?" />
 
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/materialCardView7"
-                android:layout_width="match_parent"
-                android:layout_height="280dp"
-                android:layout_margin="18dp"
-                app:cardCornerRadius="28dp"
-                app:cardElevation="1dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/caption"
-                app:strokeWidth="0dp">
+        <EditText
+            android:id="@+id/skillsEt"
+            android:hint="Required Skills (comma-separated)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:padding="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/editbox_background" />
 
-                <ImageView
-                    android:id="@+id/img"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:contentDescription="TODO"
-                    android:scaleType="fitCenter"
-                    android:tooltipText="Post preview"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+        <EditText
+            android:id="@+id/applyLinkEt"
+            android:hint="Apply Link (URL)"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textUri"
+            android:padding="12dp"
+            android:layout_marginBottom="10dp"
+            android:background="@android:drawable/editbox_background" />
 
-            </com.google.android.material.card.MaterialCardView>
+        <EditText
+            android:id="@+id/descriptionEt"
+            android:hint="Job Description"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:padding="12dp"
+            android:layout_marginBottom="20dp"
+            android:background="@android:drawable/editbox_background" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_gravity="center" />
 
-    </ScrollView>
+        <Button
+            android:id="@+id/postBtn"
+            android:text="Create Post"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#3F51B5"
+            android:textColor="#FFF"
+            android:padding="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp" />
 
-    <com.google.android.material.checkbox.MaterialCheckBox
-        android:id="@+id/anonymous"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="12dp"
-        android:clickable="true"
-        android:padding="8dp"
-        android:text="Anonymous post"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@+id/addImg"
-        app:layout_constraintEnd_toStartOf="@+id/addImg"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/addImg" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/addImg"
-        style="@style/Widget.Material3.Button.IconButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        app:icon="@drawable/outline_add_photo_alternate_24"
-        app:layout_constraintBottom_toBottomOf="@+id/post"
-        app:layout_constraintEnd_toStartOf="@+id/post" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/post"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="28dp"
-        android:text="Post"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+</ScrollView>

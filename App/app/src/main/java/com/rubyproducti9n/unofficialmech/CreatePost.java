@@ -3,6 +3,7 @@ package com.rubyproducti9n.unofficialmech;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.preference.PreferenceManager;
 
 import android.content.ContentResolver;
@@ -14,10 +15,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Switch;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +37,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,349 +47,97 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import java.security.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class CreatePost extends BaseActivity {
 
-    ImageView postImg;
-    MaterialCardView postImgContainer;
-    EditText captionEditTxt;
-    MaterialButton posBtn, addImg;
-    Uri rawSelectedImageUri;
-    boolean uploadEnableStatus;
-    Intent intent;
-    private String anonymous = "public";
-    MaterialCheckBox box;
-    LinearProgressIndicator progressBar;
-    ActivityResultLauncher<Intent> startActivityForResult;
+    private EditText titleEt, companyEt, locationEt, skillsEt, applyLinkEt, descriptionEt;
+    private Spinner typeSpinner;
+    private Switch remoteSwitch;
+    private Button postBtn;
+    private ProgressBar progressBar;
+
+    private DatabaseReference postsRef;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_post);
 
-        postImg = findViewById(R.id.img);
-        postImg.setVisibility(View.GONE);
-        addImg = findViewById(R.id.addImg);
-        captionEditTxt = findViewById(R.id.caption);
+        titleEt = findViewById(R.id.titleEt);
+        companyEt = findViewById(R.id.companyEt);
+        locationEt = findViewById(R.id.locationEt);
+        skillsEt = findViewById(R.id.skillsEt);
+        applyLinkEt = findViewById(R.id.applyLinkEt);
+        descriptionEt = findViewById(R.id.descriptionEt);
+        typeSpinner = findViewById(R.id.typeSpinner);
+        remoteSwitch = findViewById(R.id.remoteSwitch);
+        postBtn = findViewById(R.id.postBtn);
         progressBar = findViewById(R.id.progressBar);
-        progressBar.setVisibility(View.GONE);
-        posBtn = findViewById(R.id.post);
-        postImgContainer = findViewById(R.id.materialCardView7);
 
-        fetchServer();
+        postsRef = FirebaseDatabase.getInstance().getReference("posts");
+        mAuth = FirebaseAuth.getInstance();
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        postBtn.setOnClickListener(v -> createPost());
 
-        box = findViewById(R.id.anonymous);
-        box.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    anonymous = "private";
-                } else {
-                    anonymous = "public";
-                }
-            }
-        });
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item,
+                new String[]{"Job", "Internship", "Freelance", "Walk-in"});
 
-        addImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openGallery();
-            }
-        });
-
-        startActivityForResult = registerForActivityResult(
-                new ActivityResultContracts.StartActivityForResult(),
-                result -> {
-                    if (result.getResultCode() == RESULT_OK) {
-                        Intent data = result.getData();
-                        if (data != null) {
-                            rawSelectedImageUri = data.getData();
-                            String selectedImageUri = rawSelectedImageUri.toString();
-                            if (isImage(this, rawSelectedImageUri)){
-                                postImg.setImageURI(rawSelectedImageUri);
-                                postImgContainer.setVisibility(View.VISIBLE);
-
-                            }
-                        }else{
-                            rawSelectedImageUri = null;
-                        }
-                    }
-                }
-        );
-
-        posBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                push(captionEditTxt.getText().toString(), rawSelectedImageUri);
-            }
-        });
-
-
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        typeSpinner.setAdapter(adapter);
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (rawSelectedImageUri!=null){
-            new MaterialAlertDialogBuilder(this)
-                    .setMessage(rawSelectedImageUri.toString()).show();
-        }
-    }
+    private void createPost() {
+        String title = titleEt.getText().toString().trim();
+        String company = companyEt.getText().toString().trim();
+        String location = locationEt.getText().toString().trim();
+        String skillsRaw = skillsEt.getText().toString().trim();
+        String applyLink = applyLinkEt.getText().toString().trim();
+        String description = descriptionEt.getText().toString().trim();
+        String type = typeSpinner.getSelectedItem().toString();
+        boolean isRemote = remoteSwitch.isChecked();
 
-    public static boolean isImage(Context context, Uri uri) {
-        ContentResolver contentResolver = context.getContentResolver();
-
-        // Get MIME type from the Uri
-        String mimeType = contentResolver.getType(uri);
-
-        // Check if the MIME type starts with "image/"
-        return mimeType != null && mimeType.startsWith("image/");
-    }
-
-    private void fetchServer(){
-        MaterialCardView alert = findViewById(R.id.alert);
-        alert.setVisibility(View.GONE);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference dataUploadRef = database.getReference("app-configuration/uploads");
-        dataUploadRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Boolean uploadsValue = snapshot.getValue(Boolean.class);
-                if (Boolean.TRUE.equals(uploadsValue)){
-                    posBtn.setEnabled(true);
-                    alert.setVisibility(View.GONE);
-                }else{
-                    ProjectToolkit.fadeIn(alert);
-                    alert.setVisibility(View.VISIBLE);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                posBtn.setEnabled(false);
-            }
-        });
-    }
-
-    private void loadIntent(){
-        Intent i = getIntent();
-        if (intent!=null){
-            String sharedText = intent.getStringExtra("sharedText");
-            String sharedImage = intent.getStringExtra("sharedImage");
-            if (sharedText!=null){
-                captionEditTxt.setText(sharedText);
-            }
-            if (sharedImage!=null){
-                Uri imageUri = Uri.parse(sharedImage);
-                postImg.setImageURI(imageUri);
-                postImg.setVisibility(View.VISIBLE);
-                postImgContainer.setVisibility(View.VISIBLE);
-            }else {
-                postImg.setVisibility(View.GONE);
-                postImgContainer.setVisibility(View.GONE);
-            }
-        }
-    }
-
-    private void reset(){
-        posBtn.setEnabled(false);
-        postImg.setVisibility(View.GONE);
-        captionEditTxt.setText("");
-        postImgContainer.setVisibility(View.GONE);
-    }
-
-
-    private void push(String caption, Uri imgUri) {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                ProjectToolkit.fadeIn(progressBar);
-                posBtn.setEnabled(false);
-            }
-        });
-
-        if (imgUri == null && caption.isEmpty()) {
-            Snackbar.make(findViewById(R.id.progressBar), "Please add a caption or an image", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
+        if (TextUtils.isEmpty(title) || TextUtils.isEmpty(company) || TextUtils.isEmpty(location)
+                || TextUtils.isEmpty(skillsRaw) || TextUtils.isEmpty(applyLink)
+                || TextUtils.isEmpty(description)) {
+            Toast.makeText(this, "All fields are required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        StorageReference storageReference = FirebaseStorage.getInstance().getReference("posts/");
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("posts");
+        List<String> skills = Arrays.asList(skillsRaw.split(","));
+        String postId = postsRef.push().getKey();
+        String postedBy = mAuth.getCurrentUser() != null ? mAuth.getUid() : "anonymous";
 
-        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(CreatePost.this);
-        String uid = preferences.getString("auth_userId", null);
-        String authName = preferences.getString("auth_name", null);
+        long postDate = System.currentTimeMillis();
+        long deadline = postDate + (7L * 24 * 60 * 60 * 1000); // 7 days
 
+        Post post = new Post(postId, title, type, company, location, isRemote, skills, applyLink, description, postedBy, postDate, deadline);
 
-
-        String fileName = "post" + System.currentTimeMillis() + "." + getFileType(String.valueOf(imgUri));
-        StorageReference imgRef = storageReference.child(fileName);
-
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        String uploadTime = currentDateTime.format(dateTimeFormatter);
-
-        String postId = databaseReference.push().getKey();
-
-        if (imgUri != null) {
-            Uri uri = null;
-            if (isImage(this, imgUri)){
-                uri = ProjectToolkit.compress(this, imgUri, 25);
-            }else{
-                uri = imgUri;
-            }
-            //Snackbar.make(findViewById(R.id.progressBar), "URI: " +uri, Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-            UploadTask uploadTask = imgRef.putFile(uri);
-            progressBar.setProgress(80, true);
-            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                    imgRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri downloadUri) {
-                            String imageUrl = downloadUri.toString();
-                            Map<String, Boolean> likes = new HashMap<>();
-                            Post post = new Post(postId, uid, authName, imageUrl, caption, uploadTime, anonymous, likes);
-                            Map<String, Object> postValues = post.toMap();
-                            databaseReference.child(postId).updateChildren(postValues);
-                            Snackbar.make(findViewById(R.id.progressBar), "Posted!", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-                            finish();
-                            reset();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Snackbar.make(findViewById(R.id.progressBar), "Oops! An error occurred, try again later", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-                                }
-                            });
-                        }
-                    });
-                }
-            }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(findViewById(R.id.progressBar), "Request denied", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-                        }
-                    });
-                }
-            });
-        } else {
-            databaseReference.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                    Map<String, Boolean> likes = new HashMap<>();
-                    Post post = new Post(postId, uid, authName, null, caption, uploadTime, anonymous, likes);
-                    databaseReference.child(postId).setValue(post);
-                    reset();
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(findViewById(R.id.progressBar), "Posted!", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-                            progressBar.setIndeterminate(true);
-                            new Handler().postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    finish();
-                                }
-                            },2000);
-                        }
-                    });
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Snackbar.make(findViewById(R.id.progressBar), "Request denied, try again later", Snackbar.LENGTH_SHORT).setAnchorView(R.id.anonymous).show();
-                        }
-                    });
-                }
-            });
-
-        }
-
-    }
-    private String getFileType(String urlString) {
-        if (urlString.endsWith(".jpg") || urlString.endsWith(".jpeg") || urlString.endsWith(".png") || urlString.endsWith(".gif")) {
-            return "image";
-        } else if (urlString.endsWith(".pdf")) {
-            return "pdf";
-        } else if (urlString.endsWith(".doc") || urlString.endsWith(".docx")) {
-            return "word";
-        } else if (urlString.endsWith(".xls") || urlString.endsWith(".xlsx")) {
-            return "excel";
-        } else {
-            return "unknown";
-        }
-    }
-
-    private void openAppSettings() {
-        Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-        Uri uri = Uri.fromParts("package", getPackageName(), null);
-        intent.setData(uri);
-        startActivityForResult.launch(intent);
-    }
-    private void openGallery() {
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.setType("image/*");
-        startActivityForResult.launch(intent);
-
-//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-//
-//        intent.setType("*/*");
-//        String[] mimeTypes = {"image/*", "application/pdf",
-//                "application/msword",
-//                "application/vnd.openxmlformats-officedocument.wordprocessingml.document", // DOCX
-//                "application/vnd.ms-excel",
-//                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}; // XLSX
-//
-//        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes);
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        startActivityForResult.launch(intent);
-
-    }
-    private void setProgressBar(View view){
-        final Handler handler = new Handler(Looper.getMainLooper());
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                int progress = progressBar.getProgress();
-                if (progress < 90) {
-                    progressBar.setProgress(progress + 1, true);
-                    handler.postDelayed(this, 10);
-                }
-                if (progress > 89){
-                    progressBar.setProgress(100, true);
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            ProjectToolkit.fadeOut(progressBar);
-                            if (view != null) {
-                                ProjectToolkit.fadeIn(view);
-                            }
-                        }
-                    }, 1000);
-                }
-            }
-        };
-        handler.post(runnable);
+        progressBar.setVisibility(View.VISIBLE);
+        assert postId != null;
+        postsRef.child(postId).setValue(post)
+                .addOnSuccessListener(unused -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Post created successfully!", Toast.LENGTH_SHORT).show();
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    progressBar.setVisibility(View.GONE);
+                    Toast.makeText(this, "Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
+                    Log.e("CreatePost", "Error saving post", e);
+                });
     }
 
 }

@@ -542,10 +542,6 @@ public class DeveloperActivity extends BaseActivity {
                 Intent intent1 = new Intent(this, BetaActivity.class);
                 startActivity(intent1);
                 return true;
-            case R.id.activity_uploads:
-                Intent intent6 = new Intent(this, UploadsActivity.class);
-                startActivity(intent6);
-                return true;
             case R.id.activity_access_denied:
                 Intent intent2 = new Intent(this, AccessDeniedActivity.class);
                 startActivity(intent2);
